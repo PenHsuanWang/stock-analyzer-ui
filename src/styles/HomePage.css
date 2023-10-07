@@ -16,3 +16,12 @@
     margin-top: 10px;
   }
   
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
+    gap: 20px; /* Gap between grid items */
+  }
+  
+  .grid-item {
+    width: 100%; /* Each grid item takes up 100% width of its column */
+  }
