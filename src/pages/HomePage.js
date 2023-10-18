@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/HomePage.css'; // Import the CSS file
-import logo from '../logo.svg'; // Import your images
+import Header from '../views/Header';
+import NavBar from '../views/NavBar';
+import Footer from '../views/Footer';
+import ImageGrid from '../views/ImageGrid';
+import logo from '../logo.svg';
 
 function HomePage() {
   const images = [
@@ -13,25 +15,18 @@ function HomePage() {
 
   return (
     <div className="App">
-      <header className="App-header">Website Logo & Navigation</header>
-      <nav>Navigation Bar / Menu</nav>
+      <Header title="Website Logo & Navigation" />
+      <NavBar />
 
       <div className="App-content">
         <main className="Main-content home-page">
           <h1>Welcome to the Home Page</h1>
           <p>This is the home page content. You can customize it as needed.</p>
-
-          <div className="image-grid">
-            {images.map((image) => (
-              <Link to="/stock-ma-plot" key={image.id} className="grid-item">
-                <img src={image.src} alt={image.alt} />
-              </Link>
-            ))}
-          </div>
+          <ImageGrid images={images} />
         </main>
       </div>
 
-      <footer>Footer Content</footer>
+      <Footer content="Footer Content" />
     </div>
   );
 }
