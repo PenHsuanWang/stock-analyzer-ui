@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
-import { fetchData, fetchMaChartData } from './dataService';
-import StockDiagramPageLayout from '../pages/StockDiagramPage'; // Import the StockDiagramPageLayout component
+import { fetchData, fetchMaChartData } from '../services/dataService';
+import '../styles/StockDiagram.css'
 
 function StockDiagram() {
   const [chartData, setChartData] = useState([]);

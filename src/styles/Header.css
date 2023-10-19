@@ -1,0 +1,30 @@
+.Header {
+    background-color: #282c34;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 10px 20px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .Header-logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .Header-logo img {
+    height: 40px; /* 根據需要調整 */
+    margin-right: 10px;
+  }
+  
+  .Header-title {
+    font-size: 1.5em;
+    margin: 0;
+  }
+  
+  .Header-nav {
+    display: flex;
+    gap: 20px;
+  }
+  

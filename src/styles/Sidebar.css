@@ -1,0 +1,5 @@
+aside {
+    width: 25%; /* 側邊欄的寬度 */
+    background-color: #f5f5f5; /* 為了使其明顯，給它一個背景顏色 */
+    padding: 20px;
+  }
