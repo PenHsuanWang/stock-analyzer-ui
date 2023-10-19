@@ -13,8 +13,7 @@ function App() {
       <Routes>
         {/* Define your routes */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/stock-ma-plot" element={<StockDiagramPage />} />
-        <Route path="/stock-ma-plot-new" element={<DataVisualizationPage />} />
+        <Route path="/stock-ma-plot" element={<DataVisualizationPage />} />
         <Route path="/base" element={<BasePage />} />
         {/* Add other routes here */}
       </Routes>
