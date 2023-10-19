@@ -1,0 +1,5 @@
+.Sidebar {
+  width: 25%; /* 側邊欄的寬度 */
+  background-color: #f5f5f5;
+  padding: 20px 0; /* 移除水平的 padding */
+}
