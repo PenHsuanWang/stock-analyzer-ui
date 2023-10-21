@@ -1,7 +1,8 @@
 .StockSearchControls {
-  display: flex;
-  justify-content: space-around; 
-  margin: 20px 0;
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start; 
+  padding: 10px 0;
 }
 
 .StockSearchControls input[type="text"],
@@ -9,7 +10,8 @@
   padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
-  width: 20%; /* 根據需要調整寬度 */
+  width: 20%; 
+  margin-bottom: 10px; 
 }
 
 .StockSearchControls button {
@@ -20,8 +22,31 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-bottom: 10px; 
 }
 
 .StockSearchControls button:hover {
   background-color: #1f242a;
+}
+
+.StockSearchControls > * {
+  margin-right: 10px; 
+}
+
+.StockSearchControls > *:last-child {
+  margin-right: 0;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;  
+}
+
+.inputGroup label {
+  margin-right: 10px;  
+}
+
+.StockSearchControls {
+  background-color: #f7f7f7;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import '../../styles/StockSearchControls.css';
 
 const StockSearchControls = ({ stockId, setStockId, startDate, setStartDate, endDate, setEndDate }) => (
-  <div>
+  <div className="StockSearchControls">
     <input
       type="text"
       value={stockId}

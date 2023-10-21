@@ -9,11 +9,13 @@ function StockDiagram({ data }) {
   };
 
   return (
-    <Plot
-      data={data}
-      layout={layout}
-      style={{ width: '80%', height: '400px' }}
-    />
+    <div className="StockDiagram">
+      <Plot
+        data={data}
+        layout={layout}
+        style={{ width: '80%', height: '400px' }}
+      />
+    </div>
   );
 }
 

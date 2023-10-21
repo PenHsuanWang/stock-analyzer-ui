@@ -32,15 +32,17 @@ function DataVisualizationPage() {
 
   return (
     <BasePage>
-      <StockSearchControls
-        stockId={stockId}
-        setStockId={setStockId}
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-      />
-      <StockDiagram data={chartData} />
+      <div className="DataVisualizationPage"> 
+        <StockSearchControls
+          stockId={stockId}
+          setStockId={setStockId}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+        <StockDiagram data={chartData} />
+      </div>
     </BasePage>
   );
 }
