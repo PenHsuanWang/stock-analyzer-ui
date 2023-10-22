@@ -23,25 +23,31 @@ const StockSearchControls = ({ setChartData }) => {
 
   return (
     <div className="StockSearchControls">
-      <input
-        type="text"
-        value={stockId}
-        onChange={(e) => setStockId(e.target.value)}
-        placeholder="Stock ID (e.g., AAPL)"
-      />
-      <input
-        type="date"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-        placeholder="Start Date"
-      />
-      <input
-        type="date"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-        placeholder="End Date"
-      />
-      <button onClick={handleSearch}>Search</button>
+      <div className="stockInputs">
+        <input
+          type="text"
+          value={stockId}
+          onChange={(e) => setStockId(e.target.value)}
+          placeholder="Stock ID (e.g., AAPL)"
+        />
+      </div>
+      <div className="dateInputs">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          placeholder="Start Date"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          placeholder="End Date"
+        />
+      </div>
+      <div>
+        <button onClick={handleSearch}>Search</button>
+      </div>
     </div>
   );
 };

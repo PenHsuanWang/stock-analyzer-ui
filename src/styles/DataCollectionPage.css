@@ -1,0 +1,52 @@
+/* DataCollectionPage.css */
+
+  .main-content-top {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  /* .main-content-data-search, .main-content-data-preview {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  } */
+
+  .main-content-data-search {
+    width: 25%; /* 調整為你希望的寬度 */
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .main-content-data-preview {
+    width: 75%; /* 調整為你希望的寬度 */
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 10px;
+  }
+  
+
+  .main-content-data-preview {
+      margin-top: 10px;
+  }
+
+  
+  .main-content-middle,
+  .main-content-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .main-content-middle {
+    margin-top: 10px; /* 增加上間距 */
+  }
+  
+  .main-content-middle button {
+    align-self: flex-end;
+    margin-right: 10px;
+  }
+  
