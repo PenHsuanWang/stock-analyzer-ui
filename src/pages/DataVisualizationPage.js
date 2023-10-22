@@ -8,10 +8,10 @@ function DataVisualizationPage({ ChartComponent, ControlComponent }) {
 
   return (
     <BasePage>
-      <div className="main-content-top">
+      <div className="main-content-ma-stock-select">
         {ControlComponent && <ControlComponent setChartData={setChartData} />}
       </div>
-      <div className="main-content-bottom">
+      <div className="main-content-ma-stock-diagram">
         {ChartComponent && <ChartComponent data={chartData} />}
       </div>
     </BasePage>

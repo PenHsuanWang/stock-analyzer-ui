@@ -12,21 +12,21 @@ function DataCollectionPage({
 }) {
   return (
     <BasePage>
-      <div className="App-content-top">
-        <div className="App-content-left">
+      <div className="main-content-top">
+        <div className="main-content-data-search">
           {StockSearchControlsComponent && <StockSearchControlsComponent />}
         </div>
 
-        <div className="App-content-right">
+        <div className="main-content-data-preview">
           {CandlestickDiagramComponent && <CandlestickDiagramComponent />}
         </div>
       </div>
 
-      <div className="App-content-middle">
+      <div className="main-content-middle">
         {MiddlePanelComponent && <MiddlePanelComponent />}
       </div>
 
-      <div className="App-content-bottom">
+      <div className="main-content-bottom">
         {SavedDataListComponent && <SavedDataListComponent />}
       </div>
     </BasePage>

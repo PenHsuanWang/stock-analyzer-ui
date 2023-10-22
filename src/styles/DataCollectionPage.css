@@ -1,55 +1,52 @@
-/* Page Layout */
-.App-content-top,
-.App-content-middle,
-.App-content-bottom {
+/* DataCollectionPage.css */
+
+  .main-content-top {
     display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  /* .main-content-data-search, .main-content-data-preview {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    margin-bottom: 10px;
-}
+  } */
 
-/* Top Section Styling */
-.App-content-top {
-    flex-direction: column; /* Change the direction from row to column */
-}
-
-.App-content-left,
-.App-content-right {
-    flex: 1;
+  .main-content-data-search {
+    width: 25%; /* 調整為你希望的寬度 */
     padding: 10px;
     box-sizing: border-box;
-    width: 100%; /* Take up the full width */
-    margin-bottom: 10px; /* Space between StockSearchControls and CandlestickDiagram */
-}
+  }
+  
+  .main-content-data-preview {
+    width: 75%; /* 調整為你希望的寬度 */
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 10px;
+  }
+  
 
-.App-content-left {
+  .main-content-data-preview {
+      margin-top: 10px;
+  }
+
+  
+  .main-content-middle,
+  .main-content-bottom {
     display: flex;
-    justify-content: center; /* Horizontally center the content */
-    align-items: center; /* Vertically aligns content in left box */
-}
-
-.App-content-right {
-    display: flex;
-    justify-content: center; /* Horizontally center the content */
-    align-items: center; /* Vertically aligns content in the right box */
-}
-
-/* Middle Section Styling */
-.App-content-middle {
-    justify-content: space-between; /* Separate the MiddlePanel and the Save button */
-    align-items: center; /* Vertically aligns content in the middle */
-}
-
-/* Adjust the height for top, middle, and bottom sections */
-.App-content-top {
-    height: calc(33.33% - 20px); /* Adjusted for padding and margin */
-}
-
-.App-content-middle {
-    height: calc(33.33% - 20px); /* Adjusted for padding and margin */
-}
-
-.App-content-bottom {
-    height: 33.33%; /* The last section can just take up the remaining space */
-}
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .main-content-middle {
+    margin-top: 10px; /* 增加上間距 */
+  }
+  
+  .main-content-middle button {
+    align-self: flex-end;
+    margin-right: 10px;
+  }
+  

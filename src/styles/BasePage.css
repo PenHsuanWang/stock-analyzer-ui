@@ -12,9 +12,7 @@ body {
   padding: 0;
 }
 
-.App-header,
-.App-content,
-footer {
+.App-section {
   width: 100%;
   padding: 10px 0; 
   background-color: white;
@@ -24,10 +22,7 @@ footer {
 
 .Main-content {
   flex: 1.5; 
-}
-
-.App-content {
   display: flex;
-  flex-direction: row;
+  flex-direction: column; /* 確保元件從上到下排列 */
   align-items: stretch;
 }

@@ -60,7 +60,7 @@ function App() {
               StockSearchControlsComponent={StockSearchControls}
               CandlestickDiagramComponent={StockDiagram}
               MiddlePanelComponent={DataCollectMiddlePanelControls}
-              SavedDataListComponen={ListDatasetFromDBControls}
+              SavedDataListComponent={ListDatasetFromDBControls}
             />
           }
         />

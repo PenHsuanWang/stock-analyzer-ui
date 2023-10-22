@@ -23,7 +23,7 @@ const StockSearchControls = ({ setChartData }) => {
 
   return (
     <div className="StockSearchControls">
-      <div>
+      <div className="stockInputs">
         <input
           type="text"
           value={stockId}
