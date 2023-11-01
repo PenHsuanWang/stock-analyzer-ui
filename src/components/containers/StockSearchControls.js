@@ -1,7 +1,8 @@
-// components/containers/StockSearchControls.js
+// StockSearchControls.js
 import React, { useState } from 'react';
 import { fetchData } from '../../services/dataService';
 import '../../styles/StockSearchControls.css';
+import { addDays, formatISO, parseISO } from 'date-fns';
 
 const StockSearchControls = ({ setChartData }) => {
   const [stockId, setStockId] = useState('');
@@ -10,11 +11,33 @@ const StockSearchControls = ({ setChartData }) => {
 
   const handleSearch = async () => {
     try {
-      const ChartDataResponse = await fetchData(stockId, startDate, endDate);
-      setChartData(ChartDataResponse);
+      const chartDataResponse = await fetchData(stockId, startDate, endDate);
+      const enrichedData = addDatesToData(chartDataResponse, startDate, endDate);
+      setChartData(enrichedData);
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  // This function will add dates to the data received from the backend
+  const addDatesToData = (data, startDate, endDate) => {
+    const startDateParsed = parseISO(startDate);
+    const endDateParsed = parseISO(endDate);
+    const dateRange = eachDayOfInterval({ start: startDateParsed, end: endDateParsed });
+    return data.map((item, index) => {
+      return { ...item, Date: formatISO(dateRange[index], { representation: 'date' }) };
+    });
+  };
+
+  // Generate an array of dates between startDate and endDate
+  const eachDayOfInterval = ({ start, end }) => {
+    const dayList = [];
+    let day = start;
+    while (day <= end) {
+      dayList.push(day);
+      day = addDays(day, 1);
+    }
+    return dayList;
   };
 
   return (
