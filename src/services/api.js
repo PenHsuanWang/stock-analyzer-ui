@@ -23,8 +23,17 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
     }
     return response.data;
   } catch (error) {
-    // to do additional error handling if needed
-    throw error;
+    if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw new Error(`Backend error: ${error.response.status} ${error.response.data.message}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        throw new Error('No response from the server. Please check your network connection.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error setting up the request:', error.message);
+      }
   }
 };
 

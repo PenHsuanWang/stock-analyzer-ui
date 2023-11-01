@@ -37,3 +37,8 @@
   display: flex;
   gap: 10%;
 }
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}

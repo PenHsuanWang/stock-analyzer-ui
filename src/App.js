@@ -58,7 +58,7 @@ function App() {
           element={
             <DataCollectionPage 
               StockSearchControlsComponent={StockSearchControls}
-              CandlestickDiagramComponent={StockDiagram}
+              CandlestickDiagramComponent={CandlestickDiagram}
               MiddlePanelComponent={DataCollectMiddlePanelControls}
               SavedDataListComponent={ListDatasetFromDBControls}
             />

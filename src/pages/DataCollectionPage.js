@@ -1,7 +1,6 @@
 // pages/DataCollectionPage.js
-import React from 'react';
+import React, { useState } from 'react';
 import BasePage from './BasePage';
-
 import '../styles/DataCollectionPage.css'
 
 function DataCollectionPage({
@@ -10,15 +9,20 @@ function DataCollectionPage({
   MiddlePanelComponent,
   SavedDataListComponent
 }) {
+  // State to hold the fetched data
+  const [fetchedData, setFetchedData] = useState([]);
+
   return (
     <BasePage>
       <div className="main-content-top">
         <div className="main-content-data-search">
-          {StockSearchControlsComponent && <StockSearchControlsComponent />}
+          {StockSearchControlsComponent && 
+            <StockSearchControlsComponent setChartData={setFetchedData} />}
         </div>
 
         <div className="main-content-data-preview">
-          {CandlestickDiagramComponent && <CandlestickDiagramComponent />}
+          {CandlestickDiagramComponent && 
+            <CandlestickDiagramComponent data={fetchedData} />}
         </div>
       </div>
 
