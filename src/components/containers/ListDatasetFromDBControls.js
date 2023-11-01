@@ -1,20 +1,42 @@
-// components/containers/ListDatasetFromDBControls.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getListDatasetFromDB } from '../../services/ListDatasetService';
 import '../../styles/ListDatasetFromDBControls.css';
 
-const mockData = [
-  { stock_id: "AAPL", start_date: "2022-01-01", end_date: "2022-01-31" },
-  { stock_id: "MSFT", start_date: "2022-02-01", end_date: "2022-02-28" },
-  { stock_id: "GOOGL", start_date: "2022-03-01", end_date: "2022-03-31" },
-  // ... (more mock data)
-];
-
 const ListDatasetFromDBControls = () => {
+  const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data inside useEffect
+    const parseDataItem = (item) => {
+      const parts = item.split(':');
+      return {
+        stock_id: parts[1],
+        start_date: parts[2],
+        end_date: parts[3]
+      };
+    };
+    
+    const fetchData = async () => {
+      try {
+        const fetchedData = await getListDatasetFromDB();
+        if (Array.isArray(fetchedData)) {
+          const parsedData = fetchedData.map(parseDataItem);
+          setData(parsedData);
+        } else {
+          console.error("Received data is not an array:", fetchedData);
+          setData([]);  // Set to an empty array as a fallback
+        }       
+      } catch (error) {
+        console.error("Failed to fetch dataset:", error);
+      }
+    };    
+    fetchData();
+  }, []); // Empty dependency array means this effect will only run once, similar to componentDidMount
 
   const handleCheckboxChange = (index, isChecked) => {
     if (isChecked) {
-      setSelectedData(prevSelected => [...prevSelected, mockData[index]]);
+      setSelectedData(prevSelected => [...prevSelected, data[index]]);
     } else {
       setSelectedData(prevSelected => prevSelected.filter((_, idx) => idx !== index));
     }
@@ -32,7 +54,7 @@ const ListDatasetFromDBControls = () => {
           </tr>
         </thead>
         <tbody>
-          {mockData.map((data, index) => (
+          {data.map((dataItem, index) => (
             <tr key={index}>
               <td>
                 <input 
@@ -40,9 +62,9 @@ const ListDatasetFromDBControls = () => {
                   onChange={e => handleCheckboxChange(index, e.target.checked)}
                 />
               </td>
-              <td>{data.stock_id}</td>
-              <td>{data.start_date}</td>
-              <td>{data.end_date}</td>
+              <td>{dataItem.stock_id}</td>
+              <td>{dataItem.start_date}</td>
+              <td>{dataItem.end_date}</td>
             </tr>
           ))}
         </tbody>
