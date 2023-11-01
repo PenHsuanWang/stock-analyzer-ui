@@ -1,6 +1,7 @@
 // StockSearchControls.js
 import React, { useState } from 'react';
-import { fetchData } from '../../services/dataService';
+// import { fetchData } from '../../services/dataService';
+import { fetchDataFromSource } from "../../services/api";
 import '../../styles/StockSearchControls.css';
 import { addDays, formatISO, parseISO } from 'date-fns';
 
@@ -11,7 +12,13 @@ const StockSearchControls = ({ setChartData }) => {
 
   const handleSearch = async () => {
     try {
-      const chartDataResponse = await fetchData(stockId, startDate, endDate);
+      // setup the payload to send the request
+      const payload = {
+        stock_id: stockId,
+        start_date: startDate,
+        end_date: endDate,
+      };
+      const chartDataResponse = await fetchDataFromSource(payload);
       const enrichedData = addDatesToData(chartDataResponse, startDate, endDate);
       setChartData(enrichedData);
     } catch (error) {
