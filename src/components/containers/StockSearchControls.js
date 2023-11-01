@@ -1,7 +1,9 @@
-// components/containers/StockSearchControls.js
+// StockSearchControls.js
 import React, { useState } from 'react';
-import { fetchData, fetchMaChartData } from '../../services/dataService';
+// import { fetchData } from '../../services/dataService';
+import { fetchDataFromSource } from "../../services/api";
 import '../../styles/StockSearchControls.css';
+import { addDays, formatISO, parseISO } from 'date-fns';
 
 const StockSearchControls = ({ setChartData }) => {
   const [stockId, setStockId] = useState('');
@@ -10,15 +12,39 @@ const StockSearchControls = ({ setChartData }) => {
 
   const handleSearch = async () => {
     try {
-      const [chartDataResponse, maChartDataResponse] = await Promise.all([
-        fetchData(stockId, startDate, endDate),
-        fetchMaChartData(stockId, startDate, endDate),
-      ]);
-
-      setChartData([...chartDataResponse, ...maChartDataResponse]);
+      // setup the payload to send the request
+      const payload = {
+        stock_id: stockId,
+        start_date: startDate,
+        end_date: endDate,
+      };
+      const chartDataResponse = await fetchDataFromSource(payload);
+      const enrichedData = addDatesToData(chartDataResponse, startDate, endDate);
+      setChartData(enrichedData);
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  // This function will add dates to the data received from the backend
+  const addDatesToData = (data, startDate, endDate) => {
+    const startDateParsed = parseISO(startDate);
+    const endDateParsed = parseISO(endDate);
+    const dateRange = eachDayOfInterval({ start: startDateParsed, end: endDateParsed });
+    return data.map((item, index) => {
+      return { ...item, Date: formatISO(dateRange[index], { representation: 'date' }) };
+    });
+  };
+
+  // Generate an array of dates between startDate and endDate
+  const eachDayOfInterval = ({ start, end }) => {
+    const dayList = [];
+    let day = start;
+    while (day <= end) {
+      dayList.push(day);
+      day = addDays(day, 1);
+    }
+    return dayList;
   };
 
   return (
@@ -30,8 +56,6 @@ const StockSearchControls = ({ setChartData }) => {
           onChange={(e) => setStockId(e.target.value)}
           placeholder="Stock ID (e.g., AAPL)"
         />
-      </div>
-      <div className="dateInputs">
         <input
           type="date"
           value={startDate}
@@ -44,8 +68,6 @@ const StockSearchControls = ({ setChartData }) => {
           onChange={(e) => setEndDate(e.target.value)}
           placeholder="End Date"
         />
-      </div>
-      <div>
         <button onClick={handleSearch}>Search</button>
       </div>
     </div>
