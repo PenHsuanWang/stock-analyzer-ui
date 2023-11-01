@@ -1,6 +1,6 @@
 // components/containers/StockSearchControls.js
 import React, { useState } from 'react';
-import { fetchData, fetchMaChartData } from '../../services/dataService';
+import { fetchData } from '../../services/dataService';
 import '../../styles/StockSearchControls.css';
 
 const StockSearchControls = ({ setChartData }) => {
@@ -10,12 +10,8 @@ const StockSearchControls = ({ setChartData }) => {
 
   const handleSearch = async () => {
     try {
-      const [chartDataResponse, maChartDataResponse] = await Promise.all([
-        fetchData(stockId, startDate, endDate),
-        fetchMaChartData(stockId, startDate, endDate),
-      ]);
-
-      setChartData([...chartDataResponse, ...maChartDataResponse]);
+      const ChartDataResponse = await fetchData(stockId, startDate, endDate);
+      setChartData(ChartDataResponse);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -30,8 +26,6 @@ const StockSearchControls = ({ setChartData }) => {
           onChange={(e) => setStockId(e.target.value)}
           placeholder="Stock ID (e.g., AAPL)"
         />
-      </div>
-      <div className="dateInputs">
         <input
           type="date"
           value={startDate}
@@ -44,8 +38,6 @@ const StockSearchControls = ({ setChartData }) => {
           onChange={(e) => setEndDate(e.target.value)}
           placeholder="End Date"
         />
-      </div>
-      <div>
         <button onClick={handleSearch}>Search</button>
       </div>
     </div>
