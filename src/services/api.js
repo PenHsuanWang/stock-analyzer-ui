@@ -23,8 +23,17 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
     }
     return response.data;
   } catch (error) {
-    // to do additional error handling if needed
-    throw error;
+    if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw new Error(`Backend error: ${error.response.status} ${error.response.data.message}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        throw new Error('No response from the server. Please check your network connection.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error setting up the request:', error.message);
+      }
   }
 };
 
@@ -32,5 +41,5 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
 export const fetchDataFromSource = (payload) => sendRequest('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 export const fetchAndStashData = (payload) => sendRequest('post', '/stock_data/fetch_and_stash', payload);
 export const fetchFullAnalysis = (payload) => sendRequest('post', '/stock_analyzer/full_analysis', payload);
-export const getListDatasetFromDB = () => sendRequest('get', '/stock_data/get_all_keys');
+export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
 export const deleteDatasetInDB = (datasetName) => sendRequest('delete', '/stock_data/delete', { dataset_name: datasetName });

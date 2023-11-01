@@ -26,7 +26,8 @@ const StockDiagram = ({ data }) => {
     },
     yaxis: {
       title: 'Close Price' // y-axis label
-    }
+    },
+    hovermode: 'closest'
   };
 
   return (
