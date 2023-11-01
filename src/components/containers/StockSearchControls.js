@@ -4,7 +4,7 @@ import { fetchDataFromSource } from "../../services/api";
 import '../../styles/StockSearchControls.css';
 import { addDays, formatISO, parseISO, isBefore } from 'date-fns';
 
-const StockSearchControls = ({ setChartData }) => {
+const StockSearchControls = ({ setChartData, setSearchParams }) => {
   const [stockId, setStockId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -43,6 +43,10 @@ const StockSearchControls = ({ setChartData }) => {
       const chartDataResponse = await fetchDataFromSource(payload);
       const enrichedData = addDatesToData(chartDataResponse, startDate, endDate);
       setChartData(enrichedData);
+
+      // Update search parameters after successful data fetch
+      setSearchParams({ stockId, startDate, endDate });
+
     } catch (error) {
       console.error("Error fetching data:", error);
       setError('Failed to fetch data. Please try again later.'); // Set a user-friendly error message

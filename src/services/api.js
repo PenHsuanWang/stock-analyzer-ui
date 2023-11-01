@@ -41,5 +41,5 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
 export const fetchDataFromSource = (payload) => sendRequest('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 export const fetchAndStashData = (payload) => sendRequest('post', '/stock_data/fetch_and_stash', payload);
 export const fetchFullAnalysis = (payload) => sendRequest('post', '/stock_analyzer/full_analysis', payload);
-export const getListDatasetFromDB = () => sendRequest('get', '/stock_data/get_all_keys');
+export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
 export const deleteDatasetInDB = (datasetName) => sendRequest('delete', '/stock_data/delete', { dataset_name: datasetName });

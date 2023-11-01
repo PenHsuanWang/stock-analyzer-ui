@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getListDatasetFromDB } from '../../services/ListDatasetService';
+import { getListDatasetFromDB } from '../../services/api'; // 确认路径是否正确
 import '../../styles/ListDatasetFromDBControls.css';
 
 const ListDatasetFromDBControls = () => {
@@ -10,35 +10,52 @@ const ListDatasetFromDBControls = () => {
     // Fetch data inside useEffect
     const parseDataItem = (item) => {
       const parts = item.split(':');
-      return {
-        stock_id: parts[1],
-        start_date: parts[2],
-        end_date: parts[3]
-      };
+      // Make sure to check if the data is valid
+      if(parts.length >= 3) {
+        return {
+          stock_id: parts[0],
+          start_date: parts[1],
+          end_date: parts[2]
+        };
+      }
+      return null;
     };
-    
+
     const fetchData = async () => {
       try {
-        const fetchedData = await getListDatasetFromDB();
-        if (Array.isArray(fetchedData)) {
-          const parsedData = fetchedData.map(parseDataItem);
+        const response = await getListDatasetFromDB({"prefix":"raw_stock_data"});
+        const keysArray = response.keys;
+        if (Array.isArray(keysArray)) {
+          const parsedData = keysArray.map(key => {
+            const parts = key.split(':');
+            if(parts.length === 4) {
+              return {
+                stock_id: parts[1],
+                start_date: parts[2],
+                end_date: parts[3]
+              };
+            }
+            return null;
+          }).filter(item => item !== null);
           setData(parsedData);
         } else {
-          console.error("Received data is not an array:", fetchedData);
-          setData([]);  // Set to an empty array as a fallback
-        }       
+          console.error("Received data is not properly formatted:", keysArray);
+          setData([]);
+        }
       } catch (error) {
         console.error("Failed to fetch dataset:", error);
+        setData([]);  // Set to an empty array on error
       }
     };    
     fetchData();
-  }, []); // Empty dependency array means this effect will only run once, similar to componentDidMount
+  }, []);
 
   const handleCheckboxChange = (index, isChecked) => {
+    const selectedItem = data[index];
     if (isChecked) {
-      setSelectedData(prevSelected => [...prevSelected, data[index]]);
+      setSelectedData(prevSelected => [...prevSelected, selectedItem]);
     } else {
-      setSelectedData(prevSelected => prevSelected.filter((_, idx) => idx !== index));
+      setSelectedData(prevSelected => prevSelected.filter(item => item !== selectedItem));
     }
   };
 
@@ -59,6 +76,7 @@ const ListDatasetFromDBControls = () => {
               <td>
                 <input 
                   type="checkbox" 
+                  checked={selectedData.includes(dataItem)}
                   onChange={e => handleCheckboxChange(index, e.target.checked)}
                 />
               </td>
