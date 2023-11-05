@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.js';
 import BasePage from './pages/BasePage.js';
 import DataVisualizationPage from './pages/DataVisualizationPage';
 import DataCollectionPage from './pages/DataCollectionPage';
+import DataAnalysisPage from './pages/DataAnalysisPage.js';
 
 import StockDiagram from './components/charts/StockDiagram';
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
@@ -61,6 +62,17 @@ function App() {
               CandlestickDiagramComponent={CandlestickDiagram}
               MiddlePanelComponent={DataCollectMiddlePanelControls}
               SavedDataListComponent={ListDatasetFromDBControls}
+              prefix="raw_stock_data"
+            />
+          }
+        />
+
+        <Route 
+          path="/data-analysis" 
+          element={
+            <DataAnalysisPage 
+              savedDataPrefix="raw_stock_data"
+              analyzedDataPrefix="analyzed_stock_data"
             />
           }
         />
