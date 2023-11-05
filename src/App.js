@@ -61,6 +61,7 @@ function App() {
               CandlestickDiagramComponent={CandlestickDiagram}
               MiddlePanelComponent={DataCollectMiddlePanelControls}
               SavedDataListComponent={ListDatasetFromDBControls}
+              prefix="raw_stock_data"
             />
           }
         />
