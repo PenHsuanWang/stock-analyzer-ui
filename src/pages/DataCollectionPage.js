@@ -1,7 +1,6 @@
-// pages/DataCollectionPage.js
 import React, { useState } from 'react';
 import BasePage from './BasePage';
-import '../styles/DataCollectionPage.css'
+import '../styles/DataCollectionPage.css';
 
 import { fetchAndStashData } from '../services/api';
 
@@ -9,10 +8,10 @@ function DataCollectionPage({
   StockSearchControlsComponent,
   CandlestickDiagramComponent,
   MiddlePanelComponent,
-  SavedDataListComponent
+  SavedDataListComponent,
+  prefix
 }) {
   // State to hold the fetched data
-
   const [searchParams, setSearchParams] = useState({
     stockId: '',
     startDate: '',
@@ -25,8 +24,7 @@ function DataCollectionPage({
   const handleSaveData = async () => {
     try {
       // send the request to backend for event handling
-      console.log(searchParams)
-      console.log(typeof searchParams)
+      console.log(searchParams);
       const response = await fetchAndStashData(searchParams);
       console.log(response);
     } catch (error) {
@@ -57,7 +55,7 @@ function DataCollectionPage({
         )}
       </div>
       <div className="main-content-bottom">
-        {SavedDataListComponent && <SavedDataListComponent />}
+        {SavedDataListComponent && <SavedDataListComponent prefix={prefix} />}
       </div>
     </BasePage>
   );
