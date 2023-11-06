@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BasePage from './BasePage';
 import '../styles/DataCollectionPage.css';
 
-import { fetchAndStashData } from '../services/api';
+import { fetchAndStashData, deleteDatasetInDB } from '../services/api';
 
 function DataCollectionPage({
   StockSearchControlsComponent,
@@ -22,6 +22,10 @@ function DataCollectionPage({
 
   const [refreshDataList, setRefreshDataList] = useState(false);
 
+  // Add state to keep track of selected datasets for deletion
+  const [selectedDatasets, setSelectedDatasets] = useState([]);
+
+
   // process the stashed data
   const handleSaveData = async () => {
     try {
@@ -36,6 +40,20 @@ function DataCollectionPage({
       setRefreshDataList(prev => !prev); // Toggle the state to trigger a refresh StoredDataList
     } catch (error) {
       console.error("Failed to save data:", error);
+    }
+  };
+
+  // function to handle the deletion of selected datasets
+  const handleDeleteData = async (selectedData) => {
+    try {
+      for (const data of selectedData) {
+        // Extract the necessary information for deletion
+        const { stock_id, start_date, end_date } = data;
+        await deleteDatasetInDB({ stock_id, start_date, end_date });
+      }
+      setRefreshDataList(prev => !prev); // Refresh the list to show updated data
+    } catch (error) {
+      console.error("Failed to delete data:", error);
     }
   };
 
@@ -58,11 +76,22 @@ function DataCollectionPage({
       </div>
       <div className="main-content-middle">
         {MiddlePanelComponent && (
-          <MiddlePanelComponent onSave={handleSaveData} searchParams={searchParams}/>
+          <MiddlePanelComponent 
+            onSave={handleSaveData} 
+            onDelete={handleDeleteData} // Pass the new handleDeleteData function as a prop
+            searchParams={searchParams}
+            selectedData={selectedDatasets} // Pass the selected datasets for deletion
+          />
         )}
       </div>
       <div className="main-content-bottom">
-        {SavedDataListComponent && <SavedDataListComponent prefix={prefix} refresh={refreshDataList} />}
+        {SavedDataListComponent && (
+          <SavedDataListComponent 
+            prefix={prefix} 
+            refresh={refreshDataList}
+            setSelectedItems={setSelectedDatasets} // Allow the list component to update the selected datasets
+          />
+        )}
       </div>
     </BasePage>
   );

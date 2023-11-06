@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getListDatasetFromDB } from '../../services/api'; // 確認路徑是否正確
 import '../../styles/ListDatasetFromDBControls.css';
 
-const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
+const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
 
@@ -26,7 +26,13 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
       }
     };    
     fetchData();
-  }, [prefix, refresh]); // 添加 prefix 為 useEffect 的依賴
+  }, [prefix, refresh]); // 'prefix' and 'refresh' are dependencies of this effect
+
+  // This effect is used to communicate the selected datasets back to the parent component
+  // Whenever 'selectedData' changes, we call 'setSelectedDatasets' to update the parent's state
+  useEffect(() => {
+    setSelectedItems(selectedData);
+  }, [selectedData, setSelectedItems]); // 'selectedData' and 'setSelectedDatasets' are dependencies of this effect
 
   const parseDataKey = (key) => {
     const parts = key.split(':');
@@ -40,12 +46,24 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
     return null;
   };
 
-  const handleCheckboxChange = (index, isChecked) => {
-    const selectedItem = data[index];
+  const isItemSelected = (item) => {
+    return selectedData.some(selectedItem => 
+      selectedItem.stock_id === item.stock_id &&
+      selectedItem.start_date === item.start_date &&
+      selectedItem.end_date === item.end_date
+    );
+  };
+  
+
+  const handleCheckboxChange = (dataItem, isChecked) => {
     if (isChecked) {
-      setSelectedData(prevSelected => [...prevSelected, selectedItem]);
+      setSelectedData(prevSelected => [...prevSelected, dataItem]);
     } else {
-      setSelectedData(prevSelected => prevSelected.filter(item => item !== selectedItem));
+      setSelectedData(prevSelected => prevSelected.filter(item => 
+        item.stock_id !== dataItem.stock_id ||
+        item.start_date !== dataItem.start_date ||
+        item.end_date !== dataItem.end_date
+      ));
     }
   };
 
@@ -61,13 +79,13 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((dataItem, index) => (
-            <tr key={index}>
+          {data.map((dataItem) => (
+            <tr key={`${dataItem.stock_id}-${dataItem.start_date}-${dataItem.end_date}`}>
               <td>
                 <input 
                   type="checkbox" 
-                  checked={selectedData.includes(dataItem)}
-                  onChange={e => handleCheckboxChange(index, e.target.checked)}
+                  checked={isItemSelected(dataItem)}
+                  onChange={e => handleCheckboxChange(dataItem, e.target.checked)}
                 />
               </td>
               <td>{dataItem.stock_id}</td>
@@ -80,5 +98,6 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
     </div>
   );
 };
+
 
 export default ListDatasetFromDBControls;
