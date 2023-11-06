@@ -47,9 +47,13 @@ function DataCollectionPage({
   const handleDeleteData = async (selectedData) => {
     try {
       for (const data of selectedData) {
-        // Extract the necessary information for deletion
-        const { stock_id, start_date, end_date } = data;
-        await deleteDatasetInDB({ stock_id, start_date, end_date });
+        // Make sure to send the data in the correct format
+        await deleteDatasetInDB({
+          prefix: 'raw_stock_data',
+          stock_id: data.stock_id,
+          start_date: data.start_date,
+          end_date: data.end_date
+        });
       }
       setRefreshDataList(prev => !prev); // Refresh the list to show updated data
     } catch (error) {
