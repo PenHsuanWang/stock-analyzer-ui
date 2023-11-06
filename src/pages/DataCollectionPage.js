@@ -20,13 +20,20 @@ function DataCollectionPage({
 
   const [fetchedData, setFetchedData] = useState([]);
 
+  const [refreshDataList, setRefreshDataList] = useState(false);
+
   // process the stashed data
   const handleSaveData = async () => {
     try {
       // send the request to backend for event handling
       console.log(searchParams);
-      const response = await fetchAndStashData(searchParams);
+      const response = await fetchAndStashData({
+        stock_id: searchParams.stockId,
+        start_date: searchParams.startDate,
+        end_date: searchParams.endDate
+      });
       console.log(response);
+      setRefreshDataList(prev => !prev); // Toggle the state to trigger a refresh StoredDataList
     } catch (error) {
       console.error("Failed to save data:", error);
     }
@@ -51,11 +58,11 @@ function DataCollectionPage({
       </div>
       <div className="main-content-middle">
         {MiddlePanelComponent && (
-          <MiddlePanelComponent onSave={handleSaveData} />
+          <MiddlePanelComponent onSave={handleSaveData} searchParams={searchParams}/>
         )}
       </div>
       <div className="main-content-bottom">
-        {SavedDataListComponent && <SavedDataListComponent prefix={prefix} />}
+        {SavedDataListComponent && <SavedDataListComponent prefix={prefix} refresh={refreshDataList} />}
       </div>
     </BasePage>
   );

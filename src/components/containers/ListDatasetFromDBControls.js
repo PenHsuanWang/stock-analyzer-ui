@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getListDatasetFromDB } from '../../services/api'; // 確認路徑是否正確
 import '../../styles/ListDatasetFromDBControls.css';
 
-const ListDatasetFromDBControls = ({ prefix }) => {
+const ListDatasetFromDBControls = ({ prefix, refresh = false }) => {
   const [data, setData] = useState([]);
   const [selectedData, setSelectedData] = useState([]);
 
@@ -26,7 +26,7 @@ const ListDatasetFromDBControls = ({ prefix }) => {
       }
     };    
     fetchData();
-  }, [prefix]); // 添加 prefix 為 useEffect 的依賴
+  }, [prefix, refresh]); // 添加 prefix 為 useEffect 的依賴
 
   const parseDataKey = (key) => {
     const parts = key.split(':');
