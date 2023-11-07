@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BasePage from './BasePage';
 import '../styles/DataCollectionPage.css';
 
-import { fetchAndStashData } from '../services/api';
+import { fetchAndStashData, deleteDatasetInDB } from '../services/api';
 
 function DataCollectionPage({
   StockSearchControlsComponent,
@@ -20,15 +20,44 @@ function DataCollectionPage({
 
   const [fetchedData, setFetchedData] = useState([]);
 
+  const [refreshDataList, setRefreshDataList] = useState(false);
+
+  // Add state to keep track of selected datasets for deletion
+  const [selectedDatasets, setSelectedDatasets] = useState([]);
+
+
   // process the stashed data
   const handleSaveData = async () => {
     try {
       // send the request to backend for event handling
       console.log(searchParams);
-      const response = await fetchAndStashData(searchParams);
+      const response = await fetchAndStashData({
+        stock_id: searchParams.stockId,
+        start_date: searchParams.startDate,
+        end_date: searchParams.endDate
+      });
       console.log(response);
+      setRefreshDataList(prev => !prev); // Toggle the state to trigger a refresh StoredDataList
     } catch (error) {
       console.error("Failed to save data:", error);
+    }
+  };
+
+  // function to handle the deletion of selected datasets
+  const handleDeleteData = async (selectedData) => {
+    try {
+      for (const data of selectedData) {
+        // Make sure to send the data in the correct format
+        await deleteDatasetInDB({
+          prefix: 'raw_stock_data',
+          stock_id: data.stock_id,
+          start_date: data.start_date,
+          end_date: data.end_date
+        });
+      }
+      setRefreshDataList(prev => !prev); // Refresh the list to show updated data
+    } catch (error) {
+      console.error("Failed to delete data:", error);
     }
   };
 
@@ -51,11 +80,22 @@ function DataCollectionPage({
       </div>
       <div className="main-content-middle">
         {MiddlePanelComponent && (
-          <MiddlePanelComponent onSave={handleSaveData} />
+          <MiddlePanelComponent 
+            onSave={handleSaveData} 
+            onDelete={handleDeleteData} // Pass the new handleDeleteData function as a prop
+            searchParams={searchParams}
+            selectedData={selectedDatasets} // Pass the selected datasets for deletion
+          />
         )}
       </div>
       <div className="main-content-bottom">
-        {SavedDataListComponent && <SavedDataListComponent prefix={prefix} />}
+        {SavedDataListComponent && (
+          <SavedDataListComponent 
+            prefix={prefix} 
+            refresh={refreshDataList}
+            setSelectedItems={setSelectedDatasets} // Allow the list component to update the selected datasets
+          />
+        )}
       </div>
     </BasePage>
   );
