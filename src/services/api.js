@@ -43,3 +43,4 @@ export const fetchAndStashData = (payload) => sendRequest('post', '/stock_data/f
 export const fetchFullAnalysis = (payload) => sendRequest('post', '/stock_analyzer/full_analysis', payload);
 export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
 export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/delete_data', payload);
+export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
