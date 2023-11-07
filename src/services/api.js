@@ -42,4 +42,5 @@ export const fetchDataFromSource = (payload) => sendRequest('post', '/stock_data
 export const fetchAndStashData = (payload) => sendRequest('post', '/stock_data/fetch_and_stash', payload);
 export const fetchFullAnalysis = (payload) => sendRequest('post', '/stock_analyzer/full_analysis', payload);
 export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
-export const deleteDatasetInDB = (datasetName) => sendRequest('delete', '/stock_data/delete', { dataset_name: datasetName });
+export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/delete_data', payload);
+export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);

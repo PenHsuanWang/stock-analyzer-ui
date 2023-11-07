@@ -2,12 +2,38 @@
 import React from 'react';
 import { SaveButton, DeleteButton, SearchButton } from '../widgets/buttons/CustomButtons';
 
-function DataCollectMiddlePanelControls({ onSave }) {
+function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, selectedData  }) {
+
+  // the activated function for save button
+  const handleSave = async () => {
+    // type check
+    if (
+      typeof searchParams.stockId !== 'string' ||
+      typeof searchParams.startDate !== 'string' ||
+      typeof searchParams.endDate !== 'string'
+    ) {
+      console.error('Invalid data types for the request payload');
+      return;
+    }
+    
+    await onSave(searchParams); // 使用來自父組件的 searchParams 作為 payload
+  };
+
+  // function to handle the delete operation
+  const handleDelete = async () => {
+    if (selectedData.length === 0) {
+      console.error('No data selected to delete');
+      return;
+    }
+
+    await onDelete(selectedData); // Pass the selected data to the parent component to handle deletion
+  };
+
   return (
     <div className="middle-panel">
       <div className="middle-panel-buttons">
-        <SaveButton onClick={onSave} />
-        <DeleteButton onClick={() => console.log('Delete clicked!')} />
+        <SaveButton onClick={handleSave} />
+        <DeleteButton onClick={handleDelete} />
         <SearchButton onClick={() => console.log('Search clicked!')} />
       </div>
     </div>
