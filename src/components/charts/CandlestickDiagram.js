@@ -3,7 +3,6 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 
 const CandlestickDiagram = ({ data }) => {
-  console.log(data)
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No data to display or data is in incorrect format.</div>;
   }

@@ -9,25 +9,17 @@ import '../styles/AnalyzedDataVisualizationPage.css';
 
 function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
 
-  // Initialize visualizationData with an empty structure for candlestick chart
-  const initialCandlestickData = chartType === 'candlestick' ? [{}] : [];
-
-  // State to track selected items for visualization
+  const [visualizationData, setVisualizationData] = useState([]);
   const [selectedForVisualization, setSelectedForVisualization] = useState([]);
-  // State to hold heatmap or candlestick data for rendering
-  const [visualizationData, setVisualizationData] = useState(initialCandlestickData);
-  // State to track refreshes of the ListDatasetFromDBControls
-  const [refreshAnalyzedDataKey, setRefreshAnalyzedDataKey] = useState(0);
+  const [refreshAnalyzedDataKey, setRefreshAnalyzedDataKey] = useState(0)
 
   // Function to handle the display of the selected data visualization
   const handleShowData = async () => {
-    console.log(chartType);
     if (chartType === 'heatmap') {
       // Trigger the computation of correlation for the selected assets
       await handleComputeCorrelation();
     } else if (chartType === 'candlestick') {
-      // Fetch and display candlestick data
-      const visualizationPromises = selectedForVisualization.map(item =>
+      const promises = selectedForVisualization.map(item =>
         fetchDataFromBackendDB({
           prefix: analyzedDataPrefix,
           stock_id: item.stock_id,
@@ -35,15 +27,29 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
           end_date: item.end_date
         })
       );
-  
+
       try {
-        const dataSets = await Promise.all(visualizationPromises);
-        // Transform or format dataSets as needed for the CandlestickDiagram component
-        // Example: transformDataSets(dataSets);
-        setVisualizationData(dataSets); // Update this line as per the transformed data
+        const datasets = await Promise.all(promises);
+        const transformedDatasets = datasets.map((response, index) => {
+          if (!response || !Array.isArray(response.data)) {
+            throw new Error('Response does not contain a data array');
+          }
+          const data = response.data;
+          const startDate = new Date(selectedForVisualization[index].start_date);
+          return data.map((dataPoint, valueIndex) => {
+            const date = new Date(startDate);
+            date.setDate(date.getDate() + valueIndex);
+            return {
+              ...dataPoint,
+              Date: date.toISOString().split('T')[0]
+            };
+          });
+        });
+
+        setVisualizationData(transformedDatasets);
       } catch (error) {
         console.error("Error fetching candlestick data:", error);
-        // Handle errors here, perhaps set an error state to show an error message to the user
+        setVisualizationData([]);
       }
     }
   };
@@ -77,15 +83,11 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
 
   // Render the appropriate chart based on chartType
   const renderVisualization = () => {
-    console.log(chartType);
     if (chartType === 'heatmap' && visualizationData) {
       return <TwoDHeatmapDiagram data={visualizationData} />;
     } else if (chartType === 'candlestick') {
-      // Render an empty chart initially or with data when available
-      console.log("going to render CandlestickDiagram")
-      console.log(visualizationData)
-      return visualizationData.map((dataSets, index) => (
-        <CandlestickDiagram key={index} data={dataSets.data} />
+      return visualizationData.map((dataSet, index) => (
+        <CandlestickDiagram key={index} data={dataSet} />
       ));
     } else {
       return <p>No data to display.</p>;
