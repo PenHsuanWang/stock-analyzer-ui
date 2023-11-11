@@ -6,6 +6,7 @@ import BasePage from './pages/BasePage.js';
 import DataVisualizationPage from './pages/DataVisualizationPage';
 import DataCollectionPage from './pages/DataCollectionPage';
 import DataAnalysisPage from './pages/DataAnalysisPage.js';
+import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
 
 import StockDiagram from './components/charts/StockDiagram';
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
@@ -75,6 +76,26 @@ function App() {
               analyzedDataPrefix="analyzed_stock_data"
             />
           }
+        />
+
+        <Route 
+          path="/analyzed-visualization-candlestick" 
+          element={
+            <AnalyzedDataVisualizationPage 
+              analyzedDataPrefix="analyzed_stock_data" 
+              chartType="candlestick" 
+            />
+          } 
+        />
+        
+        <Route 
+          path="/analyzed-visualization-heatmap" 
+          element={
+            <AnalyzedDataVisualizationPage 
+              analyzedDataPrefix="analyzed_stock_data" 
+              chartType="heatmap" 
+            />
+          } 
         />
 
         <Route path="/base" element={<BasePage />} />
