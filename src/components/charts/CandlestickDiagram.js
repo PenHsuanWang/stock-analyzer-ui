@@ -24,6 +24,28 @@ const CandlestickDiagram = ({ data }) => {
     }
   ];
 
+  //moving average line implement
+  const colorPalette = ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan'];
+  let colorIndex = 0;
+
+  if (data.length > 0) {
+    Object.keys(data[0]).forEach(key => {
+      if (key.startsWith('MA_')) {
+        plotData.push({
+          x: data.map(item => item.Date),
+          y: data.map(item => item[key]),
+          type: 'scatter',
+          mode: 'lines',
+          name: key, 
+          line: {
+            color: colorPalette[colorIndex % colorPalette.length]
+          }
+        });
+        colorIndex++;
+      }
+    });
+  }
+
   const layout = {
     title: 'Candlestick Chart',
     xaxis: {
