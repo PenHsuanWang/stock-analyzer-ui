@@ -11,6 +11,10 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
   const [selectedForAnalysis, setSelectedForAnalysis] = useState([]);
   const [selectedForDeletion, setSelectedForDeletion] = useState([]);
 
+  // state to refresh the list
+  const [refreshRawDataKey, setRefreshRawDataKey] = useState(0);
+  const [refreshAnalyzedDataKey, setRefreshAnalyzedDataKey] = useState(0);
+
   // Event handler for the 'Analyze' button
   const handleAnalyze = async () => {
     // Assume window_sizes is fixed for this example
@@ -31,6 +35,7 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
       // Wait for all the analysis to be completed
       await Promise.all(analysisPromises);
       // Handle success, such as refreshing the list to show new data
+      setRefreshAnalyzedDataKey(prevKey => prevKey + 1);
     } catch (error) {
       console.error("Error during analysis:", error);
       // Handle errors, such as displaying a message to the user
@@ -52,6 +57,7 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
       // Wait for all deletions to complete
       await Promise.all(deletePromises);
       // Handle success, such as refreshing the list
+      setRefreshAnalyzedDataKey(prevKey => prevKey + 1);
     } catch (error) {
       console.error("Error during deletion:", error);
       // Handle errors
@@ -63,6 +69,7 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
       <div className="data-analysis-page-container">
         <div className="data-list-container">
           <ListDatasetFromDBControls
+            key={refreshRawDataKey}
             prefix={savedDataPrefix}
             setSelectedItems={setSelectedForAnalysis}
           />
@@ -70,6 +77,7 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
         </div>
         <div className="data-list-container">
           <ListDatasetFromDBControls
+            key={refreshAnalyzedDataKey}
             prefix={analyzedDataPrefix}
             setSelectedItems={setSelectedForDeletion}
           />
