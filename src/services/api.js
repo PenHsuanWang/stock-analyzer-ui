@@ -45,4 +45,4 @@ export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_dat
 export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/delete_data', payload);
 export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
 export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload)
-export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/compute_assets_correlation', payload);
+export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/calculate_correlation', payload);

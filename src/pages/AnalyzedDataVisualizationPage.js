@@ -16,8 +16,31 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
   // Function to handle the display of the selected data visualization
   const handleShowData = async () => {
     if (chartType === 'heatmap') {
-      // Trigger the computation of correlation for the selected assets
-      await handleComputeCorrelation();
+      const stockIds = selectedForVisualization.map(item => item.stock_id);
+      const startDate = selectedForVisualization[0]?.start_date;
+      const endDate = selectedForVisualization[0]?.end_date;
+      const correlation_colume = "Daily_Return";
+
+      // Ensure all selected datasets have the same start and end date
+      if (!selectedForVisualization.every(item => item.start_date === startDate && item.end_date === endDate)) {
+        console.error("Error: Start dates or end dates do not match.");
+        return;
+      }
+
+      try {
+        const correlationData = await computeAssetsCorrelation({
+          stock_ids: stockIds,
+          start_date: startDate,
+          end_date: endDate,
+          metric: correlation_colume
+        });
+        // Assuming the backend returns data in the structure we expect
+        // Otherwise, we would transform it to fit what TwoDHeatmapDiagram expects
+        setVisualizationData(correlationData);
+      } catch (error) {
+        console.error("Error fetching heatmap data:", error);
+        setVisualizationData([]);
+      }
     } else if (chartType === 'candlestick') {
       const promises = selectedForVisualization.map(item =>
         fetchDataFromBackendDB({

@@ -3,14 +3,22 @@ import React from 'react';
 import Plot from 'react-plotly.js';
 
 function TwoDHeatmapDiagram({ data }) {
+  // Assuming 'data' is an object where keys are stock IDs and values are objects with correlations
+  const zData = Object.keys(data).map(rowKey => {
+    return Object.keys(data).map(columnKey => data[rowKey][columnKey]);
+  });
+
   const layout = {
     title: '2D Heatmap',
     xaxis: {
-      title: 'X Axis Label',
+      title: 'Assets',
+      ticks: '', // Remove ticks to avoid clutter
       side: 'bottom'
     },
     yaxis: {
-      title: 'Y Axis Label'
+      title: 'Assets',
+      ticks: '', // Remove ticks to avoid clutter
+      autosize: false // Ensure the plot fits to the div size
     }
   };
 
@@ -18,12 +26,14 @@ function TwoDHeatmapDiagram({ data }) {
     <div className="TwoDHeatmapDiagram">
       <Plot
         data={[{
-          z: data.values, // This is where your 2D data array will go
+          z: zData,
+          x: Object.keys(data),
+          y: Object.keys(data),
           type: 'heatmap',
           colorscale: 'Viridis'
         }]}
         layout={layout}
-        style={{ width: '80%', height: '400px' }}
+        style={{ width: '100%', height: '100%' }}
       />
     </div>
   );
