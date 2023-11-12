@@ -67,6 +67,16 @@ function App() {
         />
 
         <Route 
+          path="/analyzed-visualization-histogram" 
+          element={
+            <AnalyzedDataVisualizationPage 
+              analyzedDataPrefix="analyzed_stock_data" 
+              chartType="histogram" 
+            />
+          } 
+        />
+        
+        <Route 
           path="/correlation-analysis" 
           element={<CorrelationAnalysisPage />}
         />

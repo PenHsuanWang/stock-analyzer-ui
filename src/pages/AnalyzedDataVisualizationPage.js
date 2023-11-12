@@ -4,6 +4,7 @@ import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import TwoDHeatmapDiagram from '../components/charts/TwoDHeatmapDiagram';
 import CandlestickDiagram from '../components/charts/CandlestickDiagram';
+import HistogramDiagram from '../components/charts/HistogramDiagram';
 import { computeAssetsCorrelation, fetchDataFromBackendDB } from '../services/api';
 import '../styles/AnalyzedDataVisualizationPage.css';
 
@@ -74,6 +75,28 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
         console.error("Error fetching candlestick data:", error);
         setVisualizationData([]);
       }
+    } else if (chartType === 'histogram') {
+      const promises = selectedForVisualization.map(item =>
+        fetchDataFromBackendDB({
+            prefix: analyzedDataPrefix,
+            stock_id: item.stock_id,
+            start_date: item.start_date,
+            end_date: item.end_date
+        })
+      );
+
+      try {
+          const datasets = await Promise.all(promises);
+          const histogramData = datasets.map(dataset => {
+              // collects daily return data into global
+              return dataset.data.map(dataPoint => dataPoint.Daily_Return);
+          }).flat();
+          console.log(histogramData)
+          setVisualizationData(histogramData);
+      } catch (error) {
+          console.error("Error fetching histogram data:", error);
+          setVisualizationData([]);
+      }
     }
   };
   
@@ -112,6 +135,8 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
       return visualizationData.map((dataSet, index) => (
         <CandlestickDiagram key={index} data={dataSet} />
       ));
+    } else if (chartType === 'histogram') {
+      return <HistogramDiagram data={visualizationData} />;
     } else {
       return <p>No data to display.</p>;
     }
@@ -128,7 +153,7 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
           />
           <button onClick={handleShowData}>Show</button>
         </div>
-        <div className="data-visualization-container">
+        <div className="analyzed-data-visualization-container">
           {renderVisualization()}
         </div>
       </div>

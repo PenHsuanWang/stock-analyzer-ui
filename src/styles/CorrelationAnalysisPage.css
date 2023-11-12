@@ -13,7 +13,7 @@
   }
   
   .data-visualization-container {
-    width: 100%;
+    width: 60%;
     display: flex;
     justify-content: center;
     padding: 20px;
