@@ -2,69 +2,93 @@
 
 ## Project Overview
 
-This project offers a tool for querying stock information and visualizing it. Users can provide stock codes and date ranges via the input box to query the closing stock prices within the specified date range. The query results are presented in the form of a line chart on the screen.
+This web application is designed for querying and visualizing stock market information. Users can select stocks, specify date ranges, and visualize the data in the form of candlestick and heatmap diagrams, facilitating an in-depth analysis of stock trends and correlations.
 
 ### Project Structure
+
+Below is the file structure of the project, highlighting the main directories and files:
 
 ```
 /my-project
 |-- /node_modules
 |-- /public
-|-- /src
-    |-- /assets
-    |-- /components
-        |-- /Basic
-            |-- /Header
-            |-- /Footer
-            |-- /Sidebar
-            |-- /Main
-        |-- /Forms
-        |-- /Lists
-        |-- /Charts
-        |-- /Widgets
-            |-- /Buttons
-            |-- /Modals
-            |-- /Tooltips
-            |-- /Badges
-            |-- /Alerts
-            |-- /Spinners
-        |-- /Containers
-            |-- StockSearchControls.js
-    |-- /contexts
-    |-- /hooks
-    |-- /services
-    |-- /styles
-    |-- /utils
-    |-- /tests
-    |-- /pages
-        |-- BasePage.js
-        |-- WelcomePage.js
-        |-- DataControlPage.js
-        |-- DataSearchPage.js
-        |-- DataVisualizationPage.js
-        |-- CandlestickDiagram.js
+ src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── components
+    │   ├── basic
+    │   │   ├── Footer.js
+    │   │   ├── Header.js
+    │   │   ├── NavBar.js
+    │   │   └── Sidebar.js
+    │   ├── charts
+    │   │   ├── CandlestickDiagram.js
+    │   │   └── TwoDHeatmapDiagram.js
+    │   ├── containers
+    │   │   ├── DataCollectMiddlePanelControls.js
+    │   │   ├── ListDatasetFromDBControls.js
+    │   │   └── StockSearchControls.js
+    │   ├── lists
+    │   ├── views
+    │   │   └── layout
+    │   │       └── ImageGrid.js
+    │   └── widgets
+    │       └── buttons
+    │           └── CustomButtons.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    ├── pages
+    │   ├── AnalyzedDataVisualizationPage.js
+    │   ├── BasePage.js
+    │   ├── DataAnalysisPage.js
+    │   ├── DataCollectionPage.js
+    │   ├── DataVisualizationPage.js
+    │   └── HomePage.js
+    ├── services
+    │   └── api.js
+    └── styles
+        ├── AnalyzedDataVisualizationPage.css
+        ├── BasePage.css
+        ├── CustomButtons.css
+        ├── DataAnalysisPage.css
+        ├── DataCollectionPage.css
+        ├── DataVisualizationPage.css
+        ├── Footer.css
+        ├── Header.css
+        ├── HomePage.css
+        ├── ListDatasetFromDBControls.css
+        ├── NavBar.css
+        ├── Sidebar.css
+        └── StockSearchControls.css
 |-- package.json
 |-- ...
 ```
 
-### Component Introduction:
+## Component Introduction
 
-App.js is the startup entry point for the entire UI program.
+`App.js` is the main entry point of the application, routing to different pages and providing them with necessary components.
 
-App.js calls pages and provides various components to the pages, offering a complete page layout.
+### Key Components
 
-Different pages are implemented in src/pages.
-Components to be passed into the pages are implemented in src/components.
-Components are further categorized as follows:
- - Basic: Includes Header, Footer, NavBar, Sidebar, and other basic page components.
- - Forms: Components for rendering data tables are implemented here.
- - Lists: Components for rendering list-type items are implemented here, e.g., data list.
- - Charts: Components for rendering chart types are implemented here, e.g., various plotly diagrams.
- - Widgets: Various tools, buttons, ... etc.
- - Containers: Various interactive units, e.g., text input boxes... etc.
+- `BasePage.js`: Serves as the layout foundation for the application, including the Header, Footer, NavBar, Sidebar, and the main content area.
+- `DataVisualizationPage.js`: Used for rendering the stock data visualization interface.
+- `AnalyzedDataVisualizationPage.js`: Handles the visualization of analyzed stock data using candlestick and heatmap diagrams.
+- `CandlestickDiagram.js` and `TwoDHeatmapDiagram.js`: Chart components responsible for rendering the stock data visualizations.
+- `StockSearchControls.js` and `ListDatasetFromDBControls.js`: Interactive components for querying and listing stock data.
+- `api.js`: Contains services for backend API interaction.
 
-Tasks other than UI, such as functions triggered by buttons, etc., interfaces for interaction are implemented in services.
-All individual CSS are placed under styles.
+### Styling
+
+Each component has an associated CSS file located under `src/styles`, ensuring a consistent and modular styling approach.
+
+## Design Patterns
+
+This application leverages common design patterns to ensure code maintainability and scalability:
+
+- **Composition**: Utilized to combine various UI components into complex layouts.
+- **Strategy Pattern**: Implemented in routing to allow dynamic component rendering based on the user's navigation.
 
 ### Page Rendering Structure
 
@@ -90,31 +114,37 @@ BasePage.js -> DataVisualizePage.js
 
 `BasePage` serves as the foundational page for the entire application, responsible for presenting common frameworks such as Header, Footer, Sidebar, NavBar, and Main block.
 
-**Location:** `page/BasePage.js`
+**Location:** `src/pages/BasePage.js`
 
-**2.2 DataVisualizationPage (Data Visualization Page Module)**
+**2.2 AnalyzedDataVisualizationPage (Analyzed Data Visualization Page Module)**
 
-`DataVisualizationPage` is the primary page for stock information query and visualization. It takes in `ChartComponent` and `ControlComponent` as inputs and manages chart data updates using `useState`.
+`AnalyzedDataVisualizationPage` is now the primary page for stock information query and visualization. It dynamically handles the visualization type through the `chartType` prop, which can be set to 'candlestick' or 'heatmap' to display the corresponding diagrams. The page manages the selection of datasets for visualization and the visualization data state itself.
 
-**Location:** `page/DataVisualizationPage.js`
+**Location:** `src/pages/AnalyzedDataVisualizationPage.js`
 
-**2.3 StockDiagram (Stock Chart Component)**
+**2.3 CandlestickDiagram (Candlestick Chart Component)**
 
-`StockDiagram` uses the `react-plotly.js` library to present queried stock information. It takes a `data` prop to display chart data.
+`CandlestickDiagram` visualizes stock data as a candlestick chart, suitable for detailed analysis of stock price movements over time.
 
-**Location:** `components/charts/StockDiagram.js`
+**Location:** `src/components/charts/CandlestickDiagram.js`
 
-**2.4 StockSearchControls (Stock Query Control Component)**
+**2.4 TwoDHeatmapDiagram (2D Heatmap Chart Component)**
 
-`StockSearchControls` is the main component for stock querying. Users can input stock codes and date ranges using the input fields provided by this component and fetch data by clicking the query button. The component updates the `DataVisualizationPage` state via the `setChartData` prop.
+`TwoDHeatmapDiagram` presents correlation data in a heatmap format, offering insights into the interdependence between different stocks or metrics.
 
-**Location:** `components/containers/StockSearchControls.js`
+**Location:** `src/components/charts/TwoDHeatmapDiagram.js`
 
-**2.5 dataService (Data Service Module)**
+**2.5 StockSearchControls (Stock Query Control Component)**
 
-This module offers methods to retrieve stock data from the backend API, including `fetchData` and `fetchMaChartData`.
+`StockSearchControls` allows users to input stock codes and date ranges to fetch and visualize data through interactive controls.
 
-**Location:** `services/dataServices.js`
+**Location:** `src/components/containers/StockSearchControls.js`
+
+**2.6 api.js (API Service Module)**
+
+`api.js` includes functions for fetching data from the backend API, such as stock prices, correlation data, and other stock-related metrics.
+
+**Location:** `src/services/api.js`
 
 ## Design Patterns and Logic
 
