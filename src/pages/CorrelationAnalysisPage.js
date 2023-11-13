@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import ScatterAndHistogramChart from '../components/charts/ScatterAndHistogramChart';
+import SimpleScatterSimple from '../components/charts/ScatterPlotMatrix';
+import ScatterPlotWithHistograms from  '../components/charts/ScatterPlotWithHistograms';
+import ScatterPlotWithRegressionLine from '../components/charts/ScatterPlotWithRegressionLine';
 import { fetchDataFromBackendDB } from '../services/api';
 import '../styles/CorrelationAnalysisPage.css';
 
@@ -75,7 +78,7 @@ function CorrelationAnalysisPage() {
         </div>
         <div className="data-visualization-container">
           {visualizationData.length > 0 && (
-            <ScatterAndHistogramChart data={visualizationData} />
+            <ScatterPlotWithRegressionLine data={visualizationData} />
           )}
         </div>
       </div>

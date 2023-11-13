@@ -50,13 +50,13 @@ const options = {
     x: {
       position: 'bottom',
       grid: {
-        drawOnChartArea: false,
+        drawOnChartArea: true,
       },
     },
     y: {
       position: 'left',
       grid: {
-        drawOnChartArea: false,
+        drawOnChartArea: true,
       },
     },
     xHistogram: {
@@ -66,6 +66,9 @@ const options = {
       grid: {
         drawOnChartArea: false,
       },
+      afterFit: function(scaleInstance) {
+        scaleInstance.height = 30; // or whatever height you want for the histogram
+      }
     },
     yHistogram: {
       type: 'linear',
@@ -74,17 +77,10 @@ const options = {
       grid: {
         drawOnChartArea: false,
       },
+      afterFit: function(scaleInstance) {
+        scaleInstance.width = 30; // or whatever width you want for the histogram
+      }
     },
-    xAxes: [{
-      type: 'linear',
-      position: 'top',
-      id: 'x-axis-histogram'
-    }],
-    yAxes: [{
-      type: 'linear',
-      position: 'right',
-      id: 'y-axis-histogram'
-    }]
   },
   plugins: {
     tooltip: {
@@ -122,22 +118,22 @@ const ScatterAndHistogramChart = ({ data }) => {
         xAxisID: 'x',
         yAxisID: 'y'
       },
-      {
-        type: 'bar',
-        label: 'X Histogram Dataset',
-        data: histogramData.x,
-        backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        xAxisID: 'xHistogram',
-        yAxisID: 'y'
-      },
-      {
-        type: 'bar',
-        label: 'Y Histogram Dataset',
-        data: histogramData.y,
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        xAxisID: 'x',
-        yAxisID: 'yHistogram'
-      }
+      // {
+      //   type: 'bar',
+      //   label: 'X Histogram Dataset',－
+      //   data: histogramData.x,
+      //   backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      //   xAxisID: 'xHistogram',
+      //   yAxisID: 'y'
+      // },
+      // {
+      //   type: 'bar',
+      //   label: 'Y Histogram Dataset',
+      //   data: histogramData.y,
+      //   backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      //   xAxisID: 'x',
+      //   yAxisID: 'yHistogram'
+      // }
     ]
   };
 
