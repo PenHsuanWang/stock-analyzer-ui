@@ -5,6 +5,7 @@ import ListDatasetFromDBControls from '../components/containers/ListDatasetFromD
 import TwoDHeatmapDiagram from '../components/charts/TwoDHeatmapDiagram';
 import CandlestickDiagram from '../components/charts/CandlestickDiagram';
 import HistogramDiagram from '../components/charts/HistogramDiagram';
+import PairGridPlot from '../components/charts/PairGridPlot';
 import { computeAssetsCorrelation, fetchDataFromBackendDB } from '../services/api';
 import '../styles/AnalyzedDataVisualizationPage.css';
 
@@ -97,35 +98,39 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
           console.error("Error fetching histogram data:", error);
           setVisualizationData([]);
       }
+    } else if (chartType === 'pairgrid') {
+      const promises = selectedForVisualization.map(item =>
+        fetchDataFromBackendDB({
+          prefix: analyzedDataPrefix,
+          stock_id: item.stock_id,
+          start_date: item.start_date,
+          end_date: item.end_date
+        })
+      );
+    
+      try {
+        const datasets = await Promise.all(promises);
+        const pairGridData = {};
+    
+        // 确定所有数据集都包含 Daily_Return 字段
+        datasets.forEach((dataset, index) => {
+          if (dataset && dataset.data && dataset.data.length > 0 && dataset.data[0].hasOwnProperty('Daily_Return')) {
+            // 使用股票 ID 作为键
+            const stockId = selectedForVisualization[index].stock_id;
+            pairGridData[stockId] = dataset.data.map(dataPoint => dataPoint.Daily_Return);
+          } else {
+            throw new Error(`Dataset at index ${index} is missing 'Daily_Return'`);
+          }
+        });
+    
+        setVisualizationData(pairGridData);
+      } catch (error) {
+        console.error("Error fetching data for PairGridPlot:", error);
+        setVisualizationData({});
+      }
     }
   };
   
-  // Optional: Add a function to transform/format dataSets for CandlestickDiagram
-  const transformDataSets = (dataSets) => {
-    // Implement transformation or formatting logic here, if necessary
-    return dataSets;
-  };
-
-  // Function to handle the computation of correlation for the selected assets
-  const handleComputeCorrelation = async () => {
-    const stockIds = selectedForVisualization.map(item => item.stock_id);
-    const startDate = selectedForVisualization[0]?.start_date;
-    const endDate = selectedForVisualization[0]?.end_date;
-    const metric = 'Daily_Return'; // or any other metric you want to compute correlation for
-
-    try {
-      const correlationMatrix = await computeAssetsCorrelation({
-        stock_ids: stockIds,
-        start_date: startDate,
-        end_date: endDate,
-        metric: metric
-      });
-      setVisualizationData(correlationMatrix);
-    } catch (error) {
-      console.error("Error computing asset correlation:", error);
-      // Handle errors here, perhaps set an error state to show an error message to the user
-    }
-  };
 
   // Render the appropriate chart based on chartType
   const renderVisualization = () => {
@@ -137,6 +142,8 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
       ));
     } else if (chartType === 'histogram') {
       return <HistogramDiagram data={visualizationData} />;
+    } else if (chartType === 'pairgrid') {
+      return <PairGridPlot data={visualizationData} />;
     } else {
       return <p>No data to display.</p>;
     }

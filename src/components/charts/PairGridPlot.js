@@ -1,65 +1,84 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
-import { make_subplots } from 'plotly.js-dist-min';
 
 const PairGridPlot = ({ data }) => {
-  // fetch the variable from outer function
+  const traces = [];
   const variables = Object.keys(data);
   const numberOfVariables = variables.length;
 
-  const subplotsLayout = make_subplots({
-    rows: numberOfVariables,
-    cols: numberOfVariables,
-    sharedXaxes: true,
-    sharedYaxes: true,
-    vertical_spacing: 0.05,
-    horizontal_spacing: 0.05,
-    subplot_titles: variables // options: the title for subplot
+  const layout = {
+    title: 'PairGrid Plot',
+    showlegend: false,
+    autosize: true,
+    grid: {
+      rows: numberOfVariables,
+      columns: numberOfVariables,
+      pattern: 'independent',
+    },
+  };
+
+  // 初始化轴的配置
+  for (let i = 1; i <= numberOfVariables; i++) {
+    layout[`xaxis${i}`] = {
+      domain: [(i - 1) / numberOfVariables, i / numberOfVariables],
+      anchor: `y${i}`,
+      title: variables[i - 1]
+    };
+    layout[`yaxis${i}`] = {
+      domain: [1 - i / numberOfVariables, 1 - (i - 1) / numberOfVariables],
+      anchor: `x${i}`,
+      title: variables[i - 1]
+    };
+  }
+
+  const newLayout = { ...layout };
+  Object.keys(newLayout).forEach(key => {
+    if (key.startsWith('xaxis') || key.startsWith('yaxis')) {
+      const axisIndex = parseInt(key.replace(/^\D+/g, ''));
+      if (axisIndex > numberOfVariables) {
+        delete newLayout[key]; // 删除多余的轴配置
+      }
+    }
   });
 
+  // Add traces for each pair of variables
   variables.forEach((varY, rowIndex) => {
     variables.forEach((varX, colIndex) => {
+      const xaxis = `x${colIndex + 1}`;
+      const yaxis = `y${rowIndex + 1}`;
+
       if (rowIndex === colIndex) {
-        // histogram on the diagnal line
-        subplotsLayout.add_trace({
+        // Diagonal - add histogram
+        traces.push({
           x: data[varX],
           type: 'histogram',
-          name: varX,
-          xaxis: `x${colIndex + 1}`,
-          yaxis: `y${rowIndex + 1}`
-        }, rowIndex + 1, colIndex + 1);
+          xaxis: xaxis,
+          yaxis: yaxis,
+          marker: { color: '#636efa' },
+        });
       } else {
-        // scatter plot in the grid
-        subplotsLayout.add_trace({
+        // Off-diagonal - add scatter
+        traces.push({
           x: data[varX],
           y: data[varY],
           mode: 'markers',
           type: 'scatter',
-          name: `${varX} vs ${varY}`,
-          xaxis: `x${colIndex + 1}`,
-          yaxis: `y${rowIndex + 1}`
-        }, rowIndex + 1, colIndex + 1);
+          xaxis: xaxis,
+          yaxis: yaxis,
+          marker: { color: '#00bfd8', size: 3 },
+        });
         
-        // optional for add regression line
       }
     });
   });
 
-  // setup layout
-  const layout = {
-    ...subplotsLayout.layout,
-    title: 'PairGrid Plot',
-    height: 800,
-    width: 800,
-    showlegend: false
-  };
-
   return (
     <Plot
-      data={subplotsLayout.data}
-      layout={layout}
+      data={traces}
+      layout={newLayout}
       style={{ width: '100%', height: '100%' }}
       useResizeHandler={true}
+      config={{ responsive: true }}
     />
   );
 };

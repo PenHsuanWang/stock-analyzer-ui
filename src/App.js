@@ -75,6 +75,16 @@ function App() {
             />
           } 
         />
+
+        <Route 
+          path="/analyzed-visualization-pairgrid" 
+          element={
+            <AnalyzedDataVisualizationPage 
+              analyzedDataPrefix="analyzed_stock_data" 
+              chartType="pairgrid" 
+            />
+          } 
+        />
         
         <Route 
           path="/correlation-analysis" 
