@@ -18,28 +18,21 @@ const PairGridPlot = ({ data }) => {
   };
 
   // 初始化轴的配置
+  const updatedLayout = { ...layout };
   for (let i = 1; i <= numberOfVariables; i++) {
-    layout[`xaxis${i}`] = {
+    updatedLayout[`xaxis${i}`] = {
+      ...updatedLayout[`xaxis${i}`], // 保留已有配置
       domain: [(i - 1) / numberOfVariables, i / numberOfVariables],
       anchor: `y${i}`,
-      title: variables[i - 1]
+      title: variables[i - 1],
     };
-    layout[`yaxis${i}`] = {
+    updatedLayout[`yaxis${i}`] = {
+      ...updatedLayout[`yaxis${i}`], // 保留已有配置
       domain: [1 - i / numberOfVariables, 1 - (i - 1) / numberOfVariables],
       anchor: `x${i}`,
-      title: variables[i - 1]
+      title: variables[i - 1],
     };
   }
-
-  const newLayout = { ...layout };
-  Object.keys(newLayout).forEach(key => {
-    if (key.startsWith('xaxis') || key.startsWith('yaxis')) {
-      const axisIndex = parseInt(key.replace(/^\D+/g, ''));
-      if (axisIndex > numberOfVariables) {
-        delete newLayout[key]; // 删除多余的轴配置
-      }
-    }
-  });
 
   // Add traces for each pair of variables
   variables.forEach((varY, rowIndex) => {
@@ -49,15 +42,36 @@ const PairGridPlot = ({ data }) => {
 
       if (rowIndex === colIndex) {
         // Diagonal - add histogram
-        traces.push({
+        
+        const histogramTrace = {
           x: data[varX],
           type: 'histogram',
           xaxis: xaxis,
           yaxis: yaxis,
           marker: { color: '#636efa' },
-        });
+        };
+        traces.push(histogramTrace);
+        // Update the range for the y-axis of the histogram to fit the frequency of data
+        // updatedLayout[`yaxis${rowIndex + 1}`].range = [0, Math.max(...histogramTrace.x.map(xValue => histogramTrace.x.filter(v => v === xValue).length))];
+
       } else {
-        // Off-diagonal - add scatter
+
+        const xData = data[varX].filter(value => typeof value === 'number');
+        const yData = data[varY].filter(value => typeof value === 'number');
+  
+        // Calculate the range and update the layout if there's enough variability in the data
+        const xRange = Math.max(...xData) - Math.min(...xData);
+        const yRange = Math.max(...yData) - Math.min(...yData);
+  
+        if (xRange > 0) {
+          updatedLayout[`xaxis${colIndex + 1}`].range = [Math.min(...xData), Math.max(...xData)];
+        }
+  
+        if (yRange > 0) {
+          updatedLayout[`yaxis${rowIndex + 1}`].range = [Math.min(...yData), Math.max(...yData)];
+        }
+        
+        // Add the scatter trace
         traces.push({
           x: data[varX],
           y: data[varY],
@@ -65,7 +79,7 @@ const PairGridPlot = ({ data }) => {
           type: 'scatter',
           xaxis: xaxis,
           yaxis: yaxis,
-          marker: { color: '#00bfd8', size: 3 },
+          marker: { color: '#00bfd8', size: 6 },
         });
         
       }
@@ -75,7 +89,7 @@ const PairGridPlot = ({ data }) => {
   return (
     <Plot
       data={traces}
-      layout={newLayout}
+      layout={updatedLayout}
       style={{ width: '100%', height: '100%' }}
       useResizeHandler={true}
       config={{ responsive: true }}
