@@ -41,7 +41,7 @@ const PairGridPlot = ({ data }) => {
       const yaxis = `y${axisIndex}`;
   
       if (rowIndex === colIndex) {
-        // 对角线 - 添加直方图
+        // draw histogram if the plot on the diagnal line
         traces.push({
           x: data[varX],
           type: 'histogram',
@@ -50,7 +50,7 @@ const PairGridPlot = ({ data }) => {
           marker: { color: '#636efa' },
         });
       } else {
-        // 非对角线 - 添加散点图
+        // draw scatter if  the plot on the non-diagnal li 
         traces.push({
           x: data[varX],
           y: data[varY],
