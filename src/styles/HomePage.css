@@ -1,27 +1,57 @@
-/* styles/HomePage.css */
+.HomePage {
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-.home-page {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    color: #333;
-  }
-  
-  p {
-    font-size: 1.2rem;
-    color: #666;
-    margin-top: 10px;
-  }
-  
-  .image-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns with equal width */
-    gap: 20px; /* Gap between grid items */
-  }
-  
-  .grid-item {
-    width: 100%; /* Each grid item takes up 100% width of its column */
-  }
+.Content {
+  flex-grow: 1;
+  padding: 20px;
+  background: #f9f9f9;
+}
+
+.welcome-section h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.welcome-section p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.feature-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.feature-card {
+  flex-basis: 30%;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.readme-section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.readme-section h2 {
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.readme-content {
+  font-size: 0.9rem;
+  color: #666;
+  overflow: auto;
+}
