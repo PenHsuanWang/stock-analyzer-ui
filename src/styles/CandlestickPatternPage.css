@@ -1,41 +1,30 @@
-.correlation-analysis-page-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .data-selection-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .data-visualization-container {
-    width: 60%;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  /* Style for the ListDatasetFromDBControls components */
-  .list-dataset-controls {
-    flex: 1; /* Adjust the flex value as needed */
-    margin: 0 10px;
-  }
-  
-  /* You may need to adjust the button styling */
-  .show-analysis-button {
-    margin-top: 20px;
-    padding: 10px 15px;
-    cursor: pointer;
-  }
-  
-  /* Placeholder style for the chart, adjust as needed based on your charting library */
-  .chart-container {
-    width: 100%;
-    max-width: 900px; /* or your preferred max width */
-    height: 500px; /* or your preferred height */
-  }
-  
+/* src/styles/CandlestickPatternPage.css */
+
+/* ...其他样式保持不变... */
+
+.data-selection-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.show-data-button {
+  align-self: center;
+  margin-top: 20px;
+}
+
+.chart-and-patterns-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.pattern-checkbox-list {
+  flex-basis: 20%; /* 或者根据需要调整宽度 */
+  margin-right: 20px; /* 或者根据需要调整间距 */
+}
+
+.candlestick-chart-container {
+  flex-grow: 1; /* 图表会占据剩余的空间 */
+}
+
+/* ...其他样式保持不变... */

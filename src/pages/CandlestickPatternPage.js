@@ -71,33 +71,29 @@ function CandlestickPatternPage({ analyzedDataPrefix }) {
 
 
     return (
-        <BasePage>
+      <BasePage>
         <div className="candlestick-pattern-page-container">
-            <div className="data-selection-container">
+          <div className="data-selection-container">
             <ListDatasetFromDBControls
-                prefix={analyzedDataPrefix}
-                setSelectedItems={setSelectedForVisualization}
+              prefix={analyzedDataPrefix}
+              setSelectedItems={setSelectedForVisualization}
+              className="list-dataset-controls"
             />
-            <button onClick={handleShowData}>Show</button>
-            </div>
+            <button onClick={handleShowData} className="show-data-button">Show</button>
+          </div>
+          <div className="chart-and-patterns-container">
+            <CandlestickPatternCheckbox
+              patterns={availablePatterns}
+              selectedPatterns={selectedPatterns}
+              setSelectedPatterns={setSelectedPatterns}
+              className="pattern-checkbox-list"
+            />
             <div className="candlestick-chart-container">
-            {selectedForVisualization.length > 0 ? (
-                <>
-                <CandlestickPatternCheckbox
-                    patterns={availablePatterns}
-                    selectedPatterns={selectedPatterns}
-                    setSelectedPatterns={setSelectedPatterns}
-                />
-                <div className="candlestick-with-pattern">
-                  {renderVisualization()}
-                </div>
-                </>
-            ) : (
-                <p>stock dataset not selected</p>
-            )}
+              {selectedForVisualization.length > 0 ? renderVisualization() : <p>stock dataset not selected</p>}
             </div>
+          </div>
         </div>
-        </BasePage>
+      </BasePage>
     );
 }
 
