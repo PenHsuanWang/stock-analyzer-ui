@@ -2,10 +2,12 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-const CandlestickDiagram = ({ data }) => {
+const CandlestickDiagram = ({ data, selectedPatterns }) => {
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No data to display or data is in incorrect format.</div>;
   }
+
+  console.log(data)
 
   const plotData = [
     {
@@ -46,14 +48,41 @@ const CandlestickDiagram = ({ data }) => {
     });
   }
 
+  // Highlight patterns if selectedPatterns is provided
+  if (selectedPatterns && selectedPatterns.length > 0) {
+    data.forEach((item, index) => {
+      if (selectedPatterns.includes(item.Pattern)) {
+        plotData.push({
+          x: [item.Date],
+          y: [item.Close], // or whichever value is relevant for the pattern
+          mode: 'markers',
+          type: 'scatter',
+          marker: {
+            symbol: 'square',
+            color: 'rgba(0, 0, 0, 0)', // Inner color of marker
+            size: 10,
+            line: {
+              color: 'red', // Border color
+              width: 2 // Border width
+            }
+          },
+          name: item.Pattern
+        });
+      }
+    });
+  }
+
   const layout = {
     title: 'Candlestick Chart',
     xaxis: {
       title: 'Date',
-      type: 'date'
+      type: 'date',
+      rangeslider: { visible: false },
     },
     yaxis: {
-      title: 'Stock Price'
+      title: 'Stock Price',
+      autorange: true,
+      fixedrange: false
     }
   };
 

@@ -6,6 +6,7 @@ import BasePage from './pages/BasePage.js';
 import DataCollectionPage from './pages/DataCollectionPage';
 import DataAnalysisPage from './pages/DataAnalysisPage.js';
 import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
+import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
@@ -44,6 +45,15 @@ function App() {
               analyzedDataPrefix="analyzed_stock_data"
             />
           }
+        />
+
+        <Route 
+          path="/analyzed-visualization-candlestick-with-pattern" 
+          element={
+            <CandlestickPatternPage 
+              analyzedDataPrefix="analyzed_stock_data" 
+            />
+          } 
         />
 
         <Route 

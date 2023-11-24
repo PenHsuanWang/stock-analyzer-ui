@@ -52,22 +52,23 @@ function CandlestickPatternPage({ analyzedDataPrefix }) {
       }
     };
 
-    useEffect(() => {
-        if (visualizationData.length > 0) {
-          const newAvailablePatterns = extractPatterns(visualizationData);
-          setAvailablePatterns(newAvailablePatterns);
-        }
-    }, [visualizationData]);
-
     const extractPatterns = (dataSets) => {
-        const patternsSet = new Set(
-          dataSets
-            .flatMap(dataSet => dataSet.map(item => item.Pattern)) // extract the pattern from data
-            .filter(pattern => pattern) // filter out the na 
-        );
-        return Array.from(patternsSet); // convert to set
-      };
+      const patternsSet = new Set(
+        dataSets.flatMap(dataSet => 
+          dataSet.map(item => item.Pattern).filter(Boolean) // extract the pattern from data and filter out the na
+        )
+      );
+      return Array.from(patternsSet); // convert to set
+    };
       
+
+      // Render the appropriate chart based on chartType
+    const renderVisualization = () => {
+      return visualizationData.map((dataSet, index) => (
+        <CandlestickDiagram key={index} data={dataSet} selectedPatterns={selectedPatterns} />
+      ));
+    };
+
 
     return (
         <BasePage>
@@ -87,10 +88,9 @@ function CandlestickPatternPage({ analyzedDataPrefix }) {
                     selectedPatterns={selectedPatterns}
                     setSelectedPatterns={setSelectedPatterns}
                 />
-                <CandlestickDiagram
-                    data={visualizationData}
-                    selectedPatterns={selectedPatterns}
-                />
+                <div className="candlestick-with-pattern">
+                  {renderVisualization()}
+                </div>
                 </>
             ) : (
                 <p>stock dataset not selected</p>
