@@ -20,24 +20,26 @@ The homepage serves as the landing page for the Stock Analysis Portal, providing
 
 ### Data Collection (`/data-collect`)
 This page is dedicated to collecting raw stock data. Users can search for stocks, view raw data, collect it, and manage previously saved datasets.
-![](https://i.imgur.com/qTPDY5v.gifv)
+![](https://i.imgur.com/qTPDY5v.gif)
 
 ### Data Analysis (`/data-analysis`)
 On this page, users can analyze raw stock data. It offers tools for dissecting and understanding stock data trends and performing advanced data analysis.
-![](https://i.imgur.com/KFzM2ix.gifv)
+![](https://i.imgur.com/KFzM2ix.gif)
 
 ### Analyzed Data Visualization - Candlestick with Pattern (`/analyzed-visualization-candlestick-with-pattern`)
 This endpoint allows users to view candlestick charts with highlighted patterns for analyzed stock data, offering insights into potential market movements and trend reversals.
 
+![](https://i.imgur.com/XEixyW3.gif)
+
 ### Analyzed Data Visualization - Candlestick (`/analyzed-visualization-candlestick`)
 Visit this page to view simple candlestick charts for analyzed stock data, which can be crucial for understanding price action and market sentiment.
 
-![](https://i.imgur.com/KFzM2ix.gifv)
+![](https://i.imgur.com/KFzM2ix.gif)
 
 ### Analyzed Data Visualization - Heatmap (`/analyzed-visualization-heatmap`)
 This page presents a heatmap visualization of analyzed stock data, providing a visual representation of complex datasets to quickly grasp correlations and variances.
 
-![](https://imgur.com/E0B6xro)
+![](https://imgur.com/E0B6xro.gif)
 
 ### Analyzed Data Visualization - Histogram (`/analyzed-visualization-histogram`)
 Access this page to view histogram charts of analyzed stock data, which are useful for identifying the distribution and frequency of data points within the dataset.
@@ -48,7 +50,7 @@ The Pairgrid page offers a grid layout visualization of analyzed stock data, hel
 ### Correlation Analysis (`/correlation-analysis`)
 This page is designed for the correlation analysis of stock data, allowing users to find the statistical relationship between different stocks or market indicators.
 
-![](https://imgur.com/6nfKvHv)
+![](https://imgur.com/6nfKvHv.gif)
 
 Each page is crafted to provide specific functionalities to cater to the various needs of stock market analysis, ensuring a comprehensive toolset for traders and analysts alike.
 
