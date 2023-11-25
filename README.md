@@ -4,6 +4,54 @@
 
 This web application is designed for querying and visualizing stock market information. Users can select stocks, specify date ranges, and visualize the data in the form of candlestick and heatmap diagrams, facilitating an in-depth analysis of stock trends and correlations.
 
+## Usage
+
+To start the Stock Analysis Portal, run the following command in your project directory:
+
+```bash
+npm start
+```
+
+This will launch the web application on `http://localhost:3000`. The portal provides various functionalities spread across different pages:
+
+### Home (`/`)
+The homepage serves as the landing page for the Stock Analysis Portal, providing quick access to all the features and a summary of the portal's capabilities.
+![](https://i.imgur.com/G7joesh.png)
+
+### Data Collection (`/data-collect`)
+This page is dedicated to collecting raw stock data. Users can search for stocks, view raw data, collect it, and manage previously saved datasets.
+![](https://i.imgur.com/qTPDY5v.gifv)
+
+### Data Analysis (`/data-analysis`)
+On this page, users can analyze raw stock data. It offers tools for dissecting and understanding stock data trends and performing advanced data analysis.
+![](https://i.imgur.com/KFzM2ix.gifv)
+
+### Analyzed Data Visualization - Candlestick with Pattern (`/analyzed-visualization-candlestick-with-pattern`)
+This endpoint allows users to view candlestick charts with highlighted patterns for analyzed stock data, offering insights into potential market movements and trend reversals.
+
+### Analyzed Data Visualization - Candlestick (`/analyzed-visualization-candlestick`)
+Visit this page to view simple candlestick charts for analyzed stock data, which can be crucial for understanding price action and market sentiment.
+
+![](https://i.imgur.com/KFzM2ix.gifv)
+
+### Analyzed Data Visualization - Heatmap (`/analyzed-visualization-heatmap`)
+This page presents a heatmap visualization of analyzed stock data, providing a visual representation of complex datasets to quickly grasp correlations and variances.
+
+![](https://imgur.com/E0B6xro)
+
+### Analyzed Data Visualization - Histogram (`/analyzed-visualization-histogram`)
+Access this page to view histogram charts of analyzed stock data, which are useful for identifying the distribution and frequency of data points within the dataset.
+
+### Analyzed Data Visualization - Pairgrid (`/analyzed-visualization-pairgrid`)
+The Pairgrid page offers a grid layout visualization of analyzed stock data, helping in identifying the relationship between different pairs of variables.
+
+### Correlation Analysis (`/correlation-analysis`)
+This page is designed for the correlation analysis of stock data, allowing users to find the statistical relationship between different stocks or market indicators.
+
+![](https://imgur.com/6nfKvHv)
+
+Each page is crafted to provide specific functionalities to cater to the various needs of stock market analysis, ensuring a comprehensive toolset for traders and analysts alike.
+
 ### Project Structure
 
 Below is the file structure of the project, highlighting the main directories and files:
