@@ -2,6 +2,9 @@ import React from 'react';
 import '../../styles/CandlestickPatternCheckbox.css';
 
 const CandlestickPatternCheckbox = ({ patterns, selectedPatterns, setSelectedPatterns }) => {
+
+  const nonNullPatterns = patterns.filter(pattern => pattern !== 'null');
+
   // Handle checkbox state change
   const handleCheckboxChange = (pattern, isChecked) => {
     setSelectedPatterns(prevSelected => {
@@ -18,7 +21,7 @@ const CandlestickPatternCheckbox = ({ patterns, selectedPatterns, setSelectedPat
   return (
     <div className="CandlestickPatternCheckbox">
       <div className="pattern-checkbox-list">
-        {patterns.map((pattern, index) => (
+        {nonNullPatterns.map((pattern, index) => (
           <label key={index}>
             <input
               type="checkbox"

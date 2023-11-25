@@ -48,10 +48,10 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
     });
   }
 
-  // Highlight patterns if selectedPatterns is provided
+  // Highlight patterns if selectedPatterns is provided and not null
   if (selectedPatterns && selectedPatterns.length > 0) {
-    data.forEach((item, index) => {
-      if (selectedPatterns.includes(item.Pattern)) {
+    data.forEach((item) => {
+      if (item.Pattern && selectedPatterns.includes(item.Pattern)) {
         plotData.push({
           x: [item.Date],
           y: [item.Close], // or whichever value is relevant for the pattern
@@ -59,10 +59,10 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
           type: 'scatter',
           marker: {
             symbol: 'square',
-            color: 'rgba(0, 0, 0, 0)', // Inner color of marker
+            color: 'rgba(0, 0, 0, 0)', // Transparent inner color of marker
             size: 10,
             line: {
-              color: 'red', // Border color
+              color: 'red', // Red border color
               width: 2 // Border width
             }
           },
