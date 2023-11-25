@@ -1,0 +1,29 @@
+/* src/styles/CandlestickPatternPage.css */
+
+
+.data-selection-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.show-data-button {
+  align-self: center;
+  margin-top: 20px;
+}
+
+.chart-and-patterns-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.pattern-checkbox-list {
+  flex-basis: 20%; 
+  margin-right: 20px; 
+}
+
+.candlestick-chart-container {
+  flex-grow: 1; 
+}
+
+
