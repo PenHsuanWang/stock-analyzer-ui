@@ -7,70 +7,75 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
     return <div>No data to display or data is in incorrect format.</div>;
   }
 
-  console.log(data)
-
   const plotData = [
+    // Existing candlestick series
     {
       x: data.map(item => item.Date),
       close: data.map(item => item.Close),
       high: data.map(item => item.High),
       low: data.map(item => item.Low),
       open: data.map(item => item.Open),
-
-      // cutomize colors 
       increasing: { line: { color: 'green' } },
       decreasing: { line: { color: 'red' } },
-
       type: 'candlestick',
-      name: 'Candlestick Data'
+      name: 'Candlestick Data',
     }
   ];
 
-  //moving average line implement
+  // Add moving average lines
   const colorPalette = ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan'];
   let colorIndex = 0;
+  Object.keys(data[0]).forEach(key => {
+    if (key.startsWith('MA_')) {
+      plotData.push({
+        x: data.map(item => item.Date),
+        y: data.map(item => item[key]),
+        type: 'scatter',
+        mode: 'lines',
+        name: key,
+        line: { color: colorPalette[colorIndex % colorPalette.length] }
+      });
+      colorIndex++;
+    }
+  });
 
-  if (data.length > 0) {
-    Object.keys(data[0]).forEach(key => {
-      if (key.startsWith('MA_')) {
-        plotData.push({
-          x: data.map(item => item.Date),
-          y: data.map(item => item[key]),
-          type: 'scatter',
-          mode: 'lines',
-          name: key, 
-          line: {
-            color: colorPalette[colorIndex % colorPalette.length]
-          }
-        });
-        colorIndex++;
-      }
-    });
-  }
+  // Initialize an object to store the pattern series
+  let patternData = {};
 
   // Highlight patterns if selectedPatterns is provided and not null
   if (selectedPatterns && selectedPatterns.length > 0) {
-    data.forEach((item) => {
+    data.forEach(item => {
       if (item.Pattern && selectedPatterns.includes(item.Pattern)) {
-        plotData.push({
-          x: [item.Date],
-          y: [item.Close], // or whichever value is relevant for the pattern
-          mode: 'markers',
-          type: 'scatter',
-          marker: {
-            symbol: 'square',
-            color: 'rgba(0, 0, 0, 0)', // Transparent inner color of marker
-            size: 10,
-            line: {
-              color: 'red', // Red border color
-              width: 2 // Border width
-            }
-          },
-          name: item.Pattern
-        });
+        if (!patternData[item.Pattern]) {
+          // Initialize the pattern series with an empty array for x and y
+          patternData[item.Pattern] = {
+            x: [],
+            y: [],
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+              symbol: 'square',
+              color: 'rgba(0, 0, 0, 0)', // Transparent inner color of marker
+              size: 10,
+              line: {
+                color: 'red', // Red border color
+                width: 2 // Border width
+              }
+            },
+            name: item.Pattern // Using the pattern name here for the legend
+          };
+        }
+        // Add the data point to the respective pattern series
+        patternData[item.Pattern].x.push(item.Date);
+        patternData[item.Pattern].y.push(item.Close);
       }
     });
   }
+
+  // Add each pattern series to plotData
+  Object.values(patternData).forEach(patternSeries => {
+    plotData.push(patternSeries);
+  });
 
   const layout = {
     title: 'Candlestick Chart',
@@ -83,6 +88,9 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
       title: 'Stock Price',
       autorange: true,
       fixedrange: false
+    },
+    legend: {
+      // If the legend gets too crowded, additional configuration can go here
     }
   };
 
