@@ -7,20 +7,34 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
     return <div>No data to display or data is in incorrect format.</div>;
   }
 
-  const plotData = [
-    // Existing candlestick series
-    {
-      x: data.map(item => item.Date),
-      close: data.map(item => item.Close),
-      high: data.map(item => item.High),
-      low: data.map(item => item.Low),
-      open: data.map(item => item.Open),
-      increasing: { line: { color: 'green' } },
-      decreasing: { line: { color: 'red' } },
-      type: 'candlestick',
-      name: 'Candlestick Data',
-    }
-  ];
+  // Construct the candlestick series
+  const candlestickSeries = {
+    x: data.map(item => item.Date),
+    close: data.map(item => item.Close),
+    high: data.map(item => item.High),
+    low: data.map(item => item.Low),
+    open: data.map(item => item.Open),
+    increasing: { line: { color: 'green' } },
+    decreasing: { line: { color: 'red' } },
+    type: 'candlestick',
+    name: 'Candlestick Data',
+    xaxis: 'x', // Assign to first x-axis
+    yaxis: 'y'  // Assign to first y-axis
+  };
+
+  // Initialize plot data array with the candlestick series
+  const plotData = [candlestickSeries];
+
+  // Add volume series
+  const volumeSeries = {
+    x: data.map(item => item.Date),
+    y: data.map(item => item.Volume),
+    type: 'bar',
+    name: 'Volume',
+    xaxis: 'x', // Assign to first x-axis
+    yaxis: 'y2' // Assign to second y-axis (subplot)
+  };
+  plotData.push(volumeSeries);
 
   // Add moving average lines
   const colorPalette = ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'gray', 'olive', 'cyan'];
@@ -77,6 +91,7 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
     plotData.push(patternSeries);
   });
 
+  // Define the layout for subplots
   const layout = {
     title: 'Candlestick Chart',
     xaxis: {
@@ -87,18 +102,34 @@ const CandlestickDiagram = ({ data, selectedPatterns }) => {
     yaxis: {
       title: 'Stock Price',
       autorange: true,
-      fixedrange: false
+      fixedrange: false,
+      domain: [0.3, 1] // Allocate space for the upper chart
+    },
+    yaxis2: {
+      title: 'Volume',
+      autorange: true,
+      fixedrange: false,
+      domain: [0, 0.2], // Allocate space for the lower chart
+      anchor: 'x' // Link this y-axis to the first x-axis
     },
     legend: {
-      // If the legend gets too crowded, additional configuration can go here
-    }
+      // orientation: 'h',
+      // y: -0.3 // Adjust legend position to fit in the layout
+    },
+    grid: {
+      rows: 2,       // Two rows: one for candlestick and one for volume
+      columns: 1,    // Single column
+      pattern: 'independent', // Each row has an independent y-axis
+      roworder: 'top to bottom' // Volume is on the bottom
+    },
+    margin: { t: 30, l: 50, r: 50, b: 50 } // Adjust margins to fit layout
   };
 
   return (
     <Plot
       data={plotData}
       layout={layout}
-      style={{ width: '100%', height: '400px' }}
+      style={{ width: '90%', height: '600px' }}
     />
   );
 };
