@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getListDatasetFromDB } from '../../services/api'; // 確認路徑是否正確
+import { getListDatasetFromDB } from '../../services/api';
 import '../../styles/ListDatasetFromDBControls.css';
 
 const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }) => {
