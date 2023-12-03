@@ -35,7 +35,6 @@ const Sidebar = () => (
       <SidebarGroup label="Group A" icon="🗂️">
         <SidebarLink to="/" label="Home" icon="🏠" />
         <SidebarLink to="/data-collect" label="Data Collection" icon="📊" />
-        <SidebarLink to="/data-analysis" label="Data Analysis" icon="🔍" />
         <SidebarLink to="/analyzed-visualization-candlestick" label="Candlestick Visualization" icon="📈" />
         <SidebarLink to="/analyzed-visualization-heatmap" label="Heatmap Visualization" icon="🌡️" />
         <SidebarLink to="/analyzed-visualization-histogram" label="Histogram Visualization" icon="📊" />

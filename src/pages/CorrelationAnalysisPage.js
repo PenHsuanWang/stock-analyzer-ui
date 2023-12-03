@@ -8,7 +8,7 @@ import ScatterPlotWithRegressionLine from '../components/charts/ScatterPlotWithR
 import { fetchDataFromBackendDB } from '../services/api';
 import '../styles/CorrelationAnalysisPage.css';
 
-function CorrelationAnalysisPage() {
+function CorrelationAnalysisPage({ prefix }) {
   const [baseDataset, setBaseDataset] = useState(null);
   const [compareDataset, setCompareDataset] = useState(null);
   const [visualizationData, setVisualizationData] = useState([]);
@@ -28,7 +28,7 @@ function CorrelationAnalysisPage() {
   
         // extract the data from backend
         const baseDataResponse = await fetchDataFromBackendDB({
-          prefix: 'analyzed_stock_data',
+          prefix: prefix,
           stock_id: baseDataset.stock_id,
           start_date: baseDataset.start_date,
           end_date: baseDataset.end_date
@@ -36,7 +36,7 @@ function CorrelationAnalysisPage() {
   
         // extract the compared data from backend
         const compareDataResponse = await fetchDataFromBackendDB({
-          prefix: 'analyzed_stock_data',
+          prefix: prefix,
           stock_id: compareDataset.stock_id,
           start_date: compareDataset.start_date,
           end_date: compareDataset.end_date
@@ -65,11 +65,11 @@ function CorrelationAnalysisPage() {
       <div className="correlation-analysis-page-container">
         <div className="data-selection-container">
           <ListDatasetFromDBControls
-            prefix="analyzed_stock_data"
+            prefix={prefix}
             setSelectedItems={(items) => setBaseDataset(items[0])}
           />
           <ListDatasetFromDBControls
-            prefix="analyzed_stock_data"
+            prefix={prefix}
             setSelectedItems={(items) => setCompareDataset(items[0])}
           />
           <button onClick={handleFetchData}>Show Daily Return Scatter Correlation</button>
