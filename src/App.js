@@ -10,7 +10,6 @@ import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
-import TwoDHeatmapDiagram from './components/charts/TwoDHeatmapDiagram';
 
 import ListDatasetFromDBControls from './components/containers/ListDatasetFromDBControls';
 import StockSearchControls from './components/containers/StockSearchControls';
@@ -32,7 +31,7 @@ function App() {
               CandlestickDiagramComponent={CandlestickDiagram}
               MiddlePanelComponent={DataCollectMiddlePanelControls}
               SavedDataListComponent={ListDatasetFromDBControls}
-              prefix="raw_stock_data"
+              prefix="stock_data"
             />
           }
         />
@@ -42,7 +41,7 @@ function App() {
           element={
             <DataAnalysisPage 
               savedDataPrefix="raw_stock_data"
-              analyzedDataPrefix="analyzed_stock_data"
+              analyzedDataPrefix="stock_data"
             />
           }
         />
@@ -51,7 +50,7 @@ function App() {
           path="/analyzed-visualization-candlestick-with-pattern" 
           element={
             <CandlestickPatternPage 
-              analyzedDataPrefix="analyzed_stock_data" 
+              analyzedDataPrefix="stock_data" 
             />
           } 
         />
@@ -60,7 +59,7 @@ function App() {
           path="/analyzed-visualization-candlestick" 
           element={
             <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="analyzed_stock_data" 
+              analyzedDataPrefix="stock_data" 
               chartType="candlestick" 
             />
           } 
@@ -70,7 +69,7 @@ function App() {
           path="/analyzed-visualization-heatmap" 
           element={
             <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="analyzed_stock_data" 
+              analyzedDataPrefix="stock_data" 
               chartType="heatmap" 
             />
           } 
@@ -80,7 +79,7 @@ function App() {
           path="/analyzed-visualization-histogram" 
           element={
             <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="analyzed_stock_data" 
+              analyzedDataPrefix="stock_data" 
               chartType="histogram" 
             />
           } 
@@ -90,7 +89,7 @@ function App() {
           path="/analyzed-visualization-pairgrid" 
           element={
             <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="analyzed_stock_data" 
+              analyzedDataPrefix="stock_data" 
               chartType="pairgrid" 
             />
           } 
@@ -98,7 +97,11 @@ function App() {
         
         <Route 
           path="/correlation-analysis" 
-          element={<CorrelationAnalysisPage />}
+          element={
+            <CorrelationAnalysisPage
+              prefix="stock_data"
+            />
+          }
         />
 
         <Route path="/base" element={<BasePage />} />
