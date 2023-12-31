@@ -1,0 +1,61 @@
+/* DataExportPage.css */
+
+.data-export-page {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .data-export-page .loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .data-export-page .error-message {
+    color: red;
+    text-align: center;
+  }
+  
+  /* Styles for the DataTable component */
+  .data-export-page .MuiTableContainer-root {
+    margin-top: 20px; /* Adds top margin for spacing */
+  }
+  
+  /* Adjust the styles below as per your design requirements */
+  .data-export-page .MuiTable-root {
+    width: 100%; /* Sets the table to take the full width */
+  }
+  
+  /* You might want to add specific styles for the table head, body, cells, etc. */
+  .data-export-page .MuiTableHead-root {
+    background-color: #f0f0f0; /* Light grey background for table headers */
+  }
+  
+  .data-export-page .MuiTableRow-root:hover {
+    background-color: #e0e0e0; /* Light grey background for row hover */
+  }
+  
+  .data-export-page .MuiTableCell-root {
+    padding: 10px; /* Padding inside cells */
+  }
+  
+  .data-export-page .MuiCheckbox-root {
+    padding: 0; /* Removes padding around checkboxes */
+  }
+  
+  /* Style adjustments for buttons or other controls in DataExportPage */
+  .data-export-page .controls {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0;
+  }
+  
+  .data-export-page .controls button {
+    margin-left: 10px; /* Adds left margin to buttons */
+  }
+  
+  /* Additional styles for responsive design or specific UI elements can be added below */
+  
