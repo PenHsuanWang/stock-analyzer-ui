@@ -44,3 +44,4 @@ export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/d
 export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
 export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload)
 export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/calculate_correlation', payload);
+export const exportDataFromDB = (payload) => sendRequest('post', '/export_data/csv')
