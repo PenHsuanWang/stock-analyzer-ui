@@ -14,13 +14,13 @@
   } */
 
   .main-content-data-search {
-    width: 25%; /* 調整為你希望的寬度 */
+    width: 25%; 
     padding: 10px;
     box-sizing: border-box;
   }
   
   .main-content-data-preview {
-    width: 75%; /* 調整為你希望的寬度 */
+    width: 75%; 
     padding: 10px;
     box-sizing: border-box;
     margin-top: 10px;
@@ -43,7 +43,7 @@
   }
   
   .main-content-middle {
-    margin-top: 10px; /* 增加上間距 */
+    margin-top: 10px; 
   }
   
   .main-content-middle button {

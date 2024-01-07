@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { getListDatasetFromDB } from '../../services/api';
 import '../../styles/ListDatasetFromDBControls.css';
 
-const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }) => {
-  const [data, setData] = useState([]);
-  const [selectedData, setSelectedData] = useState([]);
+// Memoizing the component to prevent unnecessary re-renders
+const ListDatasetFromDBControls = memo(({ prefix, setSelectedItems }) => {
+  const [data, setData] = useState([]); // State for holding the list of datasets
+  const [selectedData, setSelectedData] = useState([]); // State for holding selected datasets
 
+  // Effect for fetching datasets based on the provided prefix
   useEffect(() => {
-    // Fetch data inside useEffect
+    console.log("ListDatasetFromDBControls useEffect", prefix);
     const fetchData = async () => {
       try {
-        // 使用 prop 中傳入的 prefix
         const response = await getListDatasetFromDB({ "prefix": prefix });
-        const keysArray = response.keys;
-        if (Array.isArray(keysArray)) {
-          const parsedData = keysArray.map(parseDataKey).filter(item => item !== null);
+        if (Array.isArray(response.keys)) {
+          const parsedData = response.keys.map(parseDataKey).filter(item => item !== null);
           setData(parsedData);
         } else {
-          console.error("Received data is not properly formatted:", keysArray);
+          console.error("Received data is not properly formatted:", response.keys);
           setData([]);
         }
       } catch (error) {
         console.error("Failed to fetch dataset:", error);
-        setData([]);  // Set to an empty array on error
+        setData([]);
       }
-    };    
+    };
     fetchData();
-  }, [prefix, refresh]); // 'prefix' and 'refresh' are dependencies of this effect
+  }, [prefix]); // Dependency array includes only prefix to avoid re-fetching on other state changes
 
-  // This effect is used to communicate the selected datasets back to the parent component
-  // Whenever 'selectedData' changes, we call 'setSelectedDatasets' to update the parent's state
+  // Effect for passing selected datasets to the parent component
   useEffect(() => {
     setSelectedItems(selectedData);
-  }, [selectedData, setSelectedItems]); // 'selectedData' and 'setSelectedDatasets' are dependencies of this effect
+  }, [selectedData, setSelectedItems]); // Dependency array ensures effect runs only when selectedData changes
 
+  // Utility function for parsing dataset keys
   const parseDataKey = (key) => {
     const parts = key.split(':');
-    if(parts.length === 4) {
+    if (parts.length === 4) {
       return {
         stock_id: parts[1],
         start_date: parts[2],
@@ -46,6 +46,7 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }
     return null;
   };
 
+  // Function to determine if an item is selected
   const isItemSelected = (item) => {
     return selectedData.some(selectedItem => 
       selectedItem.stock_id === item.stock_id &&
@@ -53,20 +54,21 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }
       selectedItem.end_date === item.end_date
     );
   };
-  
 
+  // Handler for checkbox changes
   const handleCheckboxChange = (dataItem, isChecked) => {
-    if (isChecked) {
-      setSelectedData(prevSelected => [...prevSelected, dataItem]);
-    } else {
-      setSelectedData(prevSelected => prevSelected.filter(item => 
-        item.stock_id !== dataItem.stock_id ||
-        item.start_date !== dataItem.start_date ||
-        item.end_date !== dataItem.end_date
-      ));
-    }
+    setSelectedData(prevSelected => 
+      isChecked
+        ? [...prevSelected, dataItem]
+        : prevSelected.filter(item => 
+            item.stock_id !== dataItem.stock_id ||
+            item.start_date !== dataItem.start_date ||
+            item.end_date !== dataItem.end_date
+          )
+    );
   };
 
+  // Render the component UI
   return (
     <div className="ListDatasetFromDBControls">
       <table>
@@ -97,7 +99,6 @@ const ListDatasetFromDBControls = ({ prefix, refresh = false, setSelectedItems }
       </table>
     </div>
   );
-};
-
+});
 
 export default ListDatasetFromDBControls;
