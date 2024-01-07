@@ -31,10 +31,7 @@ const DataExportPage = () => {
           setLoading(false);
           return;
         }
-        setDetailedData(prevData => {
-          console.log("Updating detailedData from", prevData, "to", response.data);
-          return response.data;
-        });
+        setDetailedData(response.data);
         setLoading(false);
       })
       .catch(err => {
@@ -43,11 +40,12 @@ const DataExportPage = () => {
       }).finally(() => {
         console.log("fetchDetailedData completed", selectedKeys);
       });
-  }, []);
+  }, []); // Remove unnecessary dependencies
 
   const handleSelectionChange = useCallback((selectedKeys) => {
     console.log("handleSelectionChange", selectedKeys);
     setSelectedData(selectedKeys);
+    // Since we're setting the state directly, we don't need to include setSelectedData in the dependency array
   }, []);
 
   useEffect(() => {
