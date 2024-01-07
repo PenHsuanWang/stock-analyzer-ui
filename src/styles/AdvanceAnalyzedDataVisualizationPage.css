@@ -1,0 +1,14 @@
+/* src/styles/AnalyzedDataVisualizationPage.css */
+
+.analyzed-data-visualization-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.data-visualization-container {
+    width: 30%;
+    /* display: flex;
+    justify-content: center;
+    padding: 20px; */
+  }
