@@ -1,14 +1,21 @@
-/* src/styles/AnalyzedDataVisualizationPage.css */
+/* src/styles/AdvanceAnalyzedDataVisualizationPage.css */
 
 .analyzed-data-visualization-page-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%; /* or other appropriate width */
+  margin: auto; /* center horizontally */
+}
 
-.data-visualization-container {
-    width: 30%;
-    /* display: flex;
-    justify-content: center;
-    padding: 20px; */
-  }
+.chart-container {
+  width: 100%; /* use the full width of the parent container */
+  margin-bottom: 20px; /* add some space between the charts */
+}
+
+/* If you are using Plotly, you might need to target the Plotly chart container specifically */
+.plotly-chart-container {
+  width: 100%; /* Ensure consistency in width */
+  height: 600px; /* Match the height of the Plotly chart container */
+  margin-bottom: 20px; /* Provide consistent spacing between charts */
+}

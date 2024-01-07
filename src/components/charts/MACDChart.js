@@ -40,15 +40,12 @@ const MACDChart = ({ data }) => {
   };
 
   const options = getChartOptions('MACD Chart'); // Get a fresh copy of chart options for the MACD chart
-  options.scales.y = { // Add a Y-axis scale specific to MACD chart if needed
-    beginAtZero: true,
-    title: {
-      display: true,
-      text: 'Value',
-    },
-  };
 
-  return <Bar data={chartData} options={options} />;
+  return (
+    <div className="plotly-chart-container">
+      <Bar data={chartData} options={options} />
+    </div>
+  );
 };
 
 export default MACDChart;

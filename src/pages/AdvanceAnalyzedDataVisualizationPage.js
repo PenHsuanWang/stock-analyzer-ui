@@ -92,10 +92,16 @@ const handleShowData = async () => {
         setSelectedItems={setSelectedDatasets}
       />
       <button onClick={handleShowData}>Show Data</button>
-      <div className="charts-container">
-        {candlestickData && <CandlestickDiagram data={candlestickData} />}
-        {macdData && <MACDChart data={macdData} />}
-        {rsiData && <RSIChart data={rsiData} />}
+      <div className="analyzed-data-visualization-page-container">
+        <div className="chart-container">
+          {candlestickData && <CandlestickDiagram data={candlestickData} />}
+        </div>
+        <div className="chart-container">
+          {macdData && <MACDChart data={macdData} />}
+        </div>
+        <div className="chart-container">
+          {rsiData && <RSIChart data={rsiData} />}
+        </div>
       </div>
     </BasePage>
   );

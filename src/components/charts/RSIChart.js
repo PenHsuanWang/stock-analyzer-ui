@@ -26,7 +26,11 @@ const RSIChart = ({ data }) => {
 
   const options = getChartOptions('RSI Chart'); // Get a fresh copy of chart options for the RSI chart
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <div className="plotly-chart-container">
+      <Line data={chartData} options={options} />
+    </div>
+  );
 };
 
 export default RSIChart;
