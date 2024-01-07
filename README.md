@@ -92,7 +92,6 @@ Below is the file structure of the project, highlighting the main directories an
     ├── pages
     │   ├── AnalyzedDataVisualizationPage.js
     │   ├── BasePage.js
-    │   ├── DataAnalysisPage.js
     │   ├── DataCollectionPage.js
     │   ├── DataVisualizationPage.js
     │   └── HomePage.js
@@ -102,7 +101,6 @@ Below is the file structure of the project, highlighting the main directories an
         ├── AnalyzedDataVisualizationPage.css
         ├── BasePage.css
         ├── CustomButtons.css
-        ├── DataAnalysisPage.css
         ├── DataCollectionPage.css
         ├── DataVisualizationPage.css
         ├── Footer.css

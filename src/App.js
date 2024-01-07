@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import BasePage from './pages/BasePage.js';
 import DataCollectionPage from './pages/DataCollectionPage';
-import DataAnalysisPage from './pages/DataAnalysisPage.js';
 import DataExportPage from './pages/DataExportPage.js';
 import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
 import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
@@ -33,16 +32,6 @@ function App() {
               MiddlePanelComponent={DataCollectMiddlePanelControls}
               SavedDataListComponent={ListDatasetFromDBControls}
               prefix="stock_data"
-            />
-          }
-        />
-
-        <Route 
-          path="/data-analysis" 
-          element={
-            <DataAnalysisPage 
-              savedDataPrefix="raw_stock_data"
-              analyzedDataPrefix="stock_data"
             />
           }
         />
