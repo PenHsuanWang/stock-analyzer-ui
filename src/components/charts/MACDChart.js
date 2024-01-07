@@ -1,10 +1,7 @@
+// src/components/charts/MACDChart.js
 import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, registerables } from 'chart.js';
-import 'chartjs-plugin-annotation';
-
-// Register the necessary chart components
-ChartJS.register(...registerables);
+import { Bar } from 'react-chartjs-2';
+import { getChartOptions } from '../../utils/charts/chartOptions';
 
 const MACDChart = ({ data }) => {
   if (!data || !Array.isArray(data) || data.length === 0) {
@@ -23,84 +20,35 @@ const MACDChart = ({ data }) => {
         label: 'MACD Line',
         data: macdLineData,
         borderColor: 'blue',
+        type: 'line',
         fill: false,
-        yAxisID: 'y-axis-1',
       },
       {
         label: 'Signal Line',
         data: signalLineData,
         borderColor: 'orange',
+        type: 'line',
         fill: false,
-        yAxisID: 'y-axis-1',
       },
       {
         label: 'Histogram',
         data: histogramData,
-        type: 'bar',
         backgroundColor: 'grey',
-        yAxisID: 'y-axis-2',
-      }
+        borderColor: 'grey',
+      },
     ],
   };
 
-  const options = {
-    responsive: true,
+  const options = getChartOptions('MACD Chart'); // Get a fresh copy of chart options for the MACD chart
+  options.scales.y = { // Add a Y-axis scale specific to MACD chart if needed
+    beginAtZero: true,
     title: {
       display: true,
-      text: 'MACD Chart',
+      text: 'Value',
     },
-    tooltips: {
-      mode: 'index',
-      intersect: false,
-    },
-    hover: {
-      mode: 'nearest',
-      intersect: true
-    },
-    scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          unit: 'day'
-        },
-        display: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Date'
-        },
-        ticks: {
-          maxRotation: 0
-        }
-      }],
-      yAxes: [
-        {
-          id: 'y-axis-1',
-          type: 'linear',
-          display: true,
-          position: 'left',
-          scaleLabel: {
-            display: true,
-            labelString: 'Value'
-          }
-        },
-        {
-          id: 'y-axis-2',
-          type: 'linear',
-          display: false,
-          position: 'right',
-          gridLines: {
-            drawOnChartArea: false,
-          },
-          scaleLabel: {
-            display: true,
-            labelString: 'Histogram'
-          }
-        }
-      ]
-    }
   };
 
-  return <Line data={chartData} options={options} />;
+  return <Bar data={chartData} options={options} />;
 };
 
 export default MACDChart;
