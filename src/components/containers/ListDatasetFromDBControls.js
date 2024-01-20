@@ -3,7 +3,7 @@ import { getListDatasetFromDB } from '../../services/api';
 import '../../styles/ListDatasetFromDBControls.css';
 
 // Memoizing the component to prevent unnecessary re-renders
-const ListDatasetFromDBControls = memo(({ prefix, setSelectedItems }) => {
+const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems }) => {
   const [data, setData] = useState([]); // State for holding the list of datasets
   const [selectedData, setSelectedData] = useState([]); // State for holding selected datasets
 
@@ -26,7 +26,7 @@ const ListDatasetFromDBControls = memo(({ prefix, setSelectedItems }) => {
       }
     };
     fetchData();
-  }, [prefix]); // Dependency array includes only prefix to avoid re-fetching on other state changes
+  }, [prefix, refresh]); // Dependency array includes only prefix to avoid re-fetching on other state changes
 
   // Effect for passing selected datasets to the parent component
   useEffect(() => {
