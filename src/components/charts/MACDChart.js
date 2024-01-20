@@ -1,50 +1,44 @@
 // src/components/charts/MACDChart.js
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import { getChartOptions } from '../../utils/charts/chartOptions';
+import Plot from 'react-plotly.js';
 
-const MACDChart = ({ data }) => {
+const MACDChart = ({ data, layout }) => {
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <div>No data to display or data is in incorrect format.</div>;
   }
 
-  const macdLineData = data.map(item => item.MACD);
-  const signalLineData = data.map(item => item.signal);
-  const histogramData = data.map(item => item.histogram);
-  const dates = data.map(item => item.Date);
-
-  const chartData = {
-    labels: dates,
-    datasets: [
-      {
-        label: 'MACD Line',
-        data: macdLineData,
-        borderColor: 'blue',
-        type: 'line',
-        fill: false,
-      },
-      {
-        label: 'Signal Line',
-        data: signalLineData,
-        borderColor: 'orange',
-        type: 'line',
-        fill: false,
-      },
-      {
-        label: 'Histogram',
-        data: histogramData,
-        backgroundColor: 'grey',
-        borderColor: 'grey',
-      },
-    ],
-  };
-
-  const options = getChartOptions('MACD Chart'); // Get a fresh copy of chart options for the MACD chart
+  const plotData = [
+    {
+      x: data.map(item => item.Date),
+      y: data.map(item => item.MACD),
+      type: 'scatter',
+      mode: 'lines',
+      name: 'MACD Line',
+      line: { color: 'blue' }
+    },
+    {
+      x: data.map(item => item.Date),
+      y: data.map(item => item.signal),
+      type: 'scatter',
+      mode: 'lines',
+      name: 'Signal Line',
+      line: { color: 'orange' }
+    },
+    {
+      x: data.map(item => item.Date),
+      y: data.map(item => item.histogram),
+      type: 'bar',
+      name: 'Histogram',
+      marker: { color: 'grey' }
+    }
+  ];
 
   return (
-    <div className="plotly-chart-container">
-      <Bar data={chartData} options={options} />
-    </div>
+    <Plot
+      data={plotData}
+      layout={layout}
+      style={{ width: '100%', height: '100%' }} // Adjust size as needed
+    />
   );
 };
 

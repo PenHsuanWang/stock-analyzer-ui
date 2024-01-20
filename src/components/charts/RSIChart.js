@@ -1,35 +1,30 @@
 // src/components/charts/RSIChart.js
 import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { getChartOptions } from '../../utils/charts/chartOptions';
+import Plot from 'react-plotly.js';
 
-const RSIChart = ({ data }) => {
+const RSIChart = ({ data, layout }) => {
   if (!data || !Array.isArray(data) || data.length === 0) {
     return <div>No data to display or data is in incorrect format.</div>;
   }
 
-  const rsiData = data.map(item => item.RSI);
-  const dates = data.map(item => item.Date);
+  const plotData = [
+    {
+      x: data.map(item => item.Date),
+      y: data.map(item => item.RSI),
+      type: 'scatter',
+      mode: 'lines',
+      name: 'RSI',
+      line: { color: 'blue' }
+    }
+  ];
 
-  const chartData = {
-    labels: dates,
-    datasets: [
-      {
-        label: 'RSI',
-        data: rsiData,
-        borderColor: 'blue',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        fill: false,
-      },
-    ],
-  };
-
-  const options = getChartOptions('RSI Chart'); // Get a fresh copy of chart options for the RSI chart
 
   return (
-    <div className="plotly-chart-container">
-      <Line data={chartData} options={options} />
-    </div>
+    <Plot
+      data={plotData}
+      layout={layout}
+      style={{ width: '100%', height: '100%' }} // Adjust size as needed
+    />
   );
 };
 
