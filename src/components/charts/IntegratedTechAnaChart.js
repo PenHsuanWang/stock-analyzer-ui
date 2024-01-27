@@ -36,57 +36,93 @@ const IntegratedTechAnaChart = ({ candlestickData, macdData, rsiData }) => {
     yaxis: 'y2'
   };
 
-// Add MACD Line series
-const macdLineSeries = {
-  x: macdData.map(item => item.Date),
-  y: macdData.map(item => item.MACD),
-  type: 'scatter',
-  mode: 'lines',
-  name: 'MACD Line',
-  line: { color: 'blue' },
-  xaxis: 'x',
-  yaxis: 'y3'
-};
+  // Add MACD Line series
+  const macdLineSeries = {
+    x: macdData.map(item => item.Date),
+    y: macdData.map(item => item.MACD),
+    type: 'scatter',
+    mode: 'lines',
+    name: 'MACD Line',
+    line: { color: 'blue' },
+    xaxis: 'x',
+    yaxis: 'y3'
+  };
 
-// Add Signal Line series
-const signalLineSeries = {
-  x: macdData.map(item => item.Date),
-  y: macdData.map(item => item.signal),
-  type: 'scatter',
-  mode: 'lines',
-  name: 'Signal Line',
-  line: { color: 'red' },
-  xaxis: 'x',
-  yaxis: 'y3'
-};
+  // Add MACD Histogram series, ensuring visibility
+  const macdHistogramSeries = {
+    x: macdData.map(item => item.Date),
+    y: macdData.map(item => Number(item.MACD_Histogram) || 0), // Make sure this matches the backend property name
+    type: 'bar',
+    name: 'Histogram',
+    marker: {
+      color: macdData.map(item =>
+        (item.MACD_Histogram !== undefined ? (item.MACD_Histogram >= 0 ? 'green' : 'red') : 'lightgrey') // Again, match the property name
+      )
+    },
+    width: 0.5, // Adjust width for visibility
+    xaxis: 'x',
+    yaxis: 'y3'
+  };
 
-// Add MACD Histogram series
-const macdHistogramSeries = {
-  x: macdData.map(item => item.Date),
-  y: macdData.map(item => item.histogram),
-  type: 'bar',
-  name: 'Histogram',
-  marker: {
-    color: macdData.map(item => (item.histogram >= 0 ? 'green' : 'red'))
-  },
-  xaxis: 'x',
-  yaxis: 'y3'
-};
+  const signalLineSeries = {
+    x: macdData.map(item => item.Date),
+    y: macdData.map(item => Number(item.Signal_Line) || 0), // Make sure this matches the backend property name
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Signal Line',
+    line: { color: 'red' },
+    xaxis: 'x',
+    yaxis: 'y3'
+  };
 
-  // Construct the RSI series
+
+  // Construct the RSI series with overbought and oversold lines
   const rsiSeries = {
     x: rsiData.map(item => item.Date),
     y: rsiData.map(item => item.RSI),
     type: 'scatter',
     mode: 'lines',
     name: 'RSI',
-    line: { color: 'blue' },
+    line: { color: 'purple' }, // Changed for visibility
+    xaxis: 'x',
+    yaxis: 'y4'
+  };
+
+  // Overbought line (typically at 70)
+  const rsiOverboughtSeries = {
+    x: rsiData.map(item => item.Date),
+    y: new Array(rsiData.length).fill(70), // Fill an array with the value 70
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Overbought',
+    line: { color: 'red', dash: 'dash' }, // Dashed line for threshold
+    xaxis: 'x',
+    yaxis: 'y4'
+  };
+
+  // Oversold line (typically at 30)
+  const rsiOversoldSeries = {
+    x: rsiData.map(item => item.Date),
+    y: new Array(rsiData.length).fill(30), // Fill an array with the value 30
+    type: 'scatter',
+    mode: 'lines',
+    name: 'Oversold',
+    line: { color: 'green', dash: 'dash' }, // Dashed line for threshold
     xaxis: 'x',
     yaxis: 'y4'
   };
 
   // Combine all traces into a single data array for Plotly
-  const plotData = [candlestickSeries, volumeSeries, macdLineSeries, signalLineSeries, macdHistogramSeries, rsiSeries];
+  const plotData = [
+    candlestickSeries,
+    volumeSeries,
+    macdLineSeries,
+    signalLineSeries,
+    macdHistogramSeries,
+    rsiSeries,
+    rsiOverboughtSeries,
+    rsiOversoldSeries 
+  ];
 
 
   // Define the layout for the combined chart with appropriate domains
@@ -96,26 +132,34 @@ const macdHistogramSeries = {
       title: 'Date',
       type: 'date',
       domain: [0, 1], // Full width
+      rangeslider: { visible: true }, // Enable the range slider for the x-axis
+      rangeselector: {
+        buttons: [
+          { count: 1, label: '1M', step: 'month', stepmode: 'backward' },
+          { count: 6, label: '6M', step: 'month', stepmode: 'backward' },
+          { step: 'all' },
+        ]
+      },
     },
     yaxis: {
       title: 'Stock Price',
-      domain: [0.5, 1], // Allocate the top 50% of the grid for the candlestick chart
+      domain: [0.3, 1], // Adjusted to make space for volume histogram at half height
     },
     yaxis2: {
       title: 'Volume',
-      domain: [0.3, 0.5], // Allocate the middle 20% of the grid for Volume
+      domain: [0.15, 0.3], // Reduced height to half by adjusting both ends of the domain
       anchor: 'x',
       side: 'right',
       overlaying: 'y',
     },
     yaxis3: {
       title: 'MACD',
-      domain: [0.2, 0.3], // Allocate a portion below volume for MACD
+      domain: [0.05, 0.15], // Adjust as needed to accommodate the change in volume histogram height
       anchor: 'x',
     },
     yaxis4: {
       title: 'RSI',
-      domain: [0, 0.2], // Allocate the bottom 20% for RSI
+      domain: [0, 0.05], // Adjust as needed based on the other changes
       anchor: 'x',
     },
     legend: {
@@ -123,7 +167,12 @@ const macdHistogramSeries = {
       y: -0.2, // Place the legend below the xaxis
     },
     margin: { t: 50, l: 70, r: 50, b: 50 },
+    barmode: 'group',
   };
+  
+  console.log('Rendering Plot with the following data and layout:');
+  console.log('Plot Data:', plotData);
+  console.log('Layout:', layout);
 
   return (
     <Plot
