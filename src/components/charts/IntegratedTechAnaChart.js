@@ -31,10 +31,11 @@ const IntegratedTechAnaChart = ({ candlestickData, macdData, rsiData }) => {
     type: 'bar',
     name: 'Volume',
     xaxis: 'x',
-    yaxis: 'y',
+    yaxis: 'y2',
     marker: { color: 'teal' },
-    yaxis: 'y2'
+    showlegend: false
   };
+
 
   // Add MACD Line series
   const macdLineSeries = {
@@ -112,6 +113,59 @@ const IntegratedTechAnaChart = ({ candlestickData, macdData, rsiData }) => {
     yaxis: 'y4'
   };
 
+
+  // Define the layout with the rangeslider only for the candlestick data
+  const layout = {
+    title: 'Integrated Technical Analysis Chart',
+    xaxis: {
+      title: 'Date',
+      type: 'date',
+      domain: [0, 1], // Full width
+      rangeslider: { // Enable the range slider for the x-axis
+        visible: true,
+        borderwidth: 1,
+        bordercolor: '#cccccc',
+        thickness: 0.15, // Adjust thickness to your preference
+        bgcolor: '#e2e2e2', // Background color of the rangeslider
+      },
+      rangeselector: { // Optional range selector buttons
+        buttons: [
+          { count: 1, label: '1M', step: 'month', stepmode: 'backward' },
+          { count: 6, label: '6M', step: 'month', stepmode: 'backward' },
+          { step: 'all' },
+        ]
+      },
+    },
+    yaxis: {
+      title: 'Stock Price',
+      domain: [0.5, 1], // Adjusted to make space for volume histogram at half height
+    },
+    yaxis2: {
+      title: 'Volume',
+      domain: [0.4, 0.5], // Reduced height to half by adjusting both ends of the domain
+      anchor: 'x',
+      side: 'right',
+      overlaying: 'y',
+    },
+    yaxis3: {
+      title: 'MACD',
+      domain: [0.2, 0.4], // Increased from [0.05, 0.15]
+      anchor: 'x',
+    },
+    yaxis4: {
+      title: 'RSI',
+      domain: [0.05, 0.2], // Increased from [0, 0.05]
+      anchor: 'x',
+    },
+    legend: {
+      orientation: 'h',
+      y: -0.2, // Place the legend below the xaxis
+    },
+    margin: { t: 50, l: 70, r: 50, b: 50 },
+    barmode: 'group',
+  };
+
+
   // Combine all traces into a single data array for Plotly
   const plotData = [
     candlestickSeries,
@@ -124,51 +178,6 @@ const IntegratedTechAnaChart = ({ candlestickData, macdData, rsiData }) => {
     rsiOversoldSeries 
   ];
 
-
-  // Define the layout for the combined chart with appropriate domains
-  const layout = {
-    title: 'Integrated Technical Analysis Chart',
-    xaxis: {
-      title: 'Date',
-      type: 'date',
-      domain: [0, 1], // Full width
-      rangeslider: { visible: true }, // Enable the range slider for the x-axis
-      rangeselector: {
-        buttons: [
-          { count: 1, label: '1M', step: 'month', stepmode: 'backward' },
-          { count: 6, label: '6M', step: 'month', stepmode: 'backward' },
-          { step: 'all' },
-        ]
-      },
-    },
-    yaxis: {
-      title: 'Stock Price',
-      domain: [0.3, 1], // Adjusted to make space for volume histogram at half height
-    },
-    yaxis2: {
-      title: 'Volume',
-      domain: [0.15, 0.3], // Reduced height to half by adjusting both ends of the domain
-      anchor: 'x',
-      side: 'right',
-      overlaying: 'y',
-    },
-    yaxis3: {
-      title: 'MACD',
-      domain: [0.05, 0.15], // Adjust as needed to accommodate the change in volume histogram height
-      anchor: 'x',
-    },
-    yaxis4: {
-      title: 'RSI',
-      domain: [0, 0.05], // Adjust as needed based on the other changes
-      anchor: 'x',
-    },
-    legend: {
-      orientation: 'h',
-      y: -0.2, // Place the legend below the xaxis
-    },
-    margin: { t: 50, l: 70, r: 50, b: 50 },
-    barmode: 'group',
-  };
   
   console.log('Rendering Plot with the following data and layout:');
   console.log('Plot Data:', plotData);
@@ -178,7 +187,8 @@ const IntegratedTechAnaChart = ({ candlestickData, macdData, rsiData }) => {
     <Plot
       data={plotData}
       layout={layout}
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%' }} // Ensure Plotly chart fills the container
+      useResizeHandler={true} // Add this property to make the chart responsive
       config={{ responsive: true }}
     />
   );

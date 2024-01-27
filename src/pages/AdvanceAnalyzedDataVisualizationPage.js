@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
-import CandlestickDiagram from '../components/charts/CandlestickDiagram';
-import MACDChart from '../components/charts/MACDChart';
-import RSIChart from '../components/charts/RSIChart';
+// import CandlestickDiagram from '../components/charts/CandlestickDiagram';
+// import MACDChart from '../components/charts/MACDChart';
+// import RSIChart from '../components/charts/RSIChart';
 import IntegratedTechAnaChart from '../components/charts/IntegratedTechAnaChart'; // Import the new component
 import { formatDate } from '../utils/DatetimeFormat';
 import { fetchDataFromBackendDB } from '../services/api';
@@ -85,63 +85,89 @@ function AdvanceAnalyzedDataVisualizationPage({ analyzedDataPrefix }) {
     }
   };
 
-    // Common layout settings for all charts
-    const commonLayoutSettings = {
-      autosize: true,
-      margin: { t: 30, l: 50, r: 50, b: 50 },
-      font: { family: 'Arial, sans-serif' },
-      // Use 'grid' property to define the layout of multiple subplots
-      grid: { rows: 2, columns: 1, pattern: 'independent' },
-    };
 
-    // Layout for the Candlestick chart
-    const candlestickLayout = {
-      ...commonLayoutSettings,
-      title: 'Candlestick Chart',
-      xaxis: {
-        title: 'Date',
-        type: 'date',
-        domain: [0, 1] // Span the full width of the grid
-      },
-      yaxis: {
-        title: 'Stock Price',
-        autorange: true,
-        domain: [0.5, 1] // Keep only the top half of the grid for the candlestick chart
-      },
-    };
 
-    // Layout for the MACD chart
-    const macdLayout = {
-      ...commonLayoutSettings,
-      title: 'MACD Chart',
-      xaxis: {
-        title: 'Date',
-        type: 'date',
-        domain: [0, 1] // Span the full width of the grid
-      },
-      yaxis: {
-        title: 'Value',
-        autorange: true,
-        domain: [0, 0.5] // Use the bottom half of the grid for the MACD chart
-      },
-    };
+    // Render the page with the updated chart container
+    return (
+      <BasePage>
+        <ListDatasetFromDBControls
+          prefix={analyzedDataPrefix}
+          setSelectedItems={setSelectedDatasets}
+        />
+        <button onClick={handleShowData}>Show Data</button>
+        <div className="advanced-analyzed-data-visualization-page-container">
+          {/* Use the new IntegratedTechAnaChart component */}
+          {candlestickData && macdData && rsiData && (
+            <div className="chart-container">
+              <IntegratedTechAnaChart
+                candlestickData={candlestickData}
+                macdData={macdData}
+                rsiData={rsiData}
+                // selectedPatterns can be passed if it's implemented in IntegratedTechAnaChart
+              />
+            </div>
+          )}
+        </div>
+      </BasePage>
+    );
 
-    // Layout for the RSI chart
-    const rsiLayout = {
-      ...commonLayoutSettings,
-      title: 'RSI Chart',
-      xaxis: {
-        title: 'Date',
-        type: 'date',
-        domain: [0, 0.5] // Use the bottom half of the grid, similar to MACD
-      },
-      yaxis: {
-        title: 'RSI',
-        autorange: true,
-        domain: [0, 0.5], // Match the xaxis domain for alignment
-        range: [0, 100] // RSI typically ranges from 0 to 100
-      },
-    };
+    // // Common layout settings for all charts
+    // const commonLayoutSettings = {
+    //   autosize: true,
+    //   margin: { t: 30, l: 50, r: 50, b: 50 },
+    //   font: { family: 'Arial, sans-serif' },
+    //   // Use 'grid' property to define the layout of multiple subplots
+    //   grid: { rows: 2, columns: 1, pattern: 'independent' },
+    // };
+
+    // // Layout for the Candlestick chart
+    // const candlestickLayout = {
+    //   ...commonLayoutSettings,
+    //   title: 'Candlestick Chart',
+    //   xaxis: {
+    //     title: 'Date',
+    //     type: 'date',
+    //     domain: [0, 1] // Span the full width of the grid
+    //   },
+    //   yaxis: {
+    //     title: 'Stock Price',
+    //     autorange: true,
+    //     domain: [0.5, 1] // Keep only the top half of the grid for the candlestick chart
+    //   },
+    // };
+
+    // // Layout for the MACD chart
+    // const macdLayout = {
+    //   ...commonLayoutSettings,
+    //   title: 'MACD Chart',
+    //   xaxis: {
+    //     title: 'Date',
+    //     type: 'date',
+    //     domain: [0, 1] // Span the full width of the grid
+    //   },
+    //   yaxis: {
+    //     title: 'Value',
+    //     autorange: true,
+    //     domain: [0, 0.5] // Use the bottom half of the grid for the MACD chart
+    //   },
+    // };
+
+    // // Layout for the RSI chart
+    // const rsiLayout = {
+    //   ...commonLayoutSettings,
+    //   title: 'RSI Chart',
+    //   xaxis: {
+    //     title: 'Date',
+    //     type: 'date',
+    //     domain: [0, 0.5] // Use the bottom half of the grid, similar to MACD
+    //   },
+    //   yaxis: {
+    //     title: 'RSI',
+    //     autorange: true,
+    //     domain: [0, 0.5], // Match the xaxis domain for alignment
+    //     range: [0, 100] // RSI typically ranges from 0 to 100
+    //   },
+    // };
 
 
   // return (
@@ -166,28 +192,7 @@ function AdvanceAnalyzedDataVisualizationPage({ analyzedDataPrefix }) {
   // );
 
 
-  return (
-    <BasePage>
-      <ListDatasetFromDBControls
-        prefix={analyzedDataPrefix}
-        setSelectedItems={setSelectedDatasets}
-      />
-      <button onClick={handleShowData}>Show Data</button>
-      <div className="advanced-analyzed-data-visualization-page-container">
-        {/* Use the new IntegratedTechAnaChart component */}
-        {candlestickData && macdData && rsiData && (
-          <div className="chart-container">
-            <IntegratedTechAnaChart
-              candlestickData={candlestickData}
-              macdData={macdData}
-              rsiData={rsiData}
-              // selectedPatterns can be passed if it's implemented in IntegratedTechAnaChart
-            />
-          </div>
-        )}
-      </div>
-    </BasePage>
-  );
+
 
 }
 

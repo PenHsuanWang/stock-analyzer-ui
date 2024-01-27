@@ -10,13 +10,12 @@
 
 .chart-container {
   width: 100%; /* use the full width of the parent container */
-  height: 500px; /* increase height to accommodate both charts */
+  height: 1200px; /* increase height to provide more space for clarity */
   margin-bottom: 20px; /* add some space between the charts */
 }
 
-/* If you are using Plotly, you might need to target the Plotly chart container specifically */
-.plotly-chart-container {
-  width: 100%; /* Ensure consistency in width */
-  height: 600px; /* Match the height of the Plotly chart container */
-  margin-bottom: 20px; /* Provide consistent spacing between charts */
+/* Additional styles to ensure the Plotly chart expands to fill the container */
+.plotly .plot-container .svg-container {
+  height: 100% !important; /* Force the SVG container to fill the chart container height */
+  width: 100% !important; /* Force the SVG container to fill the chart container width */
 }
