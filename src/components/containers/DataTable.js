@@ -7,7 +7,7 @@ const DataTableHead = ({ columns }) => (
     <TableRow>
       {/* Optional Checkbox for selection */}
       <TableCell padding="checkbox">
-        <Checkbox indeterminate />
+        <Checkbox indeterminate checked={false} />
       </TableCell>
       {/* Dynamic column headers */}
       {columns.map((column) => (
@@ -18,20 +18,28 @@ const DataTableHead = ({ columns }) => (
 );
 
 // Dynamic Table Row
-const DataTableRow = ({ row, columns }) => (
-  <TableRow hover>
-    {/* Optional Checkbox for selection */}
-    <TableCell padding="checkbox">
-      <Checkbox />
-    </TableCell>
-    {/* Dynamic cells based on row data */}
-    {columns.map((column) => (
-      <TableCell key={`${column}-${row[column]}`}>
-        {row[column] !== null && row[column] !== undefined ? row[column].toString() : ''}
+const DataTableRow = ({ row, columns }) => {
+  const [isChecked, setIsChecked] = React.useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  return (
+    <TableRow hover>
+      {/* Optional Checkbox for selection */}
+      <TableCell padding="checkbox">
+        <Checkbox checked={isChecked} onChange={handleCheckboxChange} />
       </TableCell>
-    ))}
-  </TableRow>
-);
+      {/* Dynamic cells based on row data */}
+      {columns.map((column) => (
+        <TableCell key={`${column}-${row[column]}`}>
+          {row[column] !== null && row[column] !== undefined ? row[column].toString() : ''}
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+};
 
 // Main Data Table Component
 const DataTable = ({ data }) => {
@@ -43,8 +51,8 @@ const DataTable = ({ data }) => {
       <Table>
         {/* Render table head */}
         <DataTableHead columns={columns} />
+        {/* Render table body */}
         <TableBody>
-          {/* Render table rows */}
           {data.map((row, index) => (
             // Use a unique identifier from the row as the key, or fallback to the index
             <DataTableRow key={`row-${index}`} row={row} columns={columns} />
