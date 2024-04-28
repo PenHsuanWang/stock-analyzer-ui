@@ -7,6 +7,7 @@ import DataCollectionPage from './pages/DataCollectionPage';
 import DataAnalysisPage from './pages/DataAnalysisPage.js';
 import DataExportPage from './pages/DataExportPage.js';
 import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
+import AdvanceAnalyzedDataVisualizationPage from './pages/AdvanceAnalyzedDataVisualizationPage.js';
 import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 
@@ -92,6 +93,15 @@ function App() {
             <AnalyzedDataVisualizationPage 
               analyzedDataPrefix="stock_data" 
               chartType="pairgrid" 
+            />
+          } 
+        />
+
+        <Route
+          path="/advance-analyzed-visualization" 
+          element={
+            <AdvanceAnalyzedDataVisualizationPage 
+              analyzedDataPrefix="stock_data" // You may adjust the props as needed
             />
           } 
         />
