@@ -10,10 +10,12 @@ const ExportControlPanel = ({ selectedData }) => {
   };
 
   const handleSendData = () => {
+    const payload = JSON.stringify(selectedData);
     if (exportMode === 'http') {
-      exportDataFromDB(url, selectedData);
+      exportDataFromDB(url, payload, 'http');
     } else if (exportMode === 'csv') {
       console.log('Exporting to CSV');
+      exportDataFromDB(payload, 'csv');
     }
   };
 

@@ -6,6 +6,9 @@ const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
+    headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // implement general base send request function, which can be reuse
@@ -14,7 +17,7 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
     const response = await apiClient({
       method,
       url: path,
-      data: payload,
+      data: JSON.stringify(payload),
       params,
     });
     // parse returned data in string format
@@ -44,4 +47,28 @@ export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/d
 export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
 export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload)
 export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/calculate_correlation', payload);
-export const exportDataFromDB = (payload) => sendRequest('post', '/export_data/csv')
+export const exportDataFromDB = async (url, data, mode) => {
+  if (mode === 'http') {
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  } else if (mode === 'csv') {
+    // handle CSV export
+  }
+};
+
+// export const exportDataFromDB = (url, payload, mode) => {
+//   let path = `/export_data/${mode}`;
+//   if (mode === 'http') {
+//     path = url;
+//   }
+//   return sendRequest('post', path, payload);
+// };
+
