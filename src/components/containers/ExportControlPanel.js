@@ -31,9 +31,10 @@ const ExportControlPanel = ({ selectedData }) => {
   const handleSendData = async () => {
     if (exportMode === 'http' && !validateUrl(url)) {
       setError("Invalid URL format. Please enter a valid URL.");
-      setDialogVisible(true); // Show dialog on invalid URL
+      setDialogVisible(true);
       return;
     }
+
     setLoading(true);
     setDialogVisible(true);
     setError('');
@@ -41,12 +42,14 @@ const ExportControlPanel = ({ selectedData }) => {
 
     try {
       const payload = JSON.stringify(selectedData);
-      if (exportMode === 'http') {
-        await exportDataFromDB(url, payload, 'http');
+      const response = await exportDataFromDB(url, payload, exportMode);
+
+      if (exportMode === 'http' && response.success) {
         setSuccessMessage('Data has been sent successfully!');
-      } else if (exportMode === 'csv') {
-        await exportDataFromDB(payload, 'csv');
+      } else if (exportMode === 'csv' && response.success) {
         setSuccessMessage('Data exported to CSV successfully!');
+      } else {
+        throw new Error(response.message || "Unknown error from server");
       }
     } catch (err) {
       setError(`Failed to send request: ${err.message || 'Unknown error'}`);
