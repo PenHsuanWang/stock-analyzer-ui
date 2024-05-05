@@ -18,24 +18,22 @@ const ExportControlPanel = ({ selectedData }) => {
   };
 
   const validateUrl = (url) => {
-    // Simple URL validation
+    // Extended URL validation to correctly handle localhost and common URLs
     const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(localhost|(([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})'+ // domain name (localhost or valid domain)
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
     '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
     '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     return !!pattern.test(url);
-  };
+  };  
+
 
   const handleSendData = async () => {
-    console.log("Send data called");  // Check if function is invoked
     if (exportMode === 'http' && !validateUrl(url)) {
-      console.log("URL validation failed"); // Check URL validation
-      setError("Invalid URL format");
+      setError("Invalid URL format. Please enter a valid URL.");
+      setDialogVisible(true); // Show dialog on invalid URL
       return;
     }
-    console.log("URL is valid, proceeding with export"); // Check flow past URL validation
     setLoading(true);
     setDialogVisible(true);
     setError('');
@@ -43,18 +41,14 @@ const ExportControlPanel = ({ selectedData }) => {
 
     try {
       const payload = JSON.stringify(selectedData);
-      console.log("Payload prepared:", payload); // Log payload to verify it's correct
       if (exportMode === 'http') {
-        console.log("Attempting HTTP export");
         await exportDataFromDB(url, payload, 'http');
         setSuccessMessage('Data has been sent successfully!');
       } else if (exportMode === 'csv') {
-        console.log("Attempting CSV export");
         await exportDataFromDB(payload, 'csv');
         setSuccessMessage('Data exported to CSV successfully!');
       }
     } catch (err) {
-      console.error("Export failed:", err);
       setError(`Failed to send request: ${err.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
