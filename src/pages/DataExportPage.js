@@ -10,6 +10,7 @@ import '../styles/DataExportPage.css';
 function DataExportPage() {
   const [selectedData, setSelectedData] = useState([]);
   const [detailedData, setDetailedData] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -56,7 +57,7 @@ function DataExportPage() {
         </div>
         <div className="data-export-section">
           <ExportControlPanel
-            selectedData={selectedData}
+            selectedData={selectedRows}
           />
         </div>
         <div className="data-preview-section">
@@ -65,7 +66,7 @@ function DataExportPage() {
           ) : error ? (
             <div className="data-export-error">Error: {error}</div>
           ) : (
-            <DataTable data={detailedData} />
+            <DataTable data={detailedData} onSelectionChange={setSelectedRows} />
           )}
         </div>  
       </div>

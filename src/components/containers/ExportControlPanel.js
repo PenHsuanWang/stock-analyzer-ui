@@ -27,6 +27,12 @@ const ExportControlPanel = ({ selectedData }) => {
     return !!pattern.test(url);
   };  
 
+  const prepareJsonSplitFormat = (data) => {
+    const columns = Object.keys(data[0]);
+    const rows = data.map(item => Object.values(item));
+    return { columns, data: rows };
+  };
+
 
   const handleSendData = async () => {
     if (exportMode === 'http' && !validateUrl(url)) {
@@ -41,10 +47,12 @@ const ExportControlPanel = ({ selectedData }) => {
     setSuccessMessage('');
 
     try {
-      const payload = JSON.stringify(selectedData);
-      const response = await exportDataFromDB(url, payload, exportMode);
+      // Prepare data in the format expected by the backend
+      const formattedData = prepareJsonSplitFormat(selectedData);
+      const jsonPayload = JSON.stringify({ data: JSON.stringify(formattedData) });
+      const response = await exportDataFromDB(url, jsonPayload, exportMode);
 
-      if (exportMode === 'http' && response.success) {
+      if (exportMode === 'http' && response && response.message) {
         setSuccessMessage('Data has been sent successfully!');
       } else if (exportMode === 'csv' && response.success) {
         setSuccessMessage('Data exported to CSV successfully!');
