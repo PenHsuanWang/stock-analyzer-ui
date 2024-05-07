@@ -112,10 +112,10 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
         const datasets = await Promise.all(promises);
         const pairGridData = {};
     
-        // 确定所有数据集都包含 Daily_Return 字段
+        
         datasets.forEach((dataset, index) => {
           if (dataset && dataset.data && dataset.data.length > 0 && dataset.data[0].hasOwnProperty('Daily_Return')) {
-            // 使用股票 ID 作为键
+            
             const stockId = selectedForVisualization[index].stock_id;
             pairGridData[stockId] = dataset.data.map(dataPoint => dataPoint.Daily_Return);
           } else {

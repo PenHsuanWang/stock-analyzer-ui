@@ -1,0 +1,21 @@
+/* src/styles/AdvanceAnalyzedDataVisualizationPage.css */
+
+.advanced-analyzed-data-visualization-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%; /* or other appropriate width */
+  margin: auto; /* center horizontally */
+}
+
+.chart-container {
+  width: 100%; /* use the full width of the parent container */
+  height: 1200px; /* increase height to provide more space for clarity */
+  margin-bottom: 20px; /* add some space between the charts */
+}
+
+/* Additional styles to ensure the Plotly chart expands to fill the container */
+.plotly .plot-container .svg-container {
+  height: 100% !important; /* Force the SVG container to fill the chart container height */
+  width: 100% !important; /* Force the SVG container to fill the chart container width */
+}

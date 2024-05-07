@@ -1,37 +1,72 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import '../../styles/Sidebar.css';
 
-// Define a reusable link component for the sidebar
-const SidebarLink = ({ to, label, icon }) => (
-  <div className="SidebarLink">
-    <NavLink to={to} className={({ isActive }) => (isActive ? 'active' : '')}>
-      {icon && <span className="icon">{icon}</span>}
-      {label}
-    </NavLink>
-  </div>
-);
 
-const Sidebar = () => (
-  <aside className="Sidebar">
-    <h3>Stock Analysis Tools</h3>
-    <div className="SidebarNavigation">
-      <SidebarLink to="/" label="Home" icon="🏠" />
-      <SidebarLink to="/data-collect" label="Data Collection" icon="📊" />
-      <SidebarLink to="/data-analysis" label="Data Analysis" icon="🔍" />
-      <SidebarLink to="/analyzed-visualization-candlestick" label="Candlestick Visualization" icon="📈" />
-      <SidebarLink to="/analyzed-visualization-heatmap" label="Heatmap Visualization" icon="🌡️" />
-      <SidebarLink to="/analyzed-visualization-histogram" label="Histogram Visualization" icon="📊" />
-      <SidebarLink to="/analyzed-visualization-pairgrid" label="Pairgrid Visualization" icon="🔲" />
-      <SidebarLink to="/correlation-analysis" label="Correlation Analysis" icon="🔗" />
-      <SidebarLink to="/base" label="Base Page" icon="🛠️" />
-      {/* Add any other additional links as needed */}
+const menuItems = [
+  {
+    name: '🗂️ Group A', // group level folder
+    isCollapsible: true,
+    children: [
+      { name: '🏠 Home', isCollapsible: false, children: [], to: '/' },
+      { name: '📊 Data Collection', isCollapsible: false, children: [], to: '/data-collect' },
+      { name: '📈 Candlestick Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-candlestick' },
+      { name: '🌡️ Heatmap Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-heatmap' },
+      { name: '📊 Histogram Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-histogram' },
+      { name: '🔲 Pairgrid Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-pairgrid' },
+      { name: '🔗 Correlation Analysis', isCollapsible: false, children: [], to: '/correlation-analysis' },
+      { name: '🛠️ Base Page', isCollapsible: false, children: [], to: '/base' },
+    ],
+  },
+  // others menu items can be added here
+];
+
+// recursive displat items
+function SidebarItem({ item, onToggle, isOpen }) {
+  const content = item.children.map((child) => {
+    if (typeof child === 'string') {
+      return <div key={child} className="SubmenuItem">{child}</div>;
+    } else {
+      // to use Link or NavLink to jump to other pages
+      return (
+        <Link to={child.to} className="SubmenuItem" key={child.name}>
+          <SidebarItem item={child} onToggle={onToggle} isOpen={isOpen}/>
+        </Link>
+      );
+    }
+  });
+
+  return (
+    <div>
+      <div className="MenuItem" onClick={() => onToggle(item.name)}>
+        {item.name}
+      </div>
+      {isOpen && content}
     </div>
-    <div className="sidebar-ads">
-      <p>Advertisement Here</p>
-      {/* Place ad scripts or other ad-related content here */}
+  );
+}
+
+function Sidebar() {
+  const [openItems, setOpenItems] = useState({});
+
+  const toggleItem = (name) => {
+    setOpenItems(prev => ({
+      ...prev,
+      [name]: !prev[name]
+    }));
+  };
+
+  return (
+    <div className="Sidebar">
+      <div className="SearchBox">
+        <input type="text" placeholder="Search this site..." className="SearchInput" />
+      </div>
+      {menuItems.map((item) => (
+        <SidebarItem key={item.name} item={item} onToggle={toggleItem} isOpen={openItems[item.name]} />
+      ))}
     </div>
-  </aside>
-);
+  );
+}
+
 
 export default Sidebar;

@@ -17,7 +17,6 @@ const PairGridPlot = ({ data }) => {
     },
   };
 
-  // 初始化轴的配置
   const updatedLayout = { ...layout };
   variables.forEach((variable, index) => {
     updatedLayout[`xaxis${index + 1}`] = {

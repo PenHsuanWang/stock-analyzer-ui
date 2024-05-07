@@ -16,7 +16,7 @@ function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, select
       return;
     }
     
-    await onSave(searchParams); // 使用來自父組件的 searchParams 作為 payload
+    await onSave(searchParams); // using outer component's searchParams as payload
   };
 
   // function to handle the delete operation
