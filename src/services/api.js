@@ -6,6 +6,9 @@ const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
+    headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // implement general base send request function, which can be reuse
@@ -14,7 +17,7 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
     const response = await apiClient({
       method,
       url: path,
-      data: payload,
+      data: JSON.stringify(payload),
       params,
     });
     // parse returned data in string format
@@ -44,4 +47,50 @@ export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/d
 export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
 export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload)
 export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/calculate_correlation', payload);
-export const exportDataFromDB = (payload) => sendRequest('post', '/export_data/csv')
+// Function to handle HTTP and CSV data export
+export const exportDataFromDB = async (url, data, mode) => {
+  if (mode === 'http') {
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000 // Timeout set for 10 seconds
+      });
+
+      // Handle successful response here, perhaps returning it
+      console.log("Data sent successfully: ", response.data);
+      return response.data;  // Returning the successful response data
+
+    } catch (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw new Error(`HTTP ${error.response.status}: ${error.response.data.message}`);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        throw new Error("No response was received from the server.");
+      } else if (error.code === 'ECONNABORTED') {
+        // Handle timeout specifically
+        throw new Error("Request timed out. Please try again.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error("Error setting up the request: " + error.message);
+      }
+    }
+  } else if (mode === 'csv') {
+    // Logic to handle CSV export if necessary
+    // Placeholder for CSV export logic
+  }
+};
+
+// export const exportDataFromDB = (url, payload, mode) => {
+//   let path = `/export_data/${mode}`;
+//   if (mode === 'http') {
+//     path = url;
+//   }
+//   return sendRequest('post', path, payload);
+// };
+

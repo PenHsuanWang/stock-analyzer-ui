@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import ExportControlPanel from '../components/containers/ExportControlPanel';
@@ -7,62 +7,44 @@ import { fetchDataFromBackendDB } from '../services/api';
 import LoadingIndicator from '../components/basic/LoadingIndicator';
 import '../styles/DataExportPage.css';
 
-const DataExportPage = () => {
+function DataExportPage() {
   const [selectedData, setSelectedData] = useState([]);
   const [detailedData, setDetailedData] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  console.log("DataExportPage render", selectedData);
-
-  const fetchDetailedData = useCallback((selectedKeys) => {
-    console.log("fetchDetailedData started", selectedKeys);
+  const fetchDetailedData = async () => {
+    if (selectedData.length === 0) {
+      // Reset detailedData if no data selected
+      setDetailedData([]);
+      return;
+    }
     setLoading(true);
     setError('');
     const payload = {
-      ...selectedKeys[0],
+      ...selectedData[0],
       prefix: "stock_data"
     };
-
-    fetchDataFromBackendDB(payload)
-      .then(response => {
-        if (!Array.isArray(response.data)) {
-          setError('API did not return an array.');
-          setLoading(false);
-          return;
-        }
+    try {
+      const response = await fetchDataFromBackendDB(payload);
+      if (!Array.isArray(response.data)) {
+        setError('API did not return an array.');
+        setDetailedData([]);
+      } else {
         setDetailedData(response.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.response ? err.response.data.message : err.message);
-        setLoading(false);
-      }).finally(() => {
-        console.log("fetchDetailedData completed", selectedKeys);
-      });
-  }, []); // Remove unnecessary dependencies
-
-  const handleSelectionChange = useCallback((selectedKeys) => {
-    console.log("handleSelectionChange", selectedKeys);
-    setSelectedData(selectedKeys);
-    // Since we're setting the state directly, we don't need to include setSelectedData in the dependency array
-  }, []);
+      }
+    } catch (err) {
+      setError(err.response ? err.response.data.message : err.message);
+      setDetailedData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (selectedData.length > 0) {
-      fetchDetailedData(selectedData);
-    } else {
-      setDetailedData([]);
-    }
-  }, [selectedData, fetchDetailedData]);
-
-  if (loading) {
-    return <LoadingIndicator />;
-  }
-
-  if (error) {
-    return <div className="data-export-error">Error: {error}</div>;
-  }
+    fetchDetailedData();
+  }, [selectedData]);
 
   return (
     <BasePage>
@@ -70,18 +52,26 @@ const DataExportPage = () => {
         <div className="data-selection-section">
           <ListDatasetFromDBControls
             prefix={"stock_data"}
-            setSelectedItems={handleSelectionChange}
+            setSelectedItems={setSelectedData}
           />
         </div>
         <div className="data-export-section">
           <ExportControlPanel
-            selectedData={selectedData}
+            selectedData={selectedRows}
           />
         </div>
-        <DataTable data={detailedData} />
+        <div className="data-preview-section">
+          {loading ? (
+            <LoadingIndicator />
+          ) : error ? (
+            <div className="data-export-error">Error: {error}</div>
+          ) : (
+            <DataTable data={detailedData} onSelectionChange={setSelectedRows} />
+          )}
+        </div>  
       </div>
     </BasePage>
   );
-};
+}
 
-export default React.memo(DataExportPage);
+export default DataExportPage;

@@ -1,15 +1,12 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Paper } from '@mui/material';
 
-// Dynamic Table Head
-const DataTableHead = ({ columns }) => (
+const DataTableHead = ({ columns, isCheckedAll, handleCheckboxAllChange }) => (
   <TableHead>
     <TableRow>
-      {/* Optional Checkbox for selection */}
       <TableCell padding="checkbox">
-        <Checkbox indeterminate />
+        <Checkbox checked={isCheckedAll} onChange={handleCheckboxAllChange} />
       </TableCell>
-      {/* Dynamic column headers */}
       {columns.map((column) => (
         <TableCell key={column}>{column}</TableCell>
       ))}
@@ -17,14 +14,11 @@ const DataTableHead = ({ columns }) => (
   </TableHead>
 );
 
-// Dynamic Table Row
-const DataTableRow = ({ row, columns }) => (
+const DataTableRow = ({ row, columns, isChecked, handleCheckboxChange }) => (
   <TableRow hover>
-    {/* Optional Checkbox for selection */}
     <TableCell padding="checkbox">
-      <Checkbox />
+      <Checkbox checked={isChecked} onChange={handleCheckboxChange} />
     </TableCell>
-    {/* Dynamic cells based on row data */}
     {columns.map((column) => (
       <TableCell key={`${column}-${row[column]}`}>
         {row[column] !== null && row[column] !== undefined ? row[column].toString() : ''}
@@ -33,21 +27,39 @@ const DataTableRow = ({ row, columns }) => (
   </TableRow>
 );
 
-// Main Data Table Component
-const DataTable = ({ data }) => {
-  // Determine columns for the table based on the keys of the first data object
+const DataTable = ({ data, onSelectionChange }) => {
   const columns = data.length > 0 ? Object.keys(data[0]) : [];
+  const [isCheckedAll, setIsCheckedAll] = React.useState(false);
+  const [checkedRows, setCheckedRows] = React.useState([]);
+
+  const handleCheckboxAllChange = (event) => {
+    const newChecked = event.target.checked;
+    setIsCheckedAll(newChecked);
+    setCheckedRows(newChecked ? data.map((_, index) => index) : []);
+    onSelectionChange(newChecked ? data : []);
+  };
+
+  const handleCheckboxChange = (index) => (event) => {
+    const newCheckedRows = [...checkedRows];
+    if (event.target.checked) {
+      newCheckedRows.push(index);
+    } else {
+      const idx = newCheckedRows.indexOf(index);
+      if (idx !== -1) {
+        newCheckedRows.splice(idx, 1);
+      }
+    }
+    setCheckedRows(newCheckedRows);
+    onSelectionChange(data.filter((_, idx) => newCheckedRows.includes(idx)));
+  };
 
   return (
     <Paper>
       <Table>
-        {/* Render table head */}
-        <DataTableHead columns={columns} />
+        <DataTableHead columns={columns} isCheckedAll={isCheckedAll} handleCheckboxAllChange={handleCheckboxAllChange} />
         <TableBody>
-          {/* Render table rows */}
           {data.map((row, index) => (
-            // Use a unique identifier from the row as the key, or fallback to the index
-            <DataTableRow key={`row-${index}`} row={row} columns={columns} />
+            <DataTableRow key={`row-${index}`} row={row} columns={columns} isChecked={checkedRows.includes(index)} handleCheckboxChange={handleCheckboxChange(index)} />
           ))}
         </TableBody>
       </Table>
