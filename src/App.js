@@ -10,6 +10,7 @@ import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage
 import AdvanceAnalyzedDataVisualizationPage from './pages/AdvanceAnalyzedDataVisualizationPage.js';
 import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
+import ModelComparisonPage from './pages/ModelComparisonPage';
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
 
@@ -120,6 +121,11 @@ function App() {
           element={
             <DataExportPage/>
           }
+        />
+
+        <Route 
+          path="/model-comparison" 
+          element={<ModelComparisonPage />}  // Add the new route for model comparison
         />
 
         <Route path="/base" element={<BasePage />} />
