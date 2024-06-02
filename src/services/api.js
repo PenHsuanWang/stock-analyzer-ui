@@ -39,7 +39,6 @@ export const sendRequest = async (method, path, payload = {}, params = {}) => {
   }
 };
 
-
 export const runTest = async (formData) => {
   const response = await axios.post('/api/runTest', formData, {
       headers: {
@@ -93,3 +92,6 @@ export const exportDataFromDB = async (url, data, mode) => {
     // Placeholder for CSV export logic
   }
 };
+
+// New function to get the model list
+export const getModelList = () => sendRequest('get', '/api/mlflow/models');

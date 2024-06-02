@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getListDatasetFromDB, sendRequest } from '../services/api';
+import { getModelList, sendRequest } from '../services/api';
 import Header from '../components/basic/Header';
 import ModelSelector from '../components/containers/ModelSelector';
 import ComparisonTable from '../components/containers/ComparisonTable';
@@ -26,28 +26,30 @@ const ModelComparisonPage = () => {
 
   useEffect(() => {
     // Fetch model options when the component mounts
-    getListDatasetFromDB()
-      .then(response => setModelOptions(response.map(model => model.name)))
+    getModelList()
+      .then(response => setModelOptions(response))
       .catch(err => setError(err.message));
   }, []);
 
   useEffect(() => {
     // Fetch version options for the first model
     if (modelName1) {
-      getListDatasetFromDB({ modelName: modelName1 })
-        .then(response => setVersionOptions1(response))
-        .catch(err => setError(err.message));
+      const model = modelOptions.find(m => m.name === modelName1);
+      if (model) {
+        setVersionOptions1(model.latest_versions.map(version => version.version));
+      }
     }
-  }, [modelName1]);
+  }, [modelName1, modelOptions]);
 
   useEffect(() => {
     // Fetch version options for the second model
     if (modelName2) {
-      getListDatasetFromDB({ modelName: modelName2 })
-        .then(response => setVersionOptions2(response))
-        .catch(err => setError(err.message));
+      const model = modelOptions.find(m => m.name === modelName2);
+      if (model) {
+        setVersionOptions2(model.latest_versions.map(version => version.version));
+      }
     }
-  }, [modelName2]);
+  }, [modelName2, modelOptions]);
 
   const handleCompare = async () => {
     try {
@@ -131,7 +133,7 @@ const ModelComparisonPage = () => {
           setModelName={setModelName1} 
           version={version1} 
           setVersion={setVersion1} 
-          modelOptions={modelOptions} 
+          modelOptions={modelOptions.map(model => model.name)} 
           versionOptions={versionOptions1} 
         />
         <ModelSelector 
@@ -139,7 +141,7 @@ const ModelComparisonPage = () => {
           setModelName={setModelName2} 
           version={version2} 
           setVersion={setVersion2} 
-          modelOptions={modelOptions} 
+          modelOptions={modelOptions.map(model => model.name)} 
           versionOptions={versionOptions2} 
         />
       </div>
