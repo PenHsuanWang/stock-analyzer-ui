@@ -57,7 +57,6 @@ const ModelComparisonPage = () => {
     try {
       const response = await compareModels(modelName1, version1, modelName2, version2);
       setComparisonResult(response);
-      setMetrics(response.metrics);
       setError(null);
     } catch (err) {
       setError(`Backend error: ${err.message}`);
@@ -151,11 +150,7 @@ const ModelComparisonPage = () => {
       <button onClick={handleCompare}>Compare Models</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {comparisonResult && (
-        <ComparisonTable
-          comparisonResult={comparisonResult}
-          modelType1={modelType1}
-          modelType2={modelType2}
-        />
+        <ComparisonTable comparisonResult={comparisonResult} />
       )}
       <MetricsComparison metrics={metrics} />
       <TestModelPerformance />
