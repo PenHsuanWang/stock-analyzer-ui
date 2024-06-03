@@ -9,6 +9,7 @@ import TestModelPerformance from '../components/containers/TestModelPerformance'
 import HistoricalComparison from '../components/containers/HistoricalComparison';
 import InteractiveAnalysis from '../components/containers/InteractiveAnalysis';
 import ExportAndShare from '../components/containers/ExportAndShare';
+import ModelDetails from '../components/containers/ModelDetails';
 import '../styles/ModelComparisonPage.css';
 
 const ModelComparisonPage = () => {
@@ -23,6 +24,8 @@ const ModelComparisonPage = () => {
   const [versionOptions2, setVersionOptions2] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [history, setHistory] = useState([]);
+  const [modelDetails1, setModelDetails1] = useState(null);
+  const [modelDetails2, setModelDetails2] = useState(null);
 
   useEffect(() => {
     getModelList()
@@ -60,25 +63,27 @@ const ModelComparisonPage = () => {
     }
   };
 
-  const fetchMetrics = async () => {
+  const fetchModelDetails = async (modelName, version, setModelDetails) => {
     try {
-      const response = await sendRequest('get', `/mlflow/models/metrics/${modelName1}/${version1}/${modelName2}/${version2}`);
-      setMetrics(response);
+      const response = await sendRequest('get', `/mlflow/models/details/${modelName}/${version}`);
+      setModelDetails(response);
       setError(null);
     } catch (err) {
-      setError(err.message);
+      setError(`Backend error: ${err.message}`);
     }
   };
 
-  const fetchHistory = async () => {
-    try {
-      const response = await sendRequest('get', `/mlflow/models/history/${modelName1}/${version1}/${modelName2}/${version2}`);
-      setHistory(response);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
+  useEffect(() => {
+    if (modelName1 && version1) {
+      fetchModelDetails(modelName1, version1, setModelDetails1);
     }
-  };
+  }, [modelName1, version1]);
+
+  useEffect(() => {
+    if (modelName2 && version2) {
+      fetchModelDetails(modelName2, version2, setModelDetails2);
+    }
+  }, [modelName2, version2]);
 
   const handleFilter = (filter) => {
     const filteredMetrics = metrics.filter(metric => metric.name.includes(filter));
@@ -134,6 +139,12 @@ const ModelComparisonPage = () => {
           versionOptions={versionOptions2} 
         />
       </div>
+
+      <div className="model-details">
+        <ModelDetails model={modelDetails1} />
+        <ModelDetails model={modelDetails2} />
+      </div>
+
       <button onClick={handleCompare}>Compare Models</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {comparisonResult && <ComparisonTable comparisonResult={comparisonResult} />}

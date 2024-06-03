@@ -5,6 +5,22 @@ const ComparisonTable = ({ comparisonResult }) => {
 
   const { parameters, metrics, training_data_info, architecture } = comparisonResult;
 
+  const getRelevantMetrics = (metrics) => {
+    const metricNames = Object.keys(metrics);
+    const relevantMetrics = {};
+
+    // Add logic to filter metrics based on your model type or other criteria
+    metricNames.forEach(metric => {
+      if (metric.includes('loss') || metric.includes('accuracy') || metric.includes('mse')) {
+        relevantMetrics[metric] = metrics[metric];
+      }
+    });
+
+    return relevantMetrics;
+  };
+
+  const filteredMetrics = getRelevantMetrics(metrics);
+
   return (
     <div>
       <h2>Comparison Result</h2>
@@ -24,7 +40,7 @@ const ComparisonTable = ({ comparisonResult }) => {
               <td>{value.model2}</td>
             </tr>
           ))}
-          {metrics && Object.entries(metrics).map(([key, value]) => (
+          {filteredMetrics && Object.entries(filteredMetrics).map(([key, value]) => (
             <tr key={key}>
               <td>{key}</td>
               <td>{value.model1}</td>

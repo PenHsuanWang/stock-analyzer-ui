@@ -53,4 +53,15 @@
     padding: 5px;
     font-size: 16px;
   }
+
+  .model-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .model-details > div {
+    width: 45%;
+  }
+  
   
