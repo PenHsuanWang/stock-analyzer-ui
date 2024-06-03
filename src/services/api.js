@@ -95,3 +95,6 @@ export const exportDataFromDB = async (url, data, mode) => {
 
 // New function to get the model list
 export const getModelList = () => sendRequest('get', '/api/mlflow/models');
+
+export const compareModels = (model1, version1, model2, version2) => 
+  sendRequest('get', `/api/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);

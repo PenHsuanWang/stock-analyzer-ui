@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getModelList, sendRequest } from '../services/api';
+import { getModelList, compareModels, sendRequest } from '../services/api';
 import Header from '../components/basic/Header';
 import ModelSelector from '../components/containers/ModelSelector';
 import ComparisonTable from '../components/containers/ComparisonTable';
-import ModelComparisonHeader from '../components/containers/ModelComparisonHeader';  // Correct path
+import ModelComparisonHeader from '../components/containers/ModelComparisonHeader';
 import MetricsComparison from '../components/containers/MetricsComparison';
 import TestModelPerformance from '../components/containers/TestModelPerformance';
 import HistoricalComparison from '../components/containers/HistoricalComparison';
@@ -25,14 +25,12 @@ const ModelComparisonPage = () => {
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    // Fetch model options when the component mounts
     getModelList()
       .then(response => setModelOptions(response))
       .catch(err => setError(err.message));
   }, []);
 
   useEffect(() => {
-    // Fetch version options for the first model
     if (modelName1) {
       const model = modelOptions.find(m => m.name === modelName1);
       if (model) {
@@ -42,7 +40,6 @@ const ModelComparisonPage = () => {
   }, [modelName1, modelOptions]);
 
   useEffect(() => {
-    // Fetch version options for the second model
     if (modelName2) {
       const model = modelOptions.find(m => m.name === modelName2);
       if (model) {
@@ -53,12 +50,12 @@ const ModelComparisonPage = () => {
 
   const handleCompare = async () => {
     try {
-      const response = await sendRequest('get', `/mlflow/models/compare/${modelName1}/${version1}/${modelName2}/${version2}`);
+      const response = await compareModels(modelName1, version1, modelName2, version2);
       setComparisonResult(response);
-      setMetrics(response.metrics); // Set metrics data
+      setMetrics(response.metrics);
       setError(null);
     } catch (err) {
-      setError(err.message);
+      setError(`Backend error: ${err.message}`);
       setComparisonResult(null);
     }
   };
@@ -84,20 +81,16 @@ const ModelComparisonPage = () => {
   };
 
   const handleFilter = (filter) => {
-    // Implement filter logic
     const filteredMetrics = metrics.filter(metric => metric.name.includes(filter));
     setMetrics(filteredMetrics);
   };
 
   const handleSort = (sort) => {
-    // Implement sort logic
     const sortedMetrics = [...metrics].sort((a, b) => (a[sort] > b[sort] ? 1 : -1));
     setMetrics(sortedMetrics);
   };
 
   const handleAdjustParameters = (parameters) => {
-    // Implement parameter adjustments
-    // Example: Adjust learning rate or batch size and refetch metrics
     const adjustedMetrics = metrics.map(metric => ({
       ...metric,
       value: metric.value * parameters.adjustmentFactor,
@@ -106,8 +99,6 @@ const ModelComparisonPage = () => {
   };
 
   const handleExport = (format) => {
-    // Implement export logic
-    // Example: Export metrics data to a CSV or PDF file
     const dataToExport = metrics.map(metric => ({
       name: metric.name,
       value: metric.value,
@@ -116,8 +107,6 @@ const ModelComparisonPage = () => {
   };
 
   const handleGenerateLink = () => {
-    // Implement link generation logic
-    // Example: Generate a shareable link for the current comparison
     const link = `${window.location.origin}/model-comparison?model1=${modelName1}&version1=${version1}&model2=${modelName2}&version2=${version2}`;
     navigator.clipboard.writeText(link);
     alert('Link copied to clipboard!');
@@ -147,7 +136,7 @@ const ModelComparisonPage = () => {
       </div>
       <button onClick={handleCompare}>Compare Models</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ComparisonTable comparisonResult={comparisonResult} />
+      {comparisonResult && <ComparisonTable comparisonResult={comparisonResult} />}
       <MetricsComparison metrics={metrics} />
       <TestModelPerformance />
       <HistoricalComparison history={history} />
