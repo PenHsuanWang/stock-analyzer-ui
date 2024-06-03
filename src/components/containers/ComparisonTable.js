@@ -1,25 +1,34 @@
 import React from 'react';
 
-const ComparisonTable = ({ comparisonResult }) => {
+const ComparisonTable = ({ comparisonResult, modelType1, modelType2 }) => {
   if (!comparisonResult) return null;
 
   const { parameters, metrics, training_data_info, architecture } = comparisonResult;
 
-  const getRelevantMetrics = (metrics) => {
+  const getRelevantMetrics = (metrics, modelType) => {
     const metricNames = Object.keys(metrics);
     const relevantMetrics = {};
 
-    // Add logic to filter metrics based on your model type or other criteria
-    metricNames.forEach(metric => {
-      if (metric.includes('loss') || metric.includes('accuracy') || metric.includes('mse')) {
-        relevantMetrics[metric] = metrics[metric];
-      }
-    });
+    if (modelType === 'lstm') {
+      metricNames.forEach(metric => {
+        if (metric.includes('loss') || metric.includes('mse')) {
+          relevantMetrics[metric] = metrics[metric];
+        }
+      });
+    } else if (modelType === 'random_forest') {
+      metricNames.forEach(metric => {
+        if (metric.includes('accuracy') || metric.includes('precision') || metric.includes('recall')) {
+          relevantMetrics[metric] = metrics[metric];
+        }
+      });
+    }
+    // Add more conditions for other model types if needed
 
     return relevantMetrics;
   };
 
-  const filteredMetrics = getRelevantMetrics(metrics);
+  const filteredMetrics1 = getRelevantMetrics(metrics, modelType1);
+  const filteredMetrics2 = getRelevantMetrics(metrics, modelType2);
 
   return (
     <div>
@@ -40,11 +49,11 @@ const ComparisonTable = ({ comparisonResult }) => {
               <td>{value.model2}</td>
             </tr>
           ))}
-          {filteredMetrics && Object.entries(filteredMetrics).map(([key, value]) => (
+          {Object.entries(filteredMetrics1).map(([key, value]) => (
             <tr key={key}>
               <td>{key}</td>
               <td>{value.model1}</td>
-              <td>{value.model2}</td>
+              <td>{filteredMetrics2[key]?.model2 || ''}</td>
             </tr>
           ))}
           {training_data_info && Object.entries(training_data_info).map(([key, value]) => (

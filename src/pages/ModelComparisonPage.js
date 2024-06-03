@@ -26,6 +26,8 @@ const ModelComparisonPage = () => {
   const [history, setHistory] = useState([]);
   const [modelDetails1, setModelDetails1] = useState(null);
   const [modelDetails2, setModelDetails2] = useState(null);
+  const [modelType1, setModelType1] = useState('');
+  const [modelType2, setModelType2] = useState('');
 
   useEffect(() => {
     getModelList()
@@ -63,10 +65,11 @@ const ModelComparisonPage = () => {
     }
   };
 
-  const fetchModelDetails = async (modelName, version, setModelDetails) => {
+  const fetchModelDetails = async (modelName, version, setModelDetails, setModelType) => {
     try {
       const response = await sendRequest('get', `/mlflow/models/details/${modelName}/${version}`);
       setModelDetails(response);
+      setModelType(response.details.model_type); // Assuming model_type is included in the response
       setError(null);
     } catch (err) {
       setError(`Backend error: ${err.message}`);
@@ -75,13 +78,13 @@ const ModelComparisonPage = () => {
 
   useEffect(() => {
     if (modelName1 && version1) {
-      fetchModelDetails(modelName1, version1, setModelDetails1);
+      fetchModelDetails(modelName1, version1, setModelDetails1, setModelType1);
     }
   }, [modelName1, version1]);
 
   useEffect(() => {
     if (modelName2 && version2) {
-      fetchModelDetails(modelName2, version2, setModelDetails2);
+      fetchModelDetails(modelName2, version2, setModelDetails2, setModelType2);
     }
   }, [modelName2, version2]);
 
@@ -147,7 +150,13 @@ const ModelComparisonPage = () => {
 
       <button onClick={handleCompare}>Compare Models</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {comparisonResult && <ComparisonTable comparisonResult={comparisonResult} />}
+      {comparisonResult && (
+        <ComparisonTable
+          comparisonResult={comparisonResult}
+          modelType1={modelType1}
+          modelType2={modelType2}
+        />
+      )}
       <MetricsComparison metrics={metrics} />
       <TestModelPerformance />
       <HistoricalComparison history={history} />
