@@ -1,21 +1,5 @@
-.model-table {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .model-table table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .model-table th, .model-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .model-table th {
-    background-color: #f2f2f2;
+.model-manage-page {
+    padding: 20px;
   }
   
   .model-details {
