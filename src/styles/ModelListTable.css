@@ -1,6 +1,10 @@
 .model-table {
     width: 100%;
     margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   .model-table table {
@@ -15,36 +19,42 @@
   }
   
   .model-table th {
-    background-color: #f2f2f2;
+    background-color: #f7f7f7;
   }
   
   .model-row {
     cursor: pointer;
     background-color: #f9f9f9;
+    transition: background-color 0.3s;
   }
   
   .model-row:hover {
-    background-color: #f1f1f1;
+    background-color: #ececec;
   }
   
   .version-row {
     background-color: #ffffff;
+    transition: background-color 0.3s;
   }
   
   .version-row:hover {
     background-color: #f1f1f1;
   }
   
+  .version-row.selected {
+    background-color: #d0ebff;
+  }
+  
   .child-row {
     padding-left: 20px;
   }
   
-  .model-row td {
+  .model-name {
     display: flex;
     align-items: center;
   }
   
-  .model-row td svg {
+  .model-name svg {
     margin-right: 8px;
   }
   
