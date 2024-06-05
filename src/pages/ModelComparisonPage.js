@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getModelList, compareModels, sendRequest } from '../services/api';
+import BasePage from './BasePage';
 import Header from '../components/basic/Header';
 import ModelSelector from '../components/containers/ModelSelector';
 import ComparisonTable from '../components/containers/ComparisonTable';
@@ -120,44 +121,45 @@ const ModelComparisonPage = () => {
   };
 
   return (
-    <div className="model-comparison-page">
-      <Header title="Model Comparison" description="Compare different versions or tags of machine learning models." />
-      <ModelComparisonHeader />
-      <div className="model-selection">
-        <ModelSelector 
-          modelName={modelName1} 
-          setModelName={setModelName1} 
-          version={version1} 
-          setVersion={setVersion1} 
-          modelOptions={modelOptions.map(model => model.name)} 
-          versionOptions={versionOptions1} 
-        />
-        <ModelSelector 
-          modelName={modelName2} 
-          setModelName={setModelName2} 
-          version={version2} 
-          setVersion={setVersion2} 
-          modelOptions={modelOptions.map(model => model.name)} 
-          versionOptions={versionOptions2} 
-        />
-      </div>
+    <BasePage>
+      <div className="model-comparison-page">
+        <ModelComparisonHeader />
+        <div className="model-selection">
+          <ModelSelector 
+            modelName={modelName1} 
+            setModelName={setModelName1} 
+            version={version1} 
+            setVersion={setVersion1} 
+            modelOptions={modelOptions.map(model => model.name)} 
+            versionOptions={versionOptions1} 
+          />
+          <ModelSelector 
+            modelName={modelName2} 
+            setModelName={setModelName2} 
+            version={version2} 
+            setVersion={setVersion2} 
+            modelOptions={modelOptions.map(model => model.name)} 
+            versionOptions={versionOptions2} 
+          />
+        </div>
 
-      <div className="model-details">
-        <ModelDetails model={modelDetails1} />
-        <ModelDetails model={modelDetails2} />
-      </div>
+        <div className="model-details">
+          <ModelDetails model={modelDetails1} />
+          <ModelDetails model={modelDetails2} />
+        </div>
 
-      <button onClick={handleCompare}>Compare Models</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {comparisonResult && (
-        <ComparisonTable comparisonResult={comparisonResult} />
-      )}
-      <MetricsComparison metrics={metrics} />
-      <TestModelPerformance />
-      <HistoricalComparison history={history} />
-      <InteractiveAnalysis onFilter={handleFilter} onSort={handleSort} onAdjustParameters={handleAdjustParameters} />
-      <ExportAndShare onExport={handleExport} onGenerateLink={handleGenerateLink} />
-    </div>
+        <button onClick={handleCompare}>Compare Models</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {comparisonResult && (
+          <ComparisonTable comparisonResult={comparisonResult} />
+        )}
+        <MetricsComparison metrics={metrics} />
+        <TestModelPerformance />
+        <HistoricalComparison history={history} />
+        <InteractiveAnalysis onFilter={handleFilter} onSort={handleSort} onAdjustParameters={handleAdjustParameters} />
+        <ExportAndShare onExport={handleExport} onGenerateLink={handleGenerateLink} />
+      </div>
+    </BasePage>
   );
 };
 
