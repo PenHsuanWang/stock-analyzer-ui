@@ -57,4 +57,33 @@
   .model-name svg {
     margin-right: 8px;
   }
+
+  /* ModelListTable.css */
+.model-table {
+  flex: 1;
+}
+
+.model-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.model-table th, .model-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.model-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.model-row {
+  cursor: pointer;
+}
+
+.version-row.selected {
+  background-color: #e6f7ff;
+}
+
   

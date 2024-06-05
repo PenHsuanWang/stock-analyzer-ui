@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getModelList, sendRequest } from '../services/api';
 import BasePage from './BasePage';
+import { getModelList, sendRequest } from '../services/api';
 import Header from '../components/basic/Header';
 import ModelListTable from '../components/lists/ModelListTable';
 import ModelDetails from '../components/containers/ModelDetails';
@@ -39,9 +39,11 @@ const ModelManagePage = () => {
     <BasePage>
       <div className="model-manage-page">
         <Header title="Model Management" description="Manage and view details of machine learning models." />
-        <ModelListTable models={modelOptions} onSelectModel={handleModelSelection} />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {modelDetails && <ModelDetails model={modelDetails} />}
+        <div className="model-manage-content">
+          <ModelListTable models={modelOptions} onSelectModel={handleModelSelection} />
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {modelDetails && <ModelDetails model={modelDetails} />}
+        </div>
       </div>
     </BasePage>
   );

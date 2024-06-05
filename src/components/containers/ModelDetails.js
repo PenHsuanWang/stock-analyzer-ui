@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../styles/ModelDetails.css';
 
 const ModelDetails = ({ model }) => {
   if (!model) return null;
@@ -7,22 +8,42 @@ const ModelDetails = ({ model }) => {
   const { parameters, metrics, training_data_info, architecture } = details;
 
   return (
-    <div>
+    <div className="model-details">
       <h2>Model Details</h2>
-      <p><strong>Name:</strong> {name}</p>
-      <p><strong>Version:</strong> {version}</p>
+      <table>
+        <tbody>
+          <tr>
+            <th>Name:</th>
+            <td>{name}</td>
+          </tr>
+          <tr>
+            <th>Version:</th>
+            <td>{version}</td>
+          </tr>
+        </tbody>
+      </table>
       <h3>Parameters</h3>
-      <ul>
-        {parameters && Object.entries(parameters).map(([key, value]) => (
-          <li key={key}>{key}: {value}</li>
-        ))}
-      </ul>
+      <table>
+        <tbody>
+          {parameters && Object.entries(parameters).map(([key, value]) => (
+            <tr key={key}>
+              <th>{key}</th>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h3>Metrics</h3>
-      <ul>
-        {metrics && Object.entries(metrics).map(([key, value]) => (
-          <li key={key}>{key}: {value}</li>
-        ))}
-      </ul>
+      <table>
+        <tbody>
+          {metrics && Object.entries(metrics).map(([key, value]) => (
+            <tr key={key}>
+              <th>{key}</th>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <h3>Training Data Info</h3>
       <p>{training_data_info}</p>
       <h3>Architecture</h3>
