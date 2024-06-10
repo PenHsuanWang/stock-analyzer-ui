@@ -10,7 +10,7 @@ const ModelDetails = ({ model }) => {
   return (
     <div className="model-details">
       <h2>Model Details</h2>
-      <table>
+      <table className="details-table">
         <tbody>
           <tr>
             <th>Name:</th>
@@ -23,22 +23,34 @@ const ModelDetails = ({ model }) => {
         </tbody>
       </table>
       <h3>Parameters</h3>
-      <table>
+      <table className="details-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+          </tr>
+        </thead>
         <tbody>
           {parameters && Object.entries(parameters).map(([key, value]) => (
             <tr key={key}>
-              <th>{key}</th>
+              <td>{key}</td>
               <td>{value}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <h3>Metrics</h3>
-      <table>
+      <table className="details-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+        </thead>
         <tbody>
           {metrics && Object.entries(metrics).map(([key, value]) => (
             <tr key={key}>
-              <th>{key}</th>
+              <td>{key}</td>
               <td>{value}</td>
             </tr>
           ))}

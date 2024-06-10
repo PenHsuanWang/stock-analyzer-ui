@@ -1,6 +1,9 @@
 /* ModelDetails.css */
 .model-details {
     flex: 1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    background-color: #f9f9f9;
   }
   
   .model-details h2 {
@@ -11,19 +14,24 @@
     margin-top: 20px;
   }
   
-  .model-details table {
+  .details-table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
   }
   
-  .model-details th, .model-details td {
+  .details-table th, .details-table td {
     border: 1px solid #ddd;
     padding: 8px;
   }
   
-  .model-details th {
+  .details-table th {
     background-color: #f2f2f2;
     text-align: left;
+    width: 20%;
+  }
+  
+  .details-table td {
+    width: 80%;
   }
   
