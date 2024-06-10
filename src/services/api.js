@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from 'axios';
 
 // setup base URL
@@ -6,13 +5,13 @@ const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
-    headers: {
+  headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// implement general base send request function, which can be reuse
-const sendRequest = async (method, path, payload = {}, params = {}) => {
+// implement general base send request function, which can be reused
+export const sendRequest = async (method, path, payload = {}, params = {}) => {
   try {
     const response = await apiClient({
       method,
@@ -27,27 +26,35 @@ const sendRequest = async (method, path, payload = {}, params = {}) => {
     return response.data;
   } catch (error) {
     if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        throw new Error(`Backend error: ${error.response.status} ${error.response.data.message}`);
-      } else if (error.request) {
-        // The request was made but no response was received
-        throw new Error('No response from the server. Please check your network connection.');
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        throw new Error('Error setting up the request:', error.message);
-      }
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      throw new Error(`Backend error: ${error.response.status} ${error.response.data.message}`);
+    } else if (error.request) {
+      // The request was made but no response was received
+      throw new Error('No response from the server. Please check your network connection.');
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      throw new Error('Error setting up the request:', error.message);
+    }
   }
 };
 
-// create function for components
+export const runTest = async (formData) => {
+  const response = await axios.post('/api/runTest', formData, {
+      headers: {
+          'Content-Type': 'multipart/form-data'
+      }
+  });
+  return response.data;
+};
+
+// create functions for components
 export const fetchDataFromSource = (payload) => sendRequest('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
 export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/delete_data', payload);
 export const computeFullAnalysisAndStore = (payload) => sendRequest('post', '/stock_data/compute_full_analysis_and_store', payload);
-export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload)
+export const fetchDataFromBackendDB = (payload) => sendRequest('post', '/stock_data/get_data', payload);
 export const computeAssetsCorrelation = (payload) => sendRequest('post', '/stock_data/calculate_correlation', payload);
-// Function to handle HTTP and CSV data export
 export const exportDataFromDB = async (url, data, mode) => {
   if (mode === 'http') {
     try {
@@ -86,11 +93,8 @@ export const exportDataFromDB = async (url, data, mode) => {
   }
 };
 
-// export const exportDataFromDB = (url, payload, mode) => {
-//   let path = `/export_data/${mode}`;
-//   if (mode === 'http') {
-//     path = url;
-//   }
-//   return sendRequest('post', path, payload);
-// };
+// New function to get the model list
+export const getModelList = () => sendRequest('get', '/mlflow/models');
 
+export const compareModels = (model1, version1, model2, version2) => 
+  sendRequest('get', `/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);

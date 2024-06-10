@@ -18,6 +18,18 @@ const menuItems = [
       { name: '🛠️ Base Page', isCollapsible: false, children: [], to: '/base' },
     ],
   },
+  {
+    name: '🛠️ Group B',
+    isCollapsible: true,
+    children: [
+      { name: '📊 Data Analysis', isCollapsible: false, children: [], to: '/data-analysis' },
+      { name: '📈 Candlestick with Pattern', isCollapsible: false, children: [], to: '/analyzed-visualization-candlestick-with-pattern' },
+      { name: '📈 Advanced Visualization', isCollapsible: false, children: [], to: '/advance-analyzed-visualization' },
+      { name: '📊 Data Export', isCollapsible: false, children: [], to: '/data-export' },
+      { name: '🛠️ Model Management', isCollapsible: false, children: [], to: '/model-manage' },
+      { name: '🔍 Model Comparison', isCollapsible: false, children: [], to: '/model-comparison' },
+    ],
+  },
   // others menu items can be added here
 ];
 
