@@ -12,6 +12,7 @@ import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
+import ModelTrainingSetupPage from './pages/ModelTrainingSetupPage';
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
 
@@ -131,7 +132,12 @@ function App() {
 
         <Route 
           path="/model-comparison" 
-          element={<ModelComparisonPage />}  // Add the new route for model comparison
+          element={<ModelComparisonPage />}  
+        />
+
+        <Route 
+          path="/model-training-setup" 
+          element={<ModelTrainingSetupPage />}  // Add the new route for model training setup
         />
 
         <Route path="/base" element={<BasePage />} />

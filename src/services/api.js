@@ -98,3 +98,29 @@ export const getModelList = () => sendRequest('get', '/mlflow/models');
 
 export const compareModels = (model1, version1, model2, version2) => 
   sendRequest('get', `/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);
+
+// New functions for ModelTrainingSetupPage components
+export const setDataFetcher = async (dataFetcherName) => {
+  const response = await apiClient.post('/ml_training_manager/set_data_fetcher', { data_fetcher_name: dataFetcherName });
+  return response.data;
+};
+
+export const initDataProcessor = async (params) => {
+  const response = await apiClient.post('/ml_training_manager/init_data_processor', params);
+  return response.data;
+};
+
+export const initModel = async (params) => {
+  const response = await apiClient.post('/ml_training_manager/init_model', params);
+  return response.data;
+};
+
+export const initTrainer = async (params) => {
+  const response = await apiClient.post('/ml_training_manager/init_trainer', params);
+  return response.data;
+};
+
+export const runMLTraining = async (params) => {
+  const response = await apiClient.post('/ml_training_manager/run_ml_training', params);
+  return response.data;
+};
