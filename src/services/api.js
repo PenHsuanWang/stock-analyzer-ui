@@ -106,7 +106,7 @@ export const setDataFetcher = async (dataFetcherName) => {
 };
 
 export const initDataProcessor = async (params) => {
-  const response = await apiClient.post('/ml_training_manager/init_data_processor', params);
+  const response = await apiClient.post('/ml_training_manager/init_data_processor_from_df', params);
   return response.data;
 };
 
@@ -128,8 +128,8 @@ export const runMLTraining = async (params) => {
 // New functions to get the current state of each component
 export const getDataFetcher = async () => sendRequest('get', '/ml_training_manager/get_data_fetcher');
 
-export const getDataProcessor = async () => sendRequest('get', '/ml_training_manager/get_data_processor');
+export const getDataProcessor = async (dataProcessorId) => sendRequest('get', `/ml_training_manager/get_data_processor/${dataProcessorId}`);
 
-export const getModel = async () => sendRequest('get', '/ml_training_manager/get_model');
+export const getModel = async (modelId) => sendRequest('get', `/ml_training_manager/get_model/${modelId}`);
 
-export const getTrainer = async () => sendRequest('get', '/ml_training_manager/get_trainer');
+export const getTrainer = async (trainerId) => sendRequest('get', `/ml_training_manager/get_trainer/${trainerId}`);

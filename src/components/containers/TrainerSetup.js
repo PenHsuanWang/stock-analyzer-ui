@@ -38,13 +38,16 @@ const TrainerSetup = ({ onSetupComplete }) => {
     try {
       const response = await initTrainer({
         trainer_type: trainerType,
-        loss_function: lossFunction,
-        optimizer: optimizer,
-        learning_rate: learningRate,
-        device: device,
-        mlflow_tracking_uri: mlflowTrackingUri,
-        mlflow_tracking_username: mlflowTrackingUsername,
-        mlflow_tracking_password: mlflowTrackingPassword
+        trainer_id: 'unique_trainer_id',
+        kwargs: {
+          loss_function: lossFunction,
+          optimizer: optimizer,
+          learning_rate: learningRate,
+          device: device,
+          mlflow_tracking_uri: mlflowTrackingUri,
+          mlflow_tracking_username: mlflowTrackingUsername,
+          mlflow_tracking_password: mlflowTrackingPassword
+        }
       });
       setStatus({ message: response.message, type: 'success' });
       onSetupComplete();

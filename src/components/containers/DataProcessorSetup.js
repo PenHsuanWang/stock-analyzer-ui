@@ -31,11 +31,15 @@ const DataProcessorSetup = ({ onSetupComplete }) => {
     setIsLoading(true);
     try {
       const response = await initDataProcessor({
+        data_processor_id: 'example_data_processor_id',
         data_processor_type: dataProcessorType,
-        extract_column: extractColumn.split(','),
-        training_data_ratio: trainingDataRatio,
-        training_window_size: trainingWindowSize,
-        target_window_size: targetWindowSize
+        dataframe: { data: [], columns: [] }, // Include your DataFrame payload here
+        kwargs: {
+          extract_column: extractColumn.split(','),
+          training_data_ratio: trainingDataRatio,
+          training_window_size: trainingWindowSize,
+          target_window_size: targetWindowSize
+        }
       });
       setStatus({ message: response.message, type: 'success' });
       onSetupComplete();

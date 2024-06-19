@@ -30,9 +30,12 @@ const ModelSetup = ({ onSetupComplete }) => {
     try {
       const response = await initModel({
         model_type: modelType,
-        input_size: inputSize,
-        hidden_size: hiddenSize,
-        output_size: outputSize
+        model_id: 'unique_model_id',
+        kwargs: {
+          input_size: inputSize,
+          hidden_size: hiddenSize,
+          output_size: outputSize
+        }
       });
       setStatus({ message: response.message, type: 'success' });
       onSetupComplete();
