@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { initTrainer } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { initTrainer, getTrainer } from '../../services/api';
 import '../../styles/TrainerSetup.css';
 
 const TrainerSetup = ({ onSetupComplete }) => {
@@ -12,8 +12,29 @@ const TrainerSetup = ({ onSetupComplete }) => {
   const [mlflowTrackingUsername, setMlflowTrackingUsername] = useState('');
   const [mlflowTrackingPassword, setMlflowTrackingPassword] = useState('');
   const [status, setStatus] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTrainer = async () => {
+      try {
+        const response = await getTrainer();
+        setTrainerType(response.trainer_type);
+        setLossFunction(response.loss_function);
+        setOptimizer(response.optimizer);
+        setLearningRate(response.learning_rate);
+        setDevice(response.device);
+        setMlflowTrackingUri(response.mlflow_tracking_uri);
+        setMlflowTrackingUsername(response.mlflow_tracking_username);
+        setMlflowTrackingPassword(response.mlflow_tracking_password);
+      } catch (error) {
+        console.error('Error fetching trainer:', error);
+      }
+    };
+    fetchTrainer();
+  }, []);
 
   const handleSetup = async () => {
+    setIsLoading(true);
     try {
       const response = await initTrainer({
         trainer_type: trainerType,
@@ -25,10 +46,12 @@ const TrainerSetup = ({ onSetupComplete }) => {
         mlflow_tracking_username: mlflowTrackingUsername,
         mlflow_tracking_password: mlflowTrackingPassword
       });
-      setStatus(response.message);
+      setStatus({ message: response.message, type: 'success' });
       onSetupComplete();
     } catch (error) {
-      setStatus('Error setting up trainer');
+      setStatus({ message: error.message, type: 'error' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,8 +106,10 @@ const TrainerSetup = ({ onSetupComplete }) => {
         onChange={(e) => setMlflowTrackingPassword(e.target.value)}
         placeholder="Enter MLflow tracking password"
       />
-      <button onClick={handleSetup}>Set Trainer</button>
-      {status && <p>{status}</p>}
+      <button onClick={handleSetup} disabled={isLoading}>
+        {isLoading ? 'Setting up...' : 'Set Trainer'}
+      </button>
+      {status && <p className={`status ${status.type}`}>{status.message}</p>}
     </div>
   );
 };

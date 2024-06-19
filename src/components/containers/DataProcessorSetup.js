@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { initDataProcessor } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { initDataProcessor, getDataProcessor } from '../../services/api';
 import '../../styles/DataProcessorSetup.css';
 
 const DataProcessorSetup = ({ onSetupComplete }) => {
@@ -9,8 +9,26 @@ const DataProcessorSetup = ({ onSetupComplete }) => {
   const [trainingWindowSize, setTrainingWindowSize] = useState(60);
   const [targetWindowSize, setTargetWindowSize] = useState(1);
   const [status, setStatus] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchDataProcessor = async () => {
+      try {
+        const response = await getDataProcessor();
+        setDataProcessorType(response.data_processor_type);
+        setExtractColumn(response.extract_column.join(','));
+        setTrainingDataRatio(response.training_data_ratio);
+        setTrainingWindowSize(response.training_window_size);
+        setTargetWindowSize(response.target_window_size);
+      } catch (error) {
+        console.error('Error fetching data processor:', error);
+      }
+    };
+    fetchDataProcessor();
+  }, []);
 
   const handleSetup = async () => {
+    setIsLoading(true);
     try {
       const response = await initDataProcessor({
         data_processor_type: dataProcessorType,
@@ -19,10 +37,12 @@ const DataProcessorSetup = ({ onSetupComplete }) => {
         training_window_size: trainingWindowSize,
         target_window_size: targetWindowSize
       });
-      setStatus(response.message);
+      setStatus({ message: response.message, type: 'success' });
       onSetupComplete();
     } catch (error) {
-      setStatus('Error setting up data processor');
+      setStatus({ message: error.message, type: 'error' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,8 +79,10 @@ const DataProcessorSetup = ({ onSetupComplete }) => {
         onChange={(e) => setTargetWindowSize(parseInt(e.target.value))}
         placeholder="Enter target window size"
       />
-      <button onClick={handleSetup}>Set Data Processor</button>
-      {status && <p>{status}</p>}
+      <button onClick={handleSetup} disabled={isLoading}>
+        {isLoading ? 'Setting up...' : 'Set Data Processor'}
+      </button>
+      {status && <p className={`status ${status.type}`}>{status.message}</p>}
     </div>
   );
 };

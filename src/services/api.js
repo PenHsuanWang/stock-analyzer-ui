@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// setup base URL
+// Setup base URL
 const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 const apiClient = axios.create({
@@ -10,7 +10,7 @@ const apiClient = axios.create({
   },
 });
 
-// implement general base send request function, which can be reused
+// General base send request function, which can be reused
 export const sendRequest = async (method, path, payload = {}, params = {}) => {
   try {
     const response = await apiClient({
@@ -19,7 +19,7 @@ export const sendRequest = async (method, path, payload = {}, params = {}) => {
       data: JSON.stringify(payload),
       params,
     });
-    // parse returned data in string format
+    // Parse returned data in string format
     if (typeof response.data === 'string') {
       return JSON.parse(response.data);
     }
@@ -34,21 +34,21 @@ export const sendRequest = async (method, path, payload = {}, params = {}) => {
       throw new Error('No response from the server. Please check your network connection.');
     } else {
       // Something happened in setting up the request that triggered an Error
-      throw new Error('Error setting up the request:', error.message);
+      throw new Error(`Error setting up the request: ${error.message}`);
     }
   }
 };
 
 export const runTest = async (formData) => {
   const response = await axios.post('/api/runTest', formData, {
-      headers: {
-          'Content-Type': 'multipart/form-data'
-      }
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   });
   return response.data;
 };
 
-// create functions for components
+// Create functions for components
 export const fetchDataFromSource = (payload) => sendRequest('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 export const getListDatasetFromDB = (payload) => sendRequest('post', '/stock_data/get_all_keys', payload);
 export const deleteDatasetInDB = (payload) => sendRequest('post', '/stock_data/delete_data', payload);
@@ -93,13 +93,13 @@ export const exportDataFromDB = async (url, data, mode) => {
   }
 };
 
-// New function to get the model list
+// Function to get the model list
 export const getModelList = () => sendRequest('get', '/mlflow/models');
 
 export const compareModels = (model1, version1, model2, version2) => 
   sendRequest('get', `/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);
 
-// New functions for ModelTrainingSetupPage components
+// Functions for ModelTrainingSetupPage components
 export const setDataFetcher = async (dataFetcherName) => {
   const response = await apiClient.post('/ml_training_manager/set_data_fetcher', { data_fetcher_name: dataFetcherName });
   return response.data;
@@ -124,3 +124,12 @@ export const runMLTraining = async (params) => {
   const response = await apiClient.post('/ml_training_manager/run_ml_training', params);
   return response.data;
 };
+
+// New functions to get the current state of each component
+export const getDataFetcher = async () => sendRequest('get', '/ml_training_manager/get_data_fetcher');
+
+export const getDataProcessor = async () => sendRequest('get', '/ml_training_manager/get_data_processor');
+
+export const getModel = async () => sendRequest('get', '/ml_training_manager/get_model');
+
+export const getTrainer = async () => sendRequest('get', '/ml_training_manager/get_trainer');
