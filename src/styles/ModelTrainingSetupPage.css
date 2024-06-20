@@ -1,30 +1,30 @@
 .model-training-setup-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f9f9f9; /* Light background color for better contrast */
-  }
-  
-  .model-training-setup-page > div {
-    margin: 20px;
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: white; /* White background for form containers */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for better visual separation */
-  }
-  
-  .model-training-setup-page h3 {
-    text-align: center;
-  }
-  
-  .model-training-setup-page input,
-  .model-training-setup-page button {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.setup-form {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.component-list {
+  flex: 1;
+  max-height: 200px; /* adjust based on your preference */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+}

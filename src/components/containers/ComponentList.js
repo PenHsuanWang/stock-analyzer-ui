@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getModelList, getTrainerList, getDataProcessorList } from '../../services/api';
+import { getModelForTrainerList, getTrainerList, getDataProcessorList } from '../../services/api';
 import '../../styles/ComponentList.css';
 
 const ComponentList = () => {
@@ -11,7 +11,7 @@ const ComponentList = () => {
   useEffect(() => {
     const fetchComponents = async () => {
       try {
-        const modelList = await getModelList();
+        const modelList = await getModelForTrainerList();
         setModels(modelList.models);
 
         const trainerList = await getTrainerList();
@@ -20,7 +20,7 @@ const ComponentList = () => {
         const dataProcessorList = await getDataProcessorList();
         setDataProcessors(dataProcessorList.data_processors);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'No response from the server. Please check your network connection.');
       }
     };
 
