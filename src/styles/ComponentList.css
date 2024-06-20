@@ -1,0 +1,29 @@
+.component-list {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .component-list h3 {
+    margin-bottom: 15px;
+  }
+  
+  .component-list h4 {
+    margin-top: 10px;
+  }
+  
+  .component-list ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .component-list li {
+    padding: 5px 0;
+  }
+  
+  .component-list .error {
+    color: red;
+  }
+  
