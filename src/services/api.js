@@ -133,3 +133,13 @@ export const getDataProcessor = async (dataProcessorId) => sendRequest('get', `/
 export const getModel = async (modelId) => sendRequest('get', `/ml_training_manager/get_model/${modelId}`);
 
 export const getTrainer = async (trainerId) => sendRequest('get', `/ml_training_manager/get_trainer/${trainerId}`);
+
+// Function to get the model list
+export const getModelForTrainerList = () => sendRequest('get', '/ml_training_manager/list_models');
+
+// Function to get the trainer list
+export const getTrainerList = () => sendRequest('get', '/ml_training_manager/list_trainers');
+
+// Function to get the data processor list
+export const getDataProcessorList = () => sendRequest('get', '/ml_training_manager/list_data_processors');
+

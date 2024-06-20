@@ -6,6 +6,7 @@ import DataProcessorSetup from '../components/containers/DataProcessorSetup';
 import ModelSetup from '../components/containers/ModelSetup';
 import TrainerSetup from '../components/containers/TrainerSetup';
 import TrainingParameters from '../components/containers/TrainingParameters';
+import ComponentList from '../components/containers/ComponentList';
 import '../styles/ModelTrainingSetupPage.css';
 
 const ModelTrainingSetupPage = () => {
@@ -18,6 +19,7 @@ const ModelTrainingSetupPage = () => {
         <ModelSetup onSetupComplete={() => {}} />
         <TrainerSetup onSetupComplete={() => {}} />
         <TrainingParameters onTrainingComplete={() => alert('Training started successfully')} />
+        <ComponentList />
       </div>
     </BasePage>
   );
