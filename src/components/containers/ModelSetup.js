@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initModel, getModel } from '../../services/api';
 import '../../styles/ModelSetup.css';
 
-const ModelSetup = ({ onSetupComplete }) => {
+const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   const [modelType, setModelType] = useState('');
   const [inputSize, setInputSize] = useState(2);
   const [hiddenSize, setHiddenSize] = useState(128);
@@ -11,19 +11,21 @@ const ModelSetup = ({ onSetupComplete }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchModel = async () => {
-      try {
-        const response = await getModel();
-        setModelType(response.model_type);
-        setInputSize(response.input_size);
-        setHiddenSize(response.hidden_size);
-        setOutputSize(response.output_size);
-      } catch (error) {
-        console.error('Error fetching model:', error);
-      }
-    };
-    fetchModel();
-  }, []);
+    if (selectedModel) {
+      const fetchData = async () => {
+        try {
+          const model = await getModel(selectedModel);
+          setModelType(model.model_type);
+          setInputSize(model.input_size);
+          setHiddenSize(model.hidden_size);
+          setOutputSize(model.output_size);
+        } catch (error) {
+          console.error('Error fetching model:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [selectedModel]);
 
   const handleSetup = async () => {
     setIsLoading(true);

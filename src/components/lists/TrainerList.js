@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getTrainerList } from '../../services/api';
 import '../../styles/ComponentList.css';
 
-const TrainerList = () => {
+const TrainerList = ({ onSelect }) => {
   const [trainers, setTrainers] = useState([]);
   const [error, setError] = useState(null);
 
@@ -25,7 +25,16 @@ const TrainerList = () => {
       {error && <p className="error">{error}</p>}
       <ul>
         {trainers.map((trainer) => (
-          <li key={trainer}>{trainer}</li>
+          <li key={trainer}>
+            <label>
+              <input
+                type="radio"
+                name="trainer"
+                onChange={() => onSelect(trainer)}
+              />
+              {trainer}
+            </label>
+          </li>
         ))}
       </ul>
     </div>

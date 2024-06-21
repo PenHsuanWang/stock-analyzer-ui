@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getModelForTrainerList } from '../../services/api';
 import '../../styles/ComponentList.css';
 
-const ModelForTrainerList = () => {
+const ModelForTrainerList = ({ onSelect }) => {
   const [models, setModels] = useState([]);
   const [error, setError] = useState(null);
 
@@ -25,7 +25,16 @@ const ModelForTrainerList = () => {
       {error && <p className="error">{error}</p>}
       <ul>
         {models.map((model) => (
-          <li key={model}>{model}</li>
+          <li key={model}>
+            <label>
+              <input
+                type="radio"
+                name="model"
+                onChange={() => onSelect(model)}
+              />
+              {model}
+            </label>
+          </li>
         ))}
       </ul>
     </div>

@@ -143,3 +143,5 @@ export const getTrainerList = () => sendRequest('get', '/ml_training_manager/lis
 // Function to get the data processor list
 export const getDataProcessorList = () => sendRequest('get', '/ml_training_manager/list_data_processors');
 
+
+export const getDataFetcherList = () => sendRequest('get', '/ml_training_manager/list_data_fetchers');

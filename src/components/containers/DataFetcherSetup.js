@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { setDataFetcher, getDataFetcher } from '../../services/api';
 import '../../styles/DataFetcherSetup.css';
 
-const DataFetcherSetup = ({ onSetupComplete }) => {
-  const [dataFetcherName, setDataFetcherName] = useState('');
+const DataFetcherSetup = ({ selectedDataFetcher, onSetupComplete }) => {
+  const [dataFetcherName, setDataFetcherName] = useState(selectedDataFetcher || '');
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchDataFetcher = async () => {
-      try {
-        const response = await getDataFetcher();
-        setDataFetcherName(response.data_fetcher_name);
-      } catch (error) {
-        console.error('Error fetching data fetcher:', error);
-      }
-    };
-    fetchDataFetcher();
-  }, []);
+    if (selectedDataFetcher) {
+      const fetchData = async () => {
+        try {
+          const dataFetcher = await getDataFetcher(selectedDataFetcher);
+          setDataFetcherName(dataFetcher.name);
+        } catch (error) {
+          console.error('Error fetching data fetcher:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [selectedDataFetcher]);
 
   const handleSetup = async () => {
     setIsLoading(true);

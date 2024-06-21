@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BasePage from './BasePage';
 import Header from '../components/basic/Header';
 import DataFetcherSetup from '../components/containers/DataFetcherSetup';
@@ -13,6 +13,8 @@ import TrainerList from '../components/lists/TrainerList';
 import '../styles/ModelTrainingSetupPage.css';
 
 const ModelTrainingSetupPage = () => {
+  const [selectedDataProcessor, setSelectedDataProcessor] = useState(null);
+
   return (
     <BasePage>
       <Header title="Model Training Setup" />
@@ -27,10 +29,13 @@ const ModelTrainingSetupPage = () => {
         </div>
         <div className="setup-block">
           <div className="setup-form">
-            <DataProcessorSetup onSetupComplete={() => {}} />
+            <DataProcessorSetup
+              selectedDataProcessor={selectedDataProcessor}
+              onSetupComplete={() => {}}
+            />
           </div>
           <div className="component-list">
-            <DataProcessorList />
+            <DataProcessorList onSelect={setSelectedDataProcessor} />
           </div>
         </div>
         <div className="setup-block">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { initTrainer, getTrainer } from '../../services/api';
 import '../../styles/TrainerSetup.css';
 
-const TrainerSetup = ({ onSetupComplete }) => {
+const TrainerSetup = ({ selectedTrainer, onSetupComplete }) => {
   const [trainerType, setTrainerType] = useState('');
   const [lossFunction, setLossFunction] = useState('mse');
   const [optimizer, setOptimizer] = useState('adam');
@@ -15,23 +15,25 @@ const TrainerSetup = ({ onSetupComplete }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchTrainer = async () => {
-      try {
-        const response = await getTrainer();
-        setTrainerType(response.trainer_type);
-        setLossFunction(response.loss_function);
-        setOptimizer(response.optimizer);
-        setLearningRate(response.learning_rate);
-        setDevice(response.device);
-        setMlflowTrackingUri(response.mlflow_tracking_uri);
-        setMlflowTrackingUsername(response.mlflow_tracking_username);
-        setMlflowTrackingPassword(response.mlflow_tracking_password);
-      } catch (error) {
-        console.error('Error fetching trainer:', error);
-      }
-    };
-    fetchTrainer();
-  }, []);
+    if (selectedTrainer) {
+      const fetchData = async () => {
+        try {
+          const trainer = await getTrainer(selectedTrainer);
+          setTrainerType(trainer.trainer_type);
+          setLossFunction(trainer.loss_function);
+          setOptimizer(trainer.optimizer);
+          setLearningRate(trainer.learning_rate);
+          setDevice(trainer.device);
+          setMlflowTrackingUri(trainer.mlflow_tracking_uri);
+          setMlflowTrackingUsername(trainer.mlflow_tracking_username);
+          setMlflowTrackingPassword(trainer.mlflow_tracking_password);
+        } catch (error) {
+          console.error('Error fetching trainer:', error);
+        }
+      };
+      fetchData();
+    }
+  }, [selectedTrainer]);
 
   const handleSetup = async () => {
     setIsLoading(true);
