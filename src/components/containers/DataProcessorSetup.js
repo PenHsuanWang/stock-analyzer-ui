@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { initDataProcessor } from '../../services/api';
+import ListDatasetFromDBControls from '../containers/ListDatasetFromDBControls';
 import '../../styles/DataProcessorSetup.css';
 
-const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
+const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDataPrefix }) => {
   const [dataProcessorType, setDataProcessorType] = useState('');
   const [extractColumn, setExtractColumn] = useState('');
   const [trainingDataRatio, setTrainingDataRatio] = useState(0.6);
   const [trainingWindowSize, setTrainingWindowSize] = useState(60);
   const [targetWindowSize, setTargetWindowSize] = useState(1);
+  const [selectedDataset, setSelectedDataset] = useState(null);
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (selectedDataProcessor) {
-      // Assuming `selectedDataProcessor` is the complete processor object or sufficient data to fill the form
       setDataProcessorType(selectedDataProcessor.data_processor_type || '');
       setExtractColumn(selectedDataProcessor.extract_column ? selectedDataProcessor.extract_column.join(',') : '');
       setTrainingDataRatio(selectedDataProcessor.training_data_ratio || 0.6);
       setTrainingWindowSize(selectedDataProcessor.training_window_size || 60);
       setTargetWindowSize(selectedDataProcessor.target_window_size || 1);
     } else {
-      // Clear the form when there is no processor selected
       setDataProcessorType('');
       setExtractColumn('');
       setTrainingDataRatio(0.6);
@@ -30,12 +30,17 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
   }, [selectedDataProcessor]);
 
   const handleSetup = async () => {
+    if (!selectedDataset) {
+      setStatus({ message: 'Please select a dataset', type: 'error' });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await initDataProcessor({
         data_processor_id: selectedDataProcessor ? selectedDataProcessor.id : 'example_data_processor_id',
         data_processor_type: dataProcessorType,
-        dataframe: { data: [], columns: [] }, // Include your DataFrame payload here
+        dataframe: selectedDataset, // Use selected dataset
         kwargs: {
           extract_column: extractColumn.split(','),
           training_data_ratio: trainingDataRatio,
@@ -55,6 +60,12 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
   return (
     <div className="data-processor-setup">
       <h3>Setup Data Processor</h3>
+      <div className="data-list-container" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+        <ListDatasetFromDBControls
+          prefix={analyzedDataPrefix} // Pass the prefix here
+          setSelectedItems={(items) => setSelectedDataset(items[0])}
+        />
+      </div>
       <input
         type="text"
         value={dataProcessorType}

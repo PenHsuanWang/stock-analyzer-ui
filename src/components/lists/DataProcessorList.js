@@ -2,23 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { getDataProcessorList, getDataProcessor } from '../../services/api';
 import '../../styles/ComponentList.css';
 
-const DataProcessorList = ({ onSelect }) => {
+const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
   const [dataProcessors, setDataProcessors] = useState([]);
   const [error, setError] = useState(null);
   const [selectedProcessor, setSelectedProcessor] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const dataProcessorList = await getDataProcessorList();
-        setDataProcessors(dataProcessorList.data_processors);
-      } catch (err) {
-        setError(err.message || 'No response from the server. Please check your network connection.');
+  const fetchData = async () => {
+    try {
+      const dataProcessorList = await getDataProcessorList();
+      setDataProcessors(dataProcessorList.data_processors);
+      if (refreshList) {
+        onRefreshed();  // Notify parent that refresh has been handled
       }
-    };
+    } catch (err) {
+      setError(err.message || 'No response from the server. Please check your network connection.');
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [refreshList]);  // Fetch on mount and when refreshList changes
 
   const handleSelect = async (processor) => {
     if (selectedProcessor === processor) {

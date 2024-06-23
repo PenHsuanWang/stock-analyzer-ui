@@ -135,9 +135,13 @@ function App() {
           element={<ModelComparisonPage />}  
         />
 
-        <Route 
-          path="/model-training-setup" 
-          element={<ModelTrainingSetupPage />}  // Add the new route for model training setup
+        <Route
+          path="/model-training-setup"
+          element={
+            <ModelTrainingSetupPage 
+              analyzedDataPrefix="stock_data"
+            />
+          }
         />
 
         <Route path="/base" element={<BasePage />} />

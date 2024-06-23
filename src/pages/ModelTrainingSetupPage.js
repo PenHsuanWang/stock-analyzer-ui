@@ -12,8 +12,9 @@ import ModelForTrainerList from '../components/lists/ModelForTrainerList';
 import TrainerList from '../components/lists/TrainerList';
 import '../styles/ModelTrainingSetupPage.css';
 
-const ModelTrainingSetupPage = () => {
+const ModelTrainingSetupPage = ({ analyzedDataPrefix }) => {
   const [selectedDataProcessor, setSelectedDataProcessor] = useState(null);
+  const [refreshDataProcessorList, setRefreshDataProcessorList] = useState(false);
 
   return (
     <BasePage>
@@ -31,11 +32,16 @@ const ModelTrainingSetupPage = () => {
           <div className="setup-form">
             <DataProcessorSetup
               selectedDataProcessor={selectedDataProcessor}
-              onSetupComplete={() => {}}
+              onSetupComplete={() => setRefreshDataProcessorList(true)}
+              analyzedDataPrefix={analyzedDataPrefix} // Pass the analyzedDataPrefix here
             />
           </div>
           <div className="component-list">
-            <DataProcessorList onSelect={setSelectedDataProcessor} />
+            <DataProcessorList
+              refreshList={refreshDataProcessorList}
+              onRefreshed={() => setRefreshDataProcessorList(false)}
+              onSelect={setSelectedDataProcessor} // Pass setSelectedDataProcessor to handle selection
+            />
           </div>
         </div>
         <div className="setup-block">
