@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { initDataProcessor, getDataProcessor } from '../../services/api';
+import { initDataProcessor } from '../../services/api';
 import '../../styles/DataProcessorSetup.css';
 
 const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
@@ -13,19 +13,19 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
 
   useEffect(() => {
     if (selectedDataProcessor) {
-      const fetchData = async () => {
-        try {
-          const dataProcessor = await getDataProcessor(selectedDataProcessor);
-          setDataProcessorType(dataProcessor.data_processor_type || '');
-          setExtractColumn(dataProcessor.extract_column ? dataProcessor.extract_column.join(',') : '');
-          setTrainingDataRatio(dataProcessor.training_data_ratio || 0.6);
-          setTrainingWindowSize(dataProcessor.training_window_size || 60);
-          setTargetWindowSize(dataProcessor.target_window_size || 1);
-        } catch (error) {
-          console.error('Error fetching data processor:', error);
-        }
-      };
-      fetchData();
+      // Assuming `selectedDataProcessor` is the complete processor object or sufficient data to fill the form
+      setDataProcessorType(selectedDataProcessor.data_processor_type || '');
+      setExtractColumn(selectedDataProcessor.extract_column ? selectedDataProcessor.extract_column.join(',') : '');
+      setTrainingDataRatio(selectedDataProcessor.training_data_ratio || 0.6);
+      setTrainingWindowSize(selectedDataProcessor.training_window_size || 60);
+      setTargetWindowSize(selectedDataProcessor.target_window_size || 1);
+    } else {
+      // Clear the form when there is no processor selected
+      setDataProcessorType('');
+      setExtractColumn('');
+      setTrainingDataRatio(0.6);
+      setTrainingWindowSize(60);
+      setTargetWindowSize(1);
     }
   }, [selectedDataProcessor]);
 
@@ -33,7 +33,7 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete }) => {
     setIsLoading(true);
     try {
       const response = await initDataProcessor({
-        data_processor_id: selectedDataProcessor || 'example_data_processor_id',
+        data_processor_id: selectedDataProcessor ? selectedDataProcessor.id : 'example_data_processor_id',
         data_processor_type: dataProcessorType,
         dataframe: { data: [], columns: [] }, // Include your DataFrame payload here
         kwargs: {

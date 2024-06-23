@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getDataProcessorList } from '../../services/api';
+import { getDataProcessorList, getDataProcessor } from '../../services/api';
 import '../../styles/ComponentList.css';
 
 const DataProcessorList = ({ onSelect }) => {
   const [dataProcessors, setDataProcessors] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedProcessor, setSelectedProcessor] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +20,21 @@ const DataProcessorList = ({ onSelect }) => {
     fetchData();
   }, []);
 
+  const handleSelect = async (processor) => {
+    if (selectedProcessor === processor) {
+      setSelectedProcessor(null);
+      onSelect(null);
+    } else {
+      setSelectedProcessor(processor);
+      try {
+        const processorData = await getDataProcessor(processor);
+        onSelect(processorData);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch processor data.');
+      }
+    }
+  };
+
   return (
     <div className="component-list">
       <h4>Existing Data Processors</h4>
@@ -30,7 +46,8 @@ const DataProcessorList = ({ onSelect }) => {
               <input
                 type="radio"
                 name="dataProcessor"
-                onChange={() => onSelect(processor)}
+                checked={selectedProcessor === processor}
+                onChange={() => handleSelect(processor)}
               />
               {processor}
             </label>
