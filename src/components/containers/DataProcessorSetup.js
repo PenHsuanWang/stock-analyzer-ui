@@ -4,7 +4,8 @@ import ListDatasetFromDBControls from './ListDatasetFromDBControls';
 import '../../styles/DataProcessorSetup.css';
 
 const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDataPrefix }) => {
-  const [dataProcessorType, setDataProcessorType] = useState('');
+  const [dataProcessorType, setDataProcessorType] = useState('time_series');
+  const [dataProcessorName, setDataProcessorName] = useState('');
   const [extractColumn, setExtractColumn] = useState('');
   const [trainingDataRatio, setTrainingDataRatio] = useState(0.6);
   const [trainingWindowSize, setTrainingWindowSize] = useState(60);
@@ -15,13 +16,15 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
 
   useEffect(() => {
     if (selectedDataProcessor) {
-      setDataProcessorType(selectedDataProcessor.data_processor_type || '');
+      setDataProcessorType(selectedDataProcessor.data_processor_type || 'time_series');
+      setDataProcessorName(selectedDataProcessor.id || '');
       setExtractColumn(selectedDataProcessor.extract_column ? selectedDataProcessor.extract_column.join(',') : '');
       setTrainingDataRatio(selectedDataProcessor.training_data_ratio || 0.6);
       setTrainingWindowSize(selectedDataProcessor.training_window_size || 60);
       setTargetWindowSize(selectedDataProcessor.target_window_size || 1);
     } else {
-      setDataProcessorType('');
+      setDataProcessorType('time_series');
+      setDataProcessorName('');
       setExtractColumn('');
       setTrainingDataRatio(0.6);
       setTrainingWindowSize(60);
@@ -55,7 +58,7 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
       };
 
       const payload = {
-        data_processor_id: selectedDataProcessor ? selectedDataProcessor.id : 'example_data_processor_id',
+        data_processor_id: dataProcessorName || 'null_data_processor_id',
         data_processor_type: dataProcessorType,
         dataframe: dataframePayload,
         kwargs: {
@@ -88,6 +91,12 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
           setSelectedItems={(items) => setSelectedDataset(items[0])}
         />
       </div>
+      <input
+        type="text"
+        value={dataProcessorName}
+        onChange={(e) => setDataProcessorName(e.target.value)}
+        placeholder="Enter data processor name"
+      />
       <input
         type="text"
         value={dataProcessorType}
