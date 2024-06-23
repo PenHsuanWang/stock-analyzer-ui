@@ -31,7 +31,8 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
       setSelectedProcessor(processor);
       try {
         const processorData = await getDataProcessor(processor);
-        onSelect(processorData);
+        console.log("Fetched Data Processor:", processorData.data_processor); // Debugging log
+        onSelect(processorData.data_processor);
       } catch (err) {
         setError(err.message || 'Failed to fetch processor data.');
       }
@@ -47,7 +48,7 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
           <li key={processor}>
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="dataProcessor"
                 checked={selectedProcessor === processor}
                 onChange={() => handleSelect(processor)}

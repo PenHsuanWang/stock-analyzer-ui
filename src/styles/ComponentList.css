@@ -1,20 +1,29 @@
 .component-list {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
   padding: 10px;
-  border-radius: 5px;
-  background-color: #fff;
 }
 
 .component-list h4 {
-  margin-top: 0;
-}
-
-.component-list ul {
-  padding-left: 20px;
+  margin-bottom: 10px;
 }
 
 .component-list .error {
   color: red;
+}
+
+.component-list ul.no-bullets {
+  list-style-type: none;
+  padding: 0;
+}
+
+.component-list ul.no-bullets li {
+  margin-bottom: 5px;
+}
+
+.component-list label {
+  display: flex;
+  align-items: center;
+}
+
+.component-list input[type="checkbox"] {
+  margin-right: 10px;
 }
