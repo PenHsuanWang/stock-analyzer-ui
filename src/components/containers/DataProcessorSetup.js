@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { initDataProcessor } from '../../services/api';
-import ListDatasetFromDBControls from '../containers/ListDatasetFromDBControls';
+import { initDataProcessor, fetchDataFromBackendDB } from '../../services/api';
+import ListDatasetFromDBControls from './ListDatasetFromDBControls';
 import '../../styles/DataProcessorSetup.css';
 
 const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDataPrefix }) => {
@@ -37,17 +37,39 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
 
     setIsLoading(true);
     try {
-      const response = await initDataProcessor({
+      // Fetch data for the selected dataset
+      const datasetResponse = await fetchDataFromBackendDB({
+        prefix: analyzedDataPrefix,
+        stock_id: selectedDataset.stock_id,
+        start_date: selectedDataset.start_date,
+        end_date: selectedDataset.end_date
+      });
+
+      if (!datasetResponse || !Array.isArray(datasetResponse.data)) {
+        throw new Error('Failed to fetch the dataset');
+      }
+
+      const dataframePayload = {
+        data: datasetResponse.data,
+        columns: Object.keys(datasetResponse.data[0])
+      };
+
+      const payload = {
         data_processor_id: selectedDataProcessor ? selectedDataProcessor.id : 'example_data_processor_id',
         data_processor_type: dataProcessorType,
-        dataframe: selectedDataset, // Use selected dataset
+        dataframe: dataframePayload,
         kwargs: {
           extract_column: extractColumn.split(','),
           training_data_ratio: trainingDataRatio,
           training_window_size: trainingWindowSize,
           target_window_size: targetWindowSize
         }
-      });
+      };
+
+      console.log("Payload sent to initDataProcessor:", JSON.stringify(payload, null, 2));
+
+      const response = await initDataProcessor(payload);
+
       setStatus({ message: response.message, type: 'success' });
       onSetupComplete();
     } catch (error) {
@@ -62,7 +84,7 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
       <h3>Setup Data Processor</h3>
       <div className="data-list-container" style={{ maxHeight: '200px', overflowY: 'auto' }}>
         <ListDatasetFromDBControls
-          prefix={analyzedDataPrefix} // Pass the prefix here
+          prefix={analyzedDataPrefix}
           setSelectedItems={(items) => setSelectedDataset(items[0])}
         />
       </div>
