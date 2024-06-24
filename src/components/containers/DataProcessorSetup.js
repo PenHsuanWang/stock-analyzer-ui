@@ -16,6 +16,7 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
 
   useEffect(() => {
     if (selectedDataProcessor) {
+      console.log('Selected Data Processor:', selectedDataProcessor);
       setDataProcessorType(selectedDataProcessor.data_processor_type || 'time_series');
       setDataProcessorName(selectedDataProcessor.id || '');
       setExtractColumn(selectedDataProcessor.extract_column ? selectedDataProcessor.extract_column.join(',') : '');

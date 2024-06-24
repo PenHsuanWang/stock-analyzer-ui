@@ -31,8 +31,8 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
       setSelectedProcessor(processor);
       try {
         const processorData = await getDataProcessor(processor);
-        console.log("Fetched Data Processor:", processorData.data_processor); // Debugging log
-        onSelect(processorData.data_processor);
+        console.log("Fetched Data Processor:", processorData); // Debugging log
+        onSelect(processorData);
       } catch (err) {
         setError(err.message || 'Failed to fetch processor data.');
       }
