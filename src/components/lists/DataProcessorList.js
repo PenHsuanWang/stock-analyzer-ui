@@ -1,3 +1,4 @@
+// src/components/lists/DataProcessorList.js
 import React, { useState, useEffect } from 'react';
 import { getDataProcessorList, getDataProcessor } from '../../services/api';
 import '../../styles/ComponentList.css';
@@ -10,6 +11,7 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
   const fetchData = async () => {
     try {
       const dataProcessorList = await getDataProcessorList();
+      console.log("Fetched Data Processor List:", dataProcessorList); // Debugging log
       setDataProcessors(dataProcessorList.data_processors);
       if (refreshList) {
         onRefreshed();  // Notify parent that refresh has been handled
@@ -31,8 +33,17 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
       setSelectedProcessor(processor);
       try {
         const processorData = await getDataProcessor(processor);
-        console.log("Fetched Data Processor:", processorData); // Debugging log
-        onSelect(processorData);
+        if (processorData.data_processor) {
+          console.log("Fetched Data Processor:", processorData.data_processor); // Debugging log
+          // Adjust data_processor_type back to 'time_series' if needed
+          const adjustedProcessorData = {
+            ...processorData.data_processor,
+            data_processor_type: processorData.data_processor.data_processor_type === 'TimeSeriesDataProcessor' ? 'time_series' : processorData.data_processor.data_processor_type,
+          };
+          onSelect(adjustedProcessorData);
+        } else {
+          setError('Failed to fetch processor data.');
+        }
       } catch (err) {
         setError(err.message || 'Failed to fetch processor data.');
       }

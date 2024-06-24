@@ -1,3 +1,4 @@
+// src/components/containers/DataProcessorSetup.js
 import React, { useState, useEffect } from 'react';
 import { initDataProcessor, fetchDataFromBackendDB } from '../../services/api';
 import ListDatasetFromDBControls from './ListDatasetFromDBControls';
@@ -74,9 +75,12 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
 
       const response = await initDataProcessor(payload);
 
+      console.log("Response from initDataProcessor:", response);
+
       setStatus({ message: response.message, type: 'success' });
-      onSetupComplete();
+      onSetupComplete(); // Notify the parent component
     } catch (error) {
+      console.log("Error during data processor setup:", error);
       setStatus({ message: error.message, type: 'error' });
     } finally {
       setIsLoading(false);

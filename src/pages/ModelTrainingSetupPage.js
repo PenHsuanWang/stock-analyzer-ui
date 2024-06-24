@@ -1,3 +1,4 @@
+// src/pages/ModelTrainingSetupPage.js
 import React, { useState } from 'react';
 import BasePage from './BasePage';
 import Header from '../components/basic/Header';
@@ -16,6 +17,11 @@ const ModelTrainingSetupPage = ({ analyzedDataPrefix }) => {
   const [selectedDataProcessor, setSelectedDataProcessor] = useState(null);
   const [refreshDataProcessorList, setRefreshDataProcessorList] = useState(false);
 
+  const handleSetupComplete = () => {
+    setRefreshDataProcessorList(true);
+    setSelectedDataProcessor(null); // Clear the selected data processor after creation
+  };
+
   return (
     <BasePage>
       <Header title="Model Training Setup" />
@@ -32,7 +38,7 @@ const ModelTrainingSetupPage = ({ analyzedDataPrefix }) => {
           <div className="setup-form">
             <DataProcessorSetup
               selectedDataProcessor={selectedDataProcessor}
-              onSetupComplete={() => setRefreshDataProcessorList(true)}
+              onSetupComplete={handleSetupComplete}
               analyzedDataPrefix={analyzedDataPrefix} // Pass the analyzedDataPrefix here
             />
           </div>
