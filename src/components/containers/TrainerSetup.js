@@ -1,3 +1,4 @@
+// src/components/containers/TrainerSetup.js
 import React, { useState, useEffect } from 'react';
 import { initTrainer, getTrainer } from '../../services/api';
 import '../../styles/TrainerSetup.css';

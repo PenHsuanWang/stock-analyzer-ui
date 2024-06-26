@@ -4,6 +4,7 @@ import '../../styles/ModelSetup.css';
 
 const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   const [modelType, setModelType] = useState('');
+  const [modelName, setModelName] = useState('');  // Add state for model name
   const [inputSize, setInputSize] = useState(2);
   const [hiddenSize, setHiddenSize] = useState(128);
   const [outputSize, setOutputSize] = useState(1);
@@ -16,6 +17,7 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
         try {
           const model = await getModel(selectedModel);
           setModelType(model.model_type);
+          setModelName(model.model_id);  // Update modelName from model_id
           setInputSize(model.input_size);
           setHiddenSize(model.hidden_size);
           setOutputSize(model.output_size);
@@ -32,7 +34,7 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
     try {
       const response = await initModel({
         model_type: modelType,
-        model_id: 'unique_model_id',
+        model_id: modelName,  // Send model name as model_id
         kwargs: {
           input_size: inputSize,
           hidden_size: hiddenSize,
@@ -51,6 +53,12 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   return (
     <div className="model-setup">
       <h3>Setup Model</h3>
+      <input
+        type="text"
+        value={modelName}  // Add input field for model name
+        onChange={(e) => setModelName(e.target.value)}
+        placeholder="Enter model name"
+      />
       <input
         type="text"
         value={modelType}
