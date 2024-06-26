@@ -1,4 +1,3 @@
-// src/components/containers/DataProcessorSetup.js
 import React, { useState, useEffect } from 'react';
 import { initDataProcessor, fetchDataFromBackendDB } from '../../services/api';
 import ListDatasetFromDBControls from './ListDatasetFromDBControls';
@@ -25,14 +24,18 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
       setTrainingWindowSize(selectedDataProcessor.training_window_size || 60);
       setTargetWindowSize(selectedDataProcessor.target_window_size || 1);
     } else {
-      setDataProcessorType('time_series');
-      setDataProcessorName('');
-      setExtractColumn('');
-      setTrainingDataRatio(0.6);
-      setTrainingWindowSize(60);
-      setTargetWindowSize(1);
+      resetFields();
     }
   }, [selectedDataProcessor]);
+
+  const resetFields = () => {
+    setDataProcessorType('time_series');
+    setDataProcessorName('');
+    setExtractColumn('');
+    setTrainingDataRatio(0.6);
+    setTrainingWindowSize(60);
+    setTargetWindowSize(1);
+  };
 
   const handleSetup = async () => {
     if (!selectedDataset) {
@@ -75,12 +78,9 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
 
       const response = await initDataProcessor(payload);
 
-      console.log("Response from initDataProcessor:", response);
-
       setStatus({ message: response.message, type: 'success' });
-      onSetupComplete(); // Notify the parent component
+      onSetupComplete();
     } catch (error) {
-      console.log("Error during data processor setup:", error);
       setStatus({ message: error.message, type: 'error' });
     } finally {
       setIsLoading(false);
