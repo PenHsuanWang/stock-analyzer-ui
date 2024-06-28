@@ -1,4 +1,3 @@
-// src/components/containers/ModelSetup.js
 import React, { useState, useEffect } from 'react';
 import { initModel } from '../../services/api';
 import '../../styles/ModelSetup.css';
@@ -6,8 +5,7 @@ import '../../styles/ModelSetup.css';
 const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   const [modelType, setModelType] = useState('');
   const [modelName, setModelName] = useState('');
-  const [inputSize, setInputSize] = useState(2);
-  const [hiddenSize, setHiddenSize] = useState(128);
+  const [layers, setLayers] = useState([{ inputSize: 2, hiddenSize: 128 }]);
   const [outputSize, setOutputSize] = useState(1);
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +14,7 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
     if (selectedModel) {
       setModelType(selectedModel.model_type);
       setModelName(selectedModel.model_id);
-      setInputSize(selectedModel.input_size);
-      setHiddenSize(selectedModel.hidden_size);
+      setLayers(selectedModel.hidden_layer_sizes.map(size => ({ hiddenSize: size })));
       setOutputSize(selectedModel.output_size);
     } else {
       resetFields();
@@ -27,22 +24,33 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   const resetFields = () => {
     setModelType('');
     setModelName('');
-    setInputSize(2);
-    setHiddenSize(128);
+    setLayers([{ inputSize: 2, hiddenSize: 128 }]);
     setOutputSize(1);
+  };
+
+  const handleAddLayer = () => {
+    setLayers([...layers, { hiddenSize: 128 }]);
+  };
+
+  const handleRemoveLayer = (index) => {
+    setLayers(layers.filter((_, i) => i !== index));
+  };
+
+  const handleLayerChange = (index, key, value) => {
+    const newLayers = layers.map((layer, i) => (i === index ? { ...layer, [key]: value } : layer));
+    setLayers(newLayers);
   };
 
   const handleSetup = async () => {
     setIsLoading(true);
     try {
+      const hiddenLayerSizes = layers.map(layer => layer.hiddenSize);
       const response = await initModel({
         model_type: modelType,
         model_id: modelName,
-        kwargs: {
-          input_size: inputSize,
-          hidden_size: hiddenSize,
-          output_size: outputSize
-        }
+        input_size: layers[0].inputSize,
+        hidden_layer_sizes: hiddenLayerSizes,
+        output_size: outputSize
       });
       setStatus({ message: response.message, type: 'success' });
       onSetupComplete();
@@ -68,23 +76,33 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
         onChange={(e) => setModelType(e.target.value)}
         placeholder="Enter model type"
       />
-      <input
-        type="number"
-        value={inputSize}
-        onChange={(e) => setInputSize(parseInt(e.target.value))}
-        placeholder="Enter input size"
-      />
-      <input
-        type="number"
-        value={hiddenSize}
-        onChange={(e) => setHiddenSize(parseInt(e.target.value))}
-        placeholder="Enter hidden size"
-      />
+      {layers.map((layer, index) => (
+        <div key={index} className="layer-input">
+          {index === 0 && (
+            <input
+              type="number"
+              value={layer.inputSize}
+              onChange={(e) => handleLayerChange(index, 'inputSize', parseInt(e.target.value))}
+              placeholder="Input size"
+            />
+          )}
+          <input
+            type="number"
+            value={layer.hiddenSize}
+            onChange={(e) => handleLayerChange(index, 'hiddenSize', parseInt(e.target.value))}
+            placeholder="Hidden size"
+          />
+          {index !== 0 && (
+            <button className="remove-layer" onClick={() => handleRemoveLayer(index)} disabled={layers.length === 1}>-</button>
+          )}
+        </div>
+      ))}
+      <button className="add-layer" onClick={handleAddLayer}>+</button>
       <input
         type="number"
         value={outputSize}
         onChange={(e) => setOutputSize(parseInt(e.target.value))}
-        placeholder="Enter output size"
+        placeholder="Output size"
       />
       <button onClick={handleSetup} disabled={isLoading}>
         {isLoading ? 'Setting up...' : 'Set Model'}
