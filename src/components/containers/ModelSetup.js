@@ -1,10 +1,11 @@
+// src/components/containers/ModelSetup.js
 import React, { useState, useEffect } from 'react';
-import { initModel, getModel } from '../../services/api';
+import { initModel } from '../../services/api';
 import '../../styles/ModelSetup.css';
 
 const ModelSetup = ({ selectedModel, onSetupComplete }) => {
   const [modelType, setModelType] = useState('');
-  const [modelName, setModelName] = useState('');  // Add state for model name
+  const [modelName, setModelName] = useState('');
   const [inputSize, setInputSize] = useState(2);
   const [hiddenSize, setHiddenSize] = useState(128);
   const [outputSize, setOutputSize] = useState(1);
@@ -13,28 +14,30 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
 
   useEffect(() => {
     if (selectedModel) {
-      const fetchData = async () => {
-        try {
-          const model = await getModel(selectedModel);
-          setModelType(model.model_type);
-          setModelName(model.model_id);  // Update modelName from model_id
-          setInputSize(model.input_size);
-          setHiddenSize(model.hidden_size);
-          setOutputSize(model.output_size);
-        } catch (error) {
-          console.error('Error fetching model:', error);
-        }
-      };
-      fetchData();
+      setModelType(selectedModel.model_type);
+      setModelName(selectedModel.model_id);
+      setInputSize(selectedModel.input_size);
+      setHiddenSize(selectedModel.hidden_size);
+      setOutputSize(selectedModel.output_size);
+    } else {
+      resetFields();
     }
   }, [selectedModel]);
+
+  const resetFields = () => {
+    setModelType('');
+    setModelName('');
+    setInputSize(2);
+    setHiddenSize(128);
+    setOutputSize(1);
+  };
 
   const handleSetup = async () => {
     setIsLoading(true);
     try {
       const response = await initModel({
         model_type: modelType,
-        model_id: modelName,  // Send model name as model_id
+        model_id: modelName,
         kwargs: {
           input_size: inputSize,
           hidden_size: hiddenSize,
@@ -55,7 +58,7 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
       <h3>Setup Model</h3>
       <input
         type="text"
-        value={modelName}  // Add input field for model name
+        value={modelName}
         onChange={(e) => setModelName(e.target.value)}
         placeholder="Enter model name"
       />
