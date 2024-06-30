@@ -96,42 +96,60 @@ const DataProcessorSetup = ({ selectedDataProcessor, onSetupComplete, analyzedDa
           setSelectedItems={(items) => setSelectedDataset(items[0])}
         />
       </div>
-      <input
-        type="text"
-        value={dataProcessorName}
-        onChange={(e) => setDataProcessorName(e.target.value)}
-        placeholder="Enter data processor name"
-      />
-      <input
-        type="text"
-        value={dataProcessorType}
-        onChange={(e) => setDataProcessorType(e.target.value)}
-        placeholder="Enter data processor type"
-      />
-      <input
-        type="text"
-        value={extractColumn}
-        onChange={(e) => setExtractColumn(e.target.value)}
-        placeholder="Enter columns to extract (comma separated)"
-      />
-      <input
-        type="number"
-        value={trainingDataRatio}
-        onChange={(e) => setTrainingDataRatio(parseFloat(e.target.value))}
-        placeholder="Enter training data ratio"
-      />
-      <input
-        type="number"
-        value={trainingWindowSize}
-        onChange={(e) => setTrainingWindowSize(parseInt(e.target.value))}
-        placeholder="Enter training window size"
-      />
-      <input
-        type="number"
-        value={targetWindowSize}
-        onChange={(e) => setTargetWindowSize(parseInt(e.target.value))}
-        placeholder="Enter target window size"
-      />
+      <div className="form-group">
+        <label>Enter data processor name</label>
+        <input
+          type="text"
+          value={dataProcessorName}
+          onChange={(e) => setDataProcessorName(e.target.value)}
+          placeholder="Enter data processor name"
+        />
+      </div>
+      <div className="form-group">
+        <label>Enter data processor type</label>
+        <input
+          type="text"
+          value={dataProcessorType}
+          onChange={(e) => setDataProcessorType(e.target.value)}
+          placeholder="Enter data processor type"
+        />
+      </div>
+      <div className="form-group">
+        <label>Enter columns to extract (comma separated)</label>
+        <input
+          type="text"
+          value={extractColumn}
+          onChange={(e) => setExtractColumn(e.target.value)}
+          placeholder="Enter columns to extract (comma separated)"
+        />
+      </div>
+      <div className="form-group">
+        <label>Training data ratio</label>
+        <input
+          type="number"
+          value={trainingDataRatio}
+          onChange={(e) => setTrainingDataRatio(parseFloat(e.target.value))}
+          placeholder="Enter training data ratio"
+        />
+      </div>
+      <div className="form-group">
+        <label>Training window size</label>
+        <input
+          type="number"
+          value={trainingWindowSize}
+          onChange={(e) => setTrainingWindowSize(parseInt(e.target.value))}
+          placeholder="Enter training window size"
+        />
+      </div>
+      <div className="form-group">
+        <label>Target window size</label>
+        <input
+          type="number"
+          value={targetWindowSize}
+          onChange={(e) => setTargetWindowSize(parseInt(e.target.value))}
+          placeholder="Enter target window size"
+        />
+      </div>
       <button onClick={handleSetup} disabled={isLoading}>
         {isLoading ? 'Setting up...' : 'Set Data Processor'}
       </button>

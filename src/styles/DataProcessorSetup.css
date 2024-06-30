@@ -9,9 +9,19 @@
   margin-bottom: 10px;
 }
 
-.data-processor-setup input {
-  display: block;
+.data-processor-setup .form-group {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+.data-processor-setup label {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.data-processor-setup input {
+  flex: 2;
   padding: 5px;
   border-radius: 3px;
   border: 1px solid #ccc;
@@ -31,7 +41,11 @@
   background-color: #0056b3;
 }
 
-.data-processor-setup p {
+.data-processor-setup p.status {
   color: green;
   margin-top: 10px;
+}
+
+.data-processor-setup p.status.error {
+  color: red;
 }
