@@ -1,6 +1,6 @@
 // src/components/lists/ModelForTrainerList.js
 import React, { useState, useEffect } from 'react';
-import { getModelForTrainerList, getModel } from '../../services/api';
+import { getModelForTrainerList, getModel, deleteModel } from '../../services/api';
 import '../../styles/ComponentList.css';
 
 const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
@@ -11,6 +11,7 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
   const fetchData = async () => {
     try {
       const modelList = await getModelForTrainerList();
+      console.log("Fetched Model List:", modelList); // Debugging log
       setModels(modelList.models);
       if (refreshList) {
         onRefreshed();
@@ -33,6 +34,7 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
       try {
         const modelData = await getModel(model);
         if (modelData.model) {
+          console.log("Fetched Model:", modelData.model); // Debugging log
           onSelect(modelData.model);
         } else {
           setError('Failed to fetch model data.');
@@ -43,22 +45,32 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
     }
   };
 
+  const handleDelete = async (model) => {
+    try {
+      await deleteModel(model);
+      fetchData(); // Refresh the list after deletion
+    } catch (err) {
+      setError(err.message || 'Failed to delete model.');
+    }
+  };
+
   return (
     <div className="component-list">
       <h4>Existing Models</h4>
       {error && <p className="error">{error}</p>}
       <ul className="no-bullets">
         {models.map((model) => (
-          <li key={model}>
+          <li key={model} className="processor-item">
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="model"
                 checked={selectedModel === model}
                 onChange={() => handleSelect(model)}
               />
               {model}
             </label>
+            <button className="delete-button" onClick={() => handleDelete(model)}>Delete</button>
           </li>
         ))}
       </ul>
