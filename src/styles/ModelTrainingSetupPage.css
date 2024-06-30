@@ -1,0 +1,30 @@
+.model-training-setup-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setup-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.setup-form {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.component-list {
+  flex: 1;
+  max-height: 200px; /* adjust based on your preference */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+}
