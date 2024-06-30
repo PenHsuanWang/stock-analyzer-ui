@@ -17,13 +17,40 @@
 
 .component-list ul.no-bullets li {
   margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.component-list .processor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f9f9f9;
 }
 
 .component-list label {
   display: flex;
   align-items: center;
+  flex: 1; /* Make the label take up remaining space */
 }
 
 .component-list input[type="checkbox"] {
   margin-right: 10px;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: darkred;
 }

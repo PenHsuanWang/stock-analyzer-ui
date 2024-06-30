@@ -121,6 +121,10 @@ export const getModelForTrainerList = () => sendRequestMlSystem('get', '/ml_trai
 export const getTrainerList = () => sendRequestMlSystem('get', '/ml_training_manager/list_trainers');
 export const getDataProcessorList = () => sendRequestMlSystem('get', '/ml_training_manager/list_data_processors');
 export const getDataFetcherList = () => sendRequestMlSystem('get', '/ml_training_manager/list_data_fetchers');
+export const deleteDataProcessor = async (processorId) => {
+  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_data_processor/${processorId}`);
+  return response;
+};
 
 // Function for file upload testing
 export const runTest = async (formData) => {
@@ -147,3 +151,9 @@ export const sendRequest = async (method, path, payload = {}, params = {}) => {
   });
   return response.data;
 };
+
+// New API functions for models
+export const getModelListForTrainer = () => sendRequestMlSystem('get', '/ml_training_manager/list_models');
+export const getModelDetails = (modelId) => sendRequestMlSystem('get', `/ml_training_manager/get_model/${modelId}`);
+export const initializeModel = (data) => sendRequestMlSystem('post', '/ml_training_manager/init_model', data);
+

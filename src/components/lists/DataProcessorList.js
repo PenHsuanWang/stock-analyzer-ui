@@ -1,6 +1,6 @@
 // src/components/lists/DataProcessorList.js
 import React, { useState, useEffect } from 'react';
-import { getDataProcessorList, getDataProcessor } from '../../services/api';
+import { getDataProcessorList, getDataProcessor, deleteDataProcessor } from '../../services/api';
 import '../../styles/ComponentList.css';
 
 const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
@@ -50,13 +50,22 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
     }
   };
 
+  const handleDelete = async (processor) => {
+    try {
+      await deleteDataProcessor(processor);
+      fetchData(); // Refresh the list after deletion
+    } catch (err) {
+      setError(err.message || 'Failed to delete processor.');
+    }
+  };
+
   return (
     <div className="component-list">
       <h4>Existing Data Processors</h4>
       {error && <p className="error">{error}</p>}
       <ul className="no-bullets">
         {dataProcessors.map((processor) => (
-          <li key={processor}>
+          <li key={processor} className="processor-item">
             <label>
               <input
                 type="checkbox"
@@ -66,6 +75,7 @@ const DataProcessorList = ({ onSelect, refreshList, onRefreshed }) => {
               />
               {processor}
             </label>
+            <button className="delete-button" onClick={() => handleDelete(processor)}>Delete</button>
           </li>
         ))}
       </ul>
