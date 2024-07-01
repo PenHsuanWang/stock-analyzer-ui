@@ -1,30 +1,34 @@
+// src/components/containers/ModelSetup.js
 import React, { useState, useEffect } from 'react';
 import { initModel } from '../../services/api';
 import '../../styles/ModelSetup.css';
 
 const ModelSetup = ({ selectedModel, onSetupComplete }) => {
-  const [modelType, setModelType] = useState('');
+  const [modelType, setModelType] = useState('lstm');
   const [modelName, setModelName] = useState('');
-  const [layers, setLayers] = useState([{ inputSize: 2, hiddenSize: 128 }]);
+  const [inputSize, setInputSize] = useState(2);
+  const [layers, setLayers] = useState([{ hiddenSize: 128 }]);
   const [outputSize, setOutputSize] = useState(1);
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (selectedModel) {
-      setModelType(selectedModel.model_type);
-      setModelName(selectedModel.model_id);
-      setLayers(selectedModel.hidden_layer_sizes.map(size => ({ hiddenSize: size })));
-      setOutputSize(selectedModel.output_size);
+      setModelType(selectedModel.model_type || 'lstm');
+      setModelName(selectedModel.name || '');
+      setInputSize(selectedModel.input_size || 2);
+      setLayers((selectedModel.hidden_layer_sizes || [128]).map(size => ({ hiddenSize: size })));
+      setOutputSize(selectedModel.output_size || 1);
     } else {
       resetFields();
     }
   }, [selectedModel]);
 
   const resetFields = () => {
-    setModelType('');
+    setModelType('lstm');
     setModelName('');
-    setLayers([{ inputSize: 2, hiddenSize: 128 }]);
+    setInputSize(2);
+    setLayers([{ hiddenSize: 128 }]);
     setOutputSize(1);
   };
 
@@ -47,13 +51,15 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
       const hiddenLayerSizes = layers.map(layer => layer.hiddenSize);
       const response = await initModel({
         model_type: modelType,
-        model_id: modelName,
-        input_size: layers[0].inputSize,
-        hidden_layer_sizes: hiddenLayerSizes,
-        output_size: outputSize
+        model_name: modelName,
+        kwargs: {
+          input_size: inputSize,
+          hidden_layer_sizes: hiddenLayerSizes,
+          output_size: outputSize
+        }
       });
       setStatus({ message: response.message, type: 'success' });
-      onSetupComplete();
+      onSetupComplete('model');
     } catch (error) {
       setStatus({ message: error.message, type: 'error' });
     } finally {
@@ -76,16 +82,14 @@ const ModelSetup = ({ selectedModel, onSetupComplete }) => {
         onChange={(e) => setModelType(e.target.value)}
         placeholder="Enter model type"
       />
+      <input
+        type="number"
+        value={inputSize}
+        onChange={(e) => setInputSize(parseInt(e.target.value))}
+        placeholder="Input size"
+      />
       {layers.map((layer, index) => (
         <div key={index} className="layer-input">
-          {index === 0 && (
-            <input
-              type="number"
-              value={layer.inputSize}
-              onChange={(e) => handleLayerChange(index, 'inputSize', parseInt(e.target.value))}
-              placeholder="Input size"
-            />
-          )}
           <input
             type="number"
             value={layer.hiddenSize}

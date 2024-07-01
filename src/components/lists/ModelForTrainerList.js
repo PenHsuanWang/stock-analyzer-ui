@@ -11,7 +11,6 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
   const fetchData = async () => {
     try {
       const modelList = await getModelForTrainerList();
-      console.log("Fetched Model List:", modelList); // Debugging log
       setModels(modelList.models);
       if (refreshList) {
         onRefreshed();
@@ -34,7 +33,6 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
       try {
         const modelData = await getModel(model);
         if (modelData.model) {
-          console.log("Fetched Model:", modelData.model); // Debugging log
           onSelect(modelData.model);
         } else {
           setError('Failed to fetch model data.');
@@ -60,7 +58,7 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
       {error && <p className="error">{error}</p>}
       <ul className="no-bullets">
         {models.map((model) => (
-          <li key={model} className="processor-item">
+          <li key={model}>
             <label>
               <input
                 type="checkbox"
