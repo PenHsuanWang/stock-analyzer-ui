@@ -1,38 +1,68 @@
+/* src/styles/TrainerSetup.css */
 .trainer-setup {
-    margin: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .trainer-setup h3 {
-    margin-bottom: 10px;
-  }
-  
-  .trainer-setup input {
-    display: block;
-    margin-bottom: 10px;
-    padding: 5px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
-  }
-  
-  .trainer-setup button {
-    margin-top: 10px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-  }
-  
-  .trainer-setup button:hover {
-    background-color: #0056b3;
-  }
-  
-  .trainer-setup p {
-    color: green;
-    margin-top: 10px;
-  }
-  
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.trainer-setup h3 {
+  margin-bottom: 10px;
+}
+
+.trainer-setup input,
+.trainer-setup select {
+  display: block;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.trainer-setup button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.trainer-setup button:hover {
+  background-color: #0056b3;
+}
+
+.trainer-setup p {
+  color: green;
+  margin-top: 10px;
+}
+
+.selected-components {
+  margin-top: 20px;
+}
+
+.selected-components h4 {
+  margin-bottom: 5px;
+}
+
+.selected-components select {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.trainer-setup .status {
+  margin-top: 10px;
+}
+
+.trainer-setup .status.success {
+  color: green;
+}
+
+.trainer-setup .status.error {
+  color: red;
+}
+

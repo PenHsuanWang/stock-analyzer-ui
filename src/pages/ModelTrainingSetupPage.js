@@ -81,6 +81,8 @@ const ModelTrainingSetupPage = ({ analyzedDataPrefix }) => {
           <div className="setup-form">
             <TrainerSetup
               selectedTrainer={selectedTrainer}
+              selectedDataProcessor={selectedDataProcessor}
+              selectedModel={selectedModel}
               onSetupComplete={() => handleSetupComplete('trainer')}
             />
           </div>
