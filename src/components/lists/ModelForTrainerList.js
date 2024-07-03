@@ -58,7 +58,7 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
       {error && <p className="error">{error}</p>}
       <ul className="no-bullets">
         {models.map((model) => (
-          <li key={model}>
+          <li key={model} className="processor-item">
             <label>
               <input
                 type="checkbox"
@@ -77,3 +77,4 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
 };
 
 export default ModelForTrainerList;
+

@@ -135,6 +135,18 @@ export const deleteDataProcessor = async (processorId) => {
   return response;
 };
 
+// Add the deleteModel function
+export const deleteModel = async (modelId) => {
+  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_model/${modelId}`);
+  return response;
+};
+
+// Add the deleteTrainer function
+export const deleteTrainer = async (trainerId) => {
+  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_trainer/${trainerId}`);
+  return response;
+};
+
 // Model management and comparison
 export const getModelList = () => sendRequestMlSystem('get', '/mlflow/models');
 export const compareModels = (model1, version1, model2, version2) => 
@@ -144,12 +156,6 @@ export const compareModels = (model1, version1, model2, version2) =>
 export const getModelListForTrainer = () => sendRequestMlSystem('get', '/ml_training_manager/list_models');
 export const getModelDetails = (modelId) => sendRequestMlSystem('get', `/ml_training_manager/get_model/${modelId}`);
 export const initializeModel = (data) => sendRequestMlSystem('post', '/ml_training_manager/init_model', data);
-
-// Add the deleteModel function
-export const deleteModel = async (modelId) => {
-  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_model/${modelId}`);
-  return response;
-};
 
 // General sendRequest function for any other requests
 export const sendGeneralRequest = async (method, path, payload = {}, params = {}) => {
