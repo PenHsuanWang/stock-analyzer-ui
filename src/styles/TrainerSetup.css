@@ -1,17 +1,23 @@
 /* src/styles/TrainerSetup.css */
 .trainer-setup {
+  display: flex;
+  justify-content: space-between;
   margin: 20px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.trainer-setup h3 {
+.trainer-setup-form {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.trainer-setup-form h3 {
   margin-bottom: 10px;
 }
 
-.trainer-setup input,
-.trainer-setup select {
+.trainer-setup-form input {
   display: block;
   margin-bottom: 10px;
   padding: 5px;
@@ -19,7 +25,7 @@
   border: 1px solid #ccc;
 }
 
-.trainer-setup button {
+.trainer-setup-form button {
   margin-top: 10px;
   padding: 5px 10px;
   border: none;
@@ -29,40 +35,41 @@
   cursor: pointer;
 }
 
-.trainer-setup button:hover {
+.trainer-setup-form button:hover {
   background-color: #0056b3;
 }
 
-.trainer-setup p {
-  color: green;
+.trainer-setup-form .status {
   margin-top: 10px;
 }
 
-.selected-components {
-  margin-top: 20px;
-}
-
-.selected-components h4 {
-  margin-bottom: 5px;
-}
-
-.selected-components select {
-  margin-bottom: 10px;
-  padding: 5px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-}
-
-.trainer-setup .status {
-  margin-top: 10px;
-}
-
-.trainer-setup .status.success {
+.trainer-setup-form .status.success {
   color: green;
 }
 
-.trainer-setup .status.error {
+.trainer-setup-form .status.error {
   color: red;
 }
 
+.trainer-setup-selectors {
+  flex: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.trainer-setup-selectors div {
+  margin-bottom: 10px;
+}
+
+.trainer-setup-selectors label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.trainer-setup-selectors select {
+  width: 100%;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}

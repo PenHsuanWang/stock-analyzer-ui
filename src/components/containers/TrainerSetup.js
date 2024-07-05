@@ -73,7 +73,9 @@ const TrainerSetup = ({ selectedTrainer, selectedDataProcessor, selectedModel, o
           device: device,
           mlflow_tracking_uri: mlflowTrackingUri,
           mlflow_tracking_username: mlflowTrackingUsername,
-          mlflow_tracking_password: mlflowTrackingPassword
+          mlflow_tracking_password: mlflowTrackingPassword,
+          data_processor_id: selectedDataProcessorId,
+          model_id: selectedModelId
         }
       });
       setStatus({ message: response.message, type: 'success' });
@@ -87,91 +89,93 @@ const TrainerSetup = ({ selectedTrainer, selectedDataProcessor, selectedModel, o
 
   return (
     <div className="trainer-setup">
-      <h3>Setup Trainer</h3>
-      <input
-        type="text"
-        value={trainerId}
-        onChange={(e) => setTrainerId(e.target.value)}
-        placeholder="Enter trainer ID"
-      />
-      <input
-        type="text"
-        value={trainerType}
-        onChange={(e) => setTrainerType(e.target.value)}
-        placeholder="Enter trainer type"
-      />
-      <input
-        type="text"
-        value={lossFunction}
-        onChange={(e) => setLossFunction(e.target.value)}
-        placeholder="Enter loss function"
-      />
-      <input
-        type="text"
-        value={optimizer}
-        onChange={(e) => setOptimizer(e.target.value)}
-        placeholder="Enter optimizer"
-      />
-      <input
-        type="number"
-        value={learningRate}
-        onChange={(e) => setLearningRate(parseFloat(e.target.value))}
-        placeholder="Enter learning rate"
-      />
-      <input
-        type="text"
-        value={device}
-        onChange={(e) => setDevice(e.target.value)}
-        placeholder="Enter device (cpu/cuda)"
-      />
-      <input
-        type="text"
-        value={mlflowTrackingUri}
-        onChange={(e) => setMlflowTrackingUri(e.target.value)}
-        placeholder="Enter MLflow tracking URI"
-      />
-      <input
-        type="text"
-        value={mlflowTrackingUsername}
-        onChange={(e) => setMlflowTrackingUsername(e.target.value)}
-        placeholder="Enter MLflow tracking username"
-      />
-      <input
-        type="password"
-        value={mlflowTrackingPassword}
-        onChange={(e) => setMlflowTrackingPassword(e.target.value)}
-        placeholder="Enter MLflow tracking password"
-      />
-
-      <div className="selected-components">
-        <h4>Selected Data Processor:</h4>
-        <select onChange={(e) => setSelectedDataProcessorId(e.target.value)}>
-          <option value="">Select Data Processor</option>
-          {dataProcessors.map((processor) => (
-            <option key={processor} value={processor}>
-              {processor}
-            </option>
-          ))}
-        </select>
-
-        <h4>Selected Model:</h4>
-        <select onChange={(e) => setSelectedModelId(e.target.value)}>
-          <option value="">Select Model</option>
-          {models.map((model) => (
-            <option key={model} value={model}>
-              {model}
-            </option>
-          ))}
-        </select>
+      <div className="trainer-setup-form">
+        <h3>Setup Trainer</h3>
+        <input
+          type="text"
+          value={trainerId}
+          onChange={(e) => setTrainerId(e.target.value)}
+          placeholder="Enter trainer ID"
+        />
+        <input
+          type="text"
+          value={trainerType}
+          onChange={(e) => setTrainerType(e.target.value)}
+          placeholder="Enter trainer type"
+        />
+        <input
+          type="text"
+          value={lossFunction}
+          onChange={(e) => setLossFunction(e.target.value)}
+          placeholder="Enter loss function"
+        />
+        <input
+          type="text"
+          value={optimizer}
+          onChange={(e) => setOptimizer(e.target.value)}
+          placeholder="Enter optimizer"
+        />
+        <input
+          type="number"
+          value={learningRate}
+          onChange={(e) => setLearningRate(parseFloat(e.target.value))}
+          placeholder="Enter learning rate"
+        />
+        <input
+          type="text"
+          value={device}
+          onChange={(e) => setDevice(e.target.value)}
+          placeholder="Enter device (cpu/cuda)"
+        />
+        <input
+          type="text"
+          value={mlflowTrackingUri}
+          onChange={(e) => setMlflowTrackingUri(e.target.value)}
+          placeholder="Enter MLflow tracking URI"
+        />
+        <input
+          type="text"
+          value={mlflowTrackingUsername}
+          onChange={(e) => setMlflowTrackingUsername(e.target.value)}
+          placeholder="Enter MLflow tracking username"
+        />
+        <input
+          type="password"
+          value={mlflowTrackingPassword}
+          onChange={(e) => setMlflowTrackingPassword(e.target.value)}
+          placeholder="Enter MLflow tracking password"
+        />
+        <button onClick={handleSetup} disabled={isLoading}>
+          {isLoading ? 'Setting up...' : 'Set Trainer'}
+        </button>
+        {status && <p className={`status ${status.type}`}>{status.message}</p>}
       </div>
-
-      <button onClick={handleSetup} disabled={isLoading}>
-        {isLoading ? 'Setting up...' : 'Set Trainer'}
-      </button>
-      {status && <p className={`status ${status.type}`}>{status.message}</p>}
+      <div className="trainer-setup-selectors">
+        <div>
+          <label>Selected Data Processor:</label>
+          <select value={selectedDataProcessorId} onChange={(e) => setSelectedDataProcessorId(e.target.value)}>
+            <option value="">Select Data Processor</option>
+            {dataProcessors.map((processor) => (
+              <option key={processor} value={processor}>
+                {processor}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Selected Model:</label>
+          <select value={selectedModelId} onChange={(e) => setSelectedModelId(e.target.value)}>
+            <option value="">Select Model</option>
+            {models.map((model) => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default TrainerSetup;
-
