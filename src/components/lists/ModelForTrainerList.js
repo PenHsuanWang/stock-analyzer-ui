@@ -1,6 +1,6 @@
 // src/components/lists/ModelForTrainerList.js
 import React, { useState, useEffect } from 'react';
-import { getModelForTrainerList, getModel } from '../../services/api';
+import { getModelForTrainerList, getModel, deleteModel } from '../../services/api';
 import '../../styles/ComponentList.css';
 
 const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
@@ -43,22 +43,32 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
     }
   };
 
+  const handleDelete = async (model) => {
+    try {
+      await deleteModel(model);
+      fetchData(); // Refresh the list after deletion
+    } catch (err) {
+      setError(err.message || 'Failed to delete model.');
+    }
+  };
+
   return (
     <div className="component-list">
       <h4>Existing Models</h4>
       {error && <p className="error">{error}</p>}
       <ul className="no-bullets">
         {models.map((model) => (
-          <li key={model}>
+          <li key={model} className="processor-item">
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="model"
                 checked={selectedModel === model}
                 onChange={() => handleSelect(model)}
               />
               {model}
             </label>
+            <button className="delete-button" onClick={() => handleDelete(model)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -67,3 +77,4 @@ const ModelForTrainerList = ({ onSelect, refreshList, onRefreshed }) => {
 };
 
 export default ModelForTrainerList;
+

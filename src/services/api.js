@@ -19,36 +19,6 @@ const apiClientMlSystem = axios.create({
   },
 });
 
-// General base send request function for stock data backend
-const sendRequestStockData = async (method, path, payload = {}, params = {}) => {
-  try {
-    const response = await apiClientStockData({
-      method,
-      url: path,
-      data: JSON.stringify(payload),
-      params,
-    });
-    return typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
-  } catch (error) {
-    handleRequestError(error);
-  }
-};
-
-// General base send request function for ML system backend
-const sendRequestMlSystem = async (method, path, payload = {}, params = {}) => {
-  try {
-    const response = await apiClientMlSystem({
-      method,
-      url: path,
-      data: JSON.stringify(payload),
-      params,
-    });
-    return typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
-  } catch (error) {
-    handleRequestError(error);
-  }
-};
-
 // Handle request errors
 const handleRequestError = (error) => {
   if (error.response) {
@@ -60,13 +30,47 @@ const handleRequestError = (error) => {
   }
 };
 
-// Exported API functions for stock data backend
-export const fetchDataFromSource = (payload) => sendRequestStockData('post', '/stock_data/fetch_and_get_as_dataframe', payload);
-export const getListDatasetFromDB = (payload) => sendRequestStockData('post', '/stock_data/get_all_keys', payload);
-export const deleteDatasetInDB = (payload) => sendRequestStockData('post', '/stock_data/delete_data', payload);
-export const computeFullAnalysisAndStore = (payload) => sendRequestStockData('post', '/stock_data/compute_full_analysis_and_store', payload);
-export const fetchDataFromBackendDB = (payload) => sendRequestStockData('post', '/stock_data/get_data', payload);
-export const computeAssetsCorrelation = (payload) => sendRequestStockData('post', '/stock_data/calculate_correlation', payload);
+// General base send request function
+const sendRequest = async (client, method, path, payload = {}, params = {}) => {
+  try {
+    const response = await client({
+      method,
+      url: path,
+      data: JSON.stringify(payload),
+      params,
+    });
+    return typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+  } catch (error) {
+    handleRequestError(error);
+  }
+};
+
+// General base send request function for stock data backend
+const sendRequestStockData = async (method, path, payload = {}, params = {}) =>
+  sendRequest(apiClientStockData, method, path, payload, params);
+
+// General base send request function for ML system backend
+const sendRequestMlSystem = async (method, path, payload = {}, params = {}) =>
+  sendRequest(apiClientMlSystem, method, path, payload, params);
+
+/** Stock Data Backend API functions **/
+export const fetchDataFromSource = (payload) =>
+  sendRequestStockData('post', '/stock_data/fetch_and_get_as_dataframe', payload);
+
+export const getListDatasetFromDB = (payload) =>
+  sendRequestStockData('post', '/stock_data/get_all_keys', payload);
+
+export const deleteDatasetInDB = (payload) =>
+  sendRequestStockData('post', '/stock_data/delete_data', payload);
+
+export const computeFullAnalysisAndStore = (payload) =>
+  sendRequestStockData('post', '/stock_data/compute_full_analysis_and_store', payload);
+
+export const fetchDataFromBackendDB = (payload) =>
+  sendRequestStockData('post', '/stock_data/get_data', payload);
+
+export const computeAssetsCorrelation = (payload) =>
+  sendRequestStockData('post', '/stock_data/calculate_correlation', payload);
 
 export const exportDataFromDB = async (url, data, mode) => {
   if (mode === 'http') {
@@ -87,7 +91,7 @@ export const exportDataFromDB = async (url, data, mode) => {
   }
 };
 
-// Exported API functions for ML system backend
+/** ML System Backend API functions **/
 export const setDataFetcher = async (dataFetcherName) => {
   const response = await apiClientMlSystem.post('/ml_training_manager/set_data_fetcher', { data_fetcher_name: dataFetcherName });
   return response.data;
@@ -113,17 +117,60 @@ export const runMLTraining = async (params) => {
   return response.data;
 };
 
+export const startTraining = async (params) => {
+  const response = await apiClientMlSystem.post('/ml_training_manager/start_training', params);
+  return response.data;
+};
+
+// Fetchers
 export const getDataFetcher = () => sendRequestMlSystem('get', '/ml_training_manager/get_data_fetcher');
 export const getDataProcessor = (processorId) => sendRequestMlSystem('get', `/ml_training_manager/get_data_processor/${processorId}`);
 export const getModel = (modelId) => sendRequestMlSystem('get', `/ml_training_manager/get_model/${modelId}`);
 export const getTrainer = (trainerId) => sendRequestMlSystem('get', `/ml_training_manager/get_trainer/${trainerId}`);
+
+// Lists
 export const getModelForTrainerList = () => sendRequestMlSystem('get', '/ml_training_manager/list_models');
 export const getTrainerList = () => sendRequestMlSystem('get', '/ml_training_manager/list_trainers');
 export const getDataProcessorList = () => sendRequestMlSystem('get', '/ml_training_manager/list_data_processors');
 export const getDataFetcherList = () => sendRequestMlSystem('get', '/ml_training_manager/list_data_fetchers');
+
+// Deletions
 export const deleteDataProcessor = async (processorId) => {
   const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_data_processor/${processorId}`);
   return response;
+};
+
+// Add the deleteModel function
+export const deleteModel = async (modelId) => {
+  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_model/${modelId}`);
+  return response;
+};
+
+// Add the deleteTrainer function
+export const deleteTrainer = async (trainerId) => {
+  const response = await sendRequestMlSystem('delete', `/ml_training_manager/delete_trainer/${trainerId}`);
+  return response;
+};
+
+// Model management and comparison
+export const getModelList = () => sendRequestMlSystem('get', '/mlflow/models');
+export const compareModels = (model1, version1, model2, version2) => 
+  sendRequestMlSystem('get', `/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);
+
+// New API functions for models
+export const getModelListForTrainer = () => sendRequestMlSystem('get', '/ml_training_manager/list_models');
+export const getModelDetails = (modelId) => sendRequestMlSystem('get', `/ml_training_manager/get_model/${modelId}`);
+export const initializeModel = (data) => sendRequestMlSystem('post', '/ml_training_manager/init_model', data);
+
+// General sendRequest function for any other requests
+export const sendGeneralRequest = async (method, path, payload = {}, params = {}) => {
+  const response = await apiClientMlSystem({
+    method,
+    url: path,
+    data: JSON.stringify(payload),
+    params,
+  });
+  return response.data;
 };
 
 // Function for file upload testing
@@ -136,24 +183,5 @@ export const runTest = async (formData) => {
   return response.data;
 };
 
-// Additional functions for model management and comparison
-export const getModelList = () => sendRequestMlSystem('get', '/mlflow/models');
-export const compareModels = (model1, version1, model2, version2) => 
-  sendRequestMlSystem('get', `/mlflow/models/compare/${model1}/${version1}/${model2}/${version2}`);
-
-// General sendRequest function
-export const sendRequest = async (method, path, payload = {}, params = {}) => {
-  const response = await apiClientMlSystem({
-    method,
-    url: path,
-    data: JSON.stringify(payload),
-    params,
-  });
-  return response.data;
-};
-
-// New API functions for models
-export const getModelListForTrainer = () => sendRequestMlSystem('get', '/ml_training_manager/list_models');
-export const getModelDetails = (modelId) => sendRequestMlSystem('get', `/ml_training_manager/get_model/${modelId}`);
-export const initializeModel = (data) => sendRequestMlSystem('post', '/ml_training_manager/init_model', data);
-
+// Export the sendRequest function for direct use in other parts of the application
+export { sendRequest };

@@ -1,3 +1,4 @@
+/* src/styles/ComponentList.css */
 .component-list {
   padding: 10px;
 }
@@ -38,7 +39,7 @@
   flex: 1; /* Make the label take up remaining space */
 }
 
-.component-list input[type="checkbox"] {
+.component-list input[type="checkbox"], .component-list input[type="radio"] {
   margin-right: 10px;
 }
 

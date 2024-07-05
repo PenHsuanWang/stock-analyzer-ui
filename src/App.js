@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -13,6 +14,7 @@ import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
 import ModelTrainingSetupPage from './pages/ModelTrainingSetupPage';
+import TrainerControlPage from './pages/TrainerControlPage'; 
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
 
@@ -139,6 +141,15 @@ function App() {
           path="/model-training-setup"
           element={
             <ModelTrainingSetupPage 
+              analyzedDataPrefix="stock_data"
+            />
+          }
+        />
+
+        <Route 
+          path="/trainer-control"
+          element={
+            <TrainerControlPage 
               analyzedDataPrefix="stock_data"
             />
           }
