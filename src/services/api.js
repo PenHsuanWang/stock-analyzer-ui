@@ -117,6 +117,11 @@ export const runMLTraining = async (params) => {
   return response.data;
 };
 
+export const startTraining = async (params) => {
+  const response = await apiClientMlSystem.post('/ml_training_manager/start_training', params);
+  return response.data;
+};
+
 // Fetchers
 export const getDataFetcher = () => sendRequestMlSystem('get', '/ml_training_manager/get_data_fetcher');
 export const getDataProcessor = (processorId) => sendRequestMlSystem('get', `/ml_training_manager/get_data_processor/${processorId}`);
