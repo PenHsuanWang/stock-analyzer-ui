@@ -1,0 +1,29 @@
+.training-monitor-chart {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .training-status {
+    margin-top: 20px;
+  }
+  
+  .logs {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .logs ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .logs li {
+    background-color: #eee;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+  }
+  
