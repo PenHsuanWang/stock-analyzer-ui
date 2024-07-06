@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import BasePage from './BasePage';
 import Header from '../components/basic/Header';
-import { getTrainerList, getTrainer, runMLTraining } from '../services/api';
+import { getTrainerList, getTrainer, runMLTraining, getTrainingStatus } from '../services/api';
 import '../styles/TrainerControlPage.css';
 
 const TrainerControlPage = () => {
@@ -11,6 +11,9 @@ const TrainerControlPage = () => {
   const [trainerDetails, setTrainerDetails] = useState(null);
   const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [trainingProgress, setTrainingProgress] = useState(null);
+  const [remainingTime, setRemainingTime] = useState(null);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
     const fetchTrainers = async () => {
@@ -49,11 +52,33 @@ const TrainerControlPage = () => {
     try {
       const response = await runMLTraining({ trainer_id: selectedTrainer });
       setStatus({ message: response.message, type: 'success' });
+      pollTrainingStatus();
     } catch (error) {
       setStatus({ message: error.message, type: 'error' });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const pollTrainingStatus = async () => {
+    const intervalId = setInterval(async () => {
+      try {
+        const status = await getTrainingStatus();
+        setTrainingProgress(status.progress);
+        setRemainingTime(status.remaining_time);
+        setLogs(status.logs);
+
+        if (status.progress === 1) {
+          clearInterval(intervalId);
+          setIsLoading(false);
+          setStatus({ message: 'Training completed successfully', type: 'success' });
+        }
+      } catch (error) {
+        setStatus({ message: error.message, type: 'error' });
+        clearInterval(intervalId);
+        setIsLoading(false);
+      }
+    }, 1000); // Poll every second
   };
 
   return (
@@ -86,6 +111,19 @@ const TrainerControlPage = () => {
         <button onClick={handleStartTraining} disabled={isLoading}>
           {isLoading ? 'Starting...' : 'Start Training'}
         </button>
+        {trainingProgress !== null && (
+          <div className="training-progress">
+            <h4>Training Progress</h4>
+            <p>Progress: {(trainingProgress * 100).toFixed(2)}%</p>
+            {remainingTime !== null && <p>Remaining Time: {Math.ceil(remainingTime)}s</p>}
+            <h4>Logs</h4>
+            <ul>
+              {logs.map((log, index) => (
+                <li key={index}>Epoch {log.epoch}: Loss {log.loss.toFixed(4)}, Duration {log.duration.toFixed(2)}s</li>
+              ))}
+            </ul>
+          </div>
+        )}
         {status && <p className={`status ${status.type}`}>{status.message}</p>}
       </div>
     </BasePage>
