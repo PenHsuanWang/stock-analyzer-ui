@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getTrainerList, getTrainer } from '../../services/api';
+import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
 
 const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [trainerDetails, setTrainerDetails] = useState(null);
+  const [isTraining, setIsTraining] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const maxRetries = 3;
 
   useEffect(() => {
     const fetchTrainers = async () => {
@@ -35,6 +39,41 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     }
   };
 
+  const handleRetry = (error) => {
+    const errorCode = error.response?.status;
+    const backendMessage = error.response?.data?.message;
+    const defaultMessage = `Error: ${error.response?.statusText || 'Unknown error'}`;
+    const message = backendMessage || defaultMessage;
+
+    if ([422, 404].includes(errorCode)) {
+      // Stop retries for these error codes
+      setIsTraining(false);
+      setRetryCount(0);
+      setErrorMessage(message);
+    } else if (retryCount < maxRetries) {
+      // Retry for other error codes
+      setRetryCount(retryCount + 1);
+    } else {
+      // Stop after max retries
+      setIsTraining(false);
+      setRetryCount(0);
+      setErrorMessage(message);
+    }
+  };
+
+  const handleStartTraining = async () => {
+    if (!selectedTrainer) return;
+    setIsTraining(true);
+    setRetryCount(0);
+    setErrorMessage(null); // Clear previous error message
+    try {
+      await runMLTraining({ trainer_id: selectedTrainer });
+    } catch (error) {
+      console.error("Error starting training:", error);
+      handleRetry(error);
+    }
+  };
+
   return (
     <div className="trainer-selector-panel">
       <h3>Select Trainer</h3>
@@ -59,6 +98,14 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
           <p><strong>Device:</strong> {trainerDetails.device}</p>
         </div>
       )}
+      <button 
+        onClick={handleStartTraining} 
+        disabled={isTraining || !selectedTrainer}
+        className="start-training-button"
+      >
+        {isTraining ? 'Training...' : 'Start Training'}
+      </button>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 };

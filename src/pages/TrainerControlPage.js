@@ -15,13 +15,9 @@ const TrainerControlPage = () => {
   return (
     <BasePage>
       <Header title="Trainer Control Panel" />
-      <div className="trainer-control-page">
-        <div className="left-panel">
-          <TrainerSelectorPanel onTrainerSelect={handleTrainerSelect} />
-        </div>
-        <div className="right-panel">
-          <TrainingMonitorChart selectedTrainer={selectedTrainer} />
-        </div>
+      <div className="trainer-control-page-vertical">
+        <TrainerSelectorPanel onTrainerSelect={handleTrainerSelect} />
+        <TrainingMonitorChart selectedTrainer={selectedTrainer} />
       </div>
     </BasePage>
   );
