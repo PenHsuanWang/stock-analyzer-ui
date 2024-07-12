@@ -1,3 +1,4 @@
+// src/pages/TrainerControlPage.js
 import React, { useState } from 'react';
 import BasePage from './BasePage';
 import Header from '../components/basic/Header';
@@ -8,8 +9,8 @@ import '../styles/TrainerControlPage.css';
 const TrainerControlPage = () => {
   const [selectedTrainer, setSelectedTrainer] = useState(null);
 
-  const handleTrainerSelect = (trainerId) => {
-    setSelectedTrainer(trainerId);
+  const handleTrainerSelect = (trainerDetails) => {
+    setSelectedTrainer(trainerDetails);
   };
 
   return (

@@ -1,3 +1,4 @@
+// src/components/containers/TrainerSelectorPanel.js
 import React, { useState, useEffect } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
@@ -93,11 +94,11 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
       {trainerDetails && (
         <div className="trainer-details">
           <h4>Trainer Details</h4>
-          <p><strong>ID:</strong> {trainerDetails.id}</p>
-          <p><strong>Type:</strong> {trainerDetails.type}</p>
+          <p><strong>ID:</strong> {trainerDetails.trainer_id}</p>
+          <p><strong>Type:</strong> {trainerDetails.trainer_type}</p>
           <p><strong>Loss Function:</strong> {trainerDetails.criterion}</p>
           <p><strong>Optimizer:</strong> {trainerDetails.optimizer}</p>
-          <p><strong>Learning Rate:</strong> {trainerDetails.optimizer_params ? trainerDetails.optimizer_params.lr : 'N/A'}</p>
+          <p><strong>Learning Rate:</strong> {trainerDetails.learning_rate}</p>
           <p><strong>Device:</strong> {trainerDetails.device}</p>
         </div>
       )}
