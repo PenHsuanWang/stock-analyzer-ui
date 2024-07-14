@@ -1,71 +1,45 @@
+// src/components/charts/TrainingMonitorChart.js
 import React, { useEffect, useState } from 'react';
-import { runMLTraining, getTrainingStatus } from '../../services/api';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import '../../styles/TrainingMonitorChart.css';
 
 const TrainingMonitorChart = ({ selectedTrainer }) => {
-  const [trainingStatus, setTrainingStatus] = useState(null);
+  const [lossData, setLossData] = useState([]);
   const [logs, setLogs] = useState([]);
   const [isTraining, setIsTraining] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [lossData, setLossData] = useState([]);
-  const maxRetries = 3;
 
   useEffect(() => {
-    let interval;
-    if (isTraining) {
-      interval = setInterval(async () => {
-        try {
-          const status = await getTrainingStatus();
-          setTrainingStatus(status);
-          setLogs((prevLogs) => [...prevLogs, ...status.logs]);
-          setLossData((prevLossData) => [...prevLossData, { x: status.epoch, y: status.loss }]);
-        } catch (error) {
-          console.error("Error fetching training status:", error);
-          handleRetry(error);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isTraining, retryCount]);
-
-  const handleRetry = (error) => {
-    const errorCode = error.response?.status;
-    const backendMessage = error.response?.data?.message;
-    const defaultMessage = `Error: ${error.response?.statusText || 'Unknown error'}`;
-    const message = backendMessage || defaultMessage;
-
-    if ([422, 404].includes(errorCode)) {
-      // Stop retries for these error codes
-      setIsTraining(false);
-      setRetryCount(0);
-      setErrorMessage(message);
-    } else if (retryCount < maxRetries) {
-      // Retry for other error codes
-      setRetryCount(retryCount + 1);
-    } else {
-      // Stop after max retries
-      setIsTraining(false);
-      setRetryCount(0);
-      setErrorMessage(message);
-    }
-  };
-
-  const handleStartTraining = async () => {
     if (!selectedTrainer) return;
+
     setIsTraining(true);
-    setRetryCount(0);
-    setErrorMessage(null); // Clear previous error message
-    setLossData([]); // Clear previous loss data
-    try {
-      await runMLTraining({ trainer_id: selectedTrainer });
-    } catch (error) {
-      console.error("Error starting training:", error);
-      handleRetry(error);
-    }
-  };
+    setErrorMessage(null);
+    setLossData([]);
+
+    const eventSource = new EventSource(`/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.message === 'Training finished') {
+        setIsTraining(false);
+        eventSource.close();
+      } else {
+        setLossData((prevData) => [...prevData, { x: data.epoch, y: data.loss }]);
+        setLogs((prevLogs) => [...prevLogs, `Epoch ${data.epoch}: Loss = ${data.loss}`]);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      setErrorMessage("Error fetching training status.");
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [selectedTrainer]);
 
   const data = {
     datasets: [
@@ -74,9 +48,9 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
         data: lossData,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }
-    ]
+        tension: 0.1,
+      },
+    ],
   };
 
   const options = {
@@ -84,24 +58,21 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
       x: {
         title: {
           display: true,
-          text: 'Epoch'
-        }
+          text: 'Epoch',
+        },
       },
       y: {
         title: {
           display: true,
-          text: 'Loss'
-        }
-      }
-    }
+          text: 'Loss',
+        },
+      },
+    },
   };
 
   return (
     <div className="training-monitor-chart">
       <h3>Training Monitor</h3>
-      <button onClick={handleStartTraining} disabled={isTraining || !selectedTrainer}>
-        {isTraining ? 'Training...' : 'Start Training'}
-      </button>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <Line data={data} options={options} />
       <div className="logs">
