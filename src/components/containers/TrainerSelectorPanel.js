@@ -30,9 +30,9 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     if (trainerId) {
       try {
         const trainer = await getTrainer(trainerId);
-        console.log("Fetched trainer details:", trainer); // Log the fetched trainer details
+        console.log("Fetched trainer details:", trainer);
         setTrainerDetails(trainer);
-        onTrainerSelect(trainer); // Pass the entire trainer details to the parent component
+        onTrainerSelect(trainer);
       } catch (error) {
         console.error("Error fetching trainer details:", error);
         setErrorMessage(`Error fetching trainer details: ${error.message}`);
@@ -50,15 +50,12 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     const message = backendMessage || defaultMessage;
 
     if ([422, 404].includes(errorCode)) {
-      // Stop retries for these error codes
       setIsTraining(false);
       setRetryCount(0);
       setErrorMessage(message);
     } else if (retryCount < maxRetries) {
-      // Retry for other error codes
       setRetryCount(retryCount + 1);
     } else {
-      // Stop after max retries
       setIsTraining(false);
       setRetryCount(0);
       setErrorMessage(message);
@@ -69,9 +66,10 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     if (!selectedTrainer) return;
     setIsTraining(true);
     setRetryCount(0);
-    setErrorMessage(null); // Clear previous error message
+    setErrorMessage(null);
     try {
-      await runMLTraining({ trainer_id: selectedTrainer });
+      const payload = { trainer_id: selectedTrainer.trainer_id };
+      await runMLTraining(payload);
     } catch (error) {
       console.error("Error starting training:", error);
       handleRetry(error);
