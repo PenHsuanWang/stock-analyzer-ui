@@ -70,7 +70,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     setRetryCount(0);
     setErrorMessage(null); // Clear previous error message
     try {
-      await runMLTraining({ trainer_id: selectedTrainer });
+      await runMLTraining({ args: [], kwargs: { trainer_id: selectedTrainer, epochs: 10 } });
     } catch (error) {
       console.error("Error starting training:", error);
       handleRetry(error);

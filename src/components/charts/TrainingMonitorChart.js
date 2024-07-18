@@ -17,7 +17,7 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
     setErrorMessage(null);
     setLossData([]);
 
-    const eventSource = new EventSource(`/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
+    const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -25,14 +25,20 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
         setIsTraining(false);
         eventSource.close();
       } else {
-        setLossData((prevData) => [...prevData, { x: data.epoch, y: data.loss }]);
-        setLogs((prevLogs) => [...prevLogs, `Epoch ${data.epoch}: Loss = ${data.loss}`]);
+        setLossData((prevData) => [
+          ...prevData,
+          { x: data.epoch, y: data.loss }
+        ]);
+        setLogs((prevLogs) => [
+          ...prevLogs,
+          `Epoch ${data.epoch}: Loss = ${data.loss}`
+        ]);
       }
     };
 
     eventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
-      setErrorMessage("Error fetching training status.");
+      console.error('EventSource failed:', error);
+      setErrorMessage('Error fetching training status.');
       eventSource.close();
     };
 
@@ -42,10 +48,11 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
   }, [selectedTrainer]);
 
   const data = {
+    labels: lossData.map((point) => point.x),
     datasets: [
       {
         label: 'Loss',
-        data: lossData,
+        data: lossData.map((point) => point.y),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
@@ -56,6 +63,7 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
   const options = {
     scales: {
       x: {
+        type: 'linear',
         title: {
           display: true,
           text: 'Epoch',
