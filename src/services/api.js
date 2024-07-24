@@ -114,8 +114,15 @@ export const initTrainer = async (params) => {
 };
 
 export const runMLTraining = async (params) => {
-  const response = await apiClientMlSystem.post('/ml_training_manager/run_ml_training', params);
-  return response.data;
+  try {
+    const response = await apiClientMlSystem.post('/ml_training_manager/run_ml_training', params, {
+      responseType: 'stream',
+    });
+
+    return response;
+  } catch (error) {
+    handleRequestError(error);
+  }
 };
 
 export const startTraining = async (params) => {
@@ -191,3 +198,4 @@ export const runTest = async (formData) => {
 
 // Export the sendRequest function for direct use in other parts of the application
 export { sendRequest };
+

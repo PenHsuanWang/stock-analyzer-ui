@@ -1,3 +1,4 @@
+// src/components/containers/TrainerSelectorPanel.js
 import React, { useState, useEffect } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
@@ -70,7 +71,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     setRetryCount(0);
     setErrorMessage(null); // Clear previous error message
     try {
-      await runMLTraining({ args: [], kwargs: { trainer_id: selectedTrainer, epochs: 10 } });
+      await runMLTraining({ trainer_id: selectedTrainer, epochs: 10 });
     } catch (error) {
       console.error("Error starting training:", error);
       handleRetry(error);
