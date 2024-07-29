@@ -10,6 +10,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   const [isTraining, setIsTraining] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [epochNumber, setEpochNumber] = useState(10); // Default value for epoch number
   const maxRetries = 3;
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     setRetryCount(0);
     setErrorMessage(null); // Clear previous error message
     try {
-      await runMLTraining({ trainer_id: selectedTrainer, epochs: 10 });
+      await runMLTraining({ trainer_id: selectedTrainer, epochs: epochNumber });
     } catch (error) {
       console.error("Error starting training:", error);
       handleRetry(error);
@@ -102,6 +103,15 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
           <p><strong>Device:</strong> {trainerDetails.device}</p>
         </div>
       )}
+      <div className="epoch-setting">
+        <label htmlFor="epochNumber">Training Epoch Setting:</label>
+        <input 
+          type="number" 
+          id="epochNumber" 
+          value={epochNumber} 
+          onChange={(e) => setEpochNumber(parseInt(e.target.value, 10))} 
+        />
+      </div>
       <button 
         onClick={handleStartTraining} 
         disabled={isTraining || !selectedTrainer}
@@ -115,3 +125,4 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
 };
 
 export default TrainerSelectorPanel;
+
