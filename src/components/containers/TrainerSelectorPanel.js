@@ -1,5 +1,5 @@
 // src/components/containers/TrainerSelectorPanel.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
 
@@ -10,6 +10,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   const [isTraining, setIsTraining] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [epochNumber, setEpochNumber] = useState(10); // Default value for epoch number
   const maxRetries = 3;
 
@@ -71,6 +72,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     setIsTraining(true);
     setRetryCount(0);
     setErrorMessage(null); // Clear previous error message
+    setSuccessMessage(null); // Clear previous success message
     try {
       await runMLTraining({ trainer_id: selectedTrainer, epochs: epochNumber });
     } catch (error) {
@@ -78,6 +80,27 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
       handleRetry(error);
     }
   };
+
+  const handleTrainingFinished = useCallback(() => {
+    setIsTraining(false);
+    setSuccessMessage('Training completed successfully!');
+  }, []);
+
+  useEffect(() => {
+    if (trainerDetails) {
+      const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${trainerDetails.trainer_id}/progress`);
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.message === 'Training finished') {
+          handleTrainingFinished();
+          eventSource.close();
+        }
+      };
+      return () => {
+        eventSource.close();
+      };
+    }
+  }, [trainerDetails, handleTrainingFinished]);
 
   return (
     <div className="trainer-selector-panel">
@@ -120,6 +143,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
         {isTraining ? 'Training...' : 'Start Training'}
       </button>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
 };
