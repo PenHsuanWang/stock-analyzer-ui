@@ -82,22 +82,31 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   };
 
   const handleTrainingFinished = useCallback(() => {
-    setIsTraining(false);
-    setSuccessMessage('Training completed successfully!');
+    setIsTraining(false);  // Re-enable the button
+    setSuccessMessage('Training completed successfully!');  // Show success message
   }, []);
-
+  
   useEffect(() => {
     if (trainerDetails) {
       const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${trainerDetails.trainer_id}/progress`);
+      
       eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.message === 'Training finished') {
-          handleTrainingFinished();
+          handleTrainingFinished();  // Reset button state when training finishes
           eventSource.close();
+        } else {
+          // Handle other messages like loss updates during training
         }
       };
-      return () => {
+      
+      eventSource.onerror = (error) => {
+        console.error('Error with EventSource:', error);
         eventSource.close();
+      };
+      
+      return () => {
+        eventSource.close();  // Cleanup
       };
     }
   }, [trainerDetails, handleTrainingFinished]);
