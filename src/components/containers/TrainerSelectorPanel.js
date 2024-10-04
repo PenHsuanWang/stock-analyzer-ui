@@ -1,4 +1,5 @@
 // src/components/containers/TrainerSelectorPanel.js
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
@@ -87,16 +88,22 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   }, []);
   
   useEffect(() => {
+    let eventSource;
     if (trainerDetails) {
-      const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${trainerDetails.trainer_id}/progress`);
+      eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${trainerDetails.trainer_id}/progress`);
       
       eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.message === 'Training finished') {
           handleTrainingFinished();  // Reset button state when training finishes
           eventSource.close();
+        } else if (data.message === 'Training error') {
+          setErrorMessage('An error occurred during training.');
+          setIsTraining(false);
+          eventSource.close();
         } else {
           // Handle other messages like loss updates during training
+          console.log(`Epoch ${data.epoch}, Loss: ${data.loss}`);
         }
       };
       
@@ -104,11 +111,13 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
         console.error('Error with EventSource:', error);
         eventSource.close();
       };
-      
-      return () => {
-        eventSource.close();  // Cleanup
-      };
     }
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();  // Cleanup
+      }
+    };
   }, [trainerDetails, handleTrainingFinished]);
 
   return (

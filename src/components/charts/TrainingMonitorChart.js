@@ -1,4 +1,5 @@
 // src/components/charts/TrainingMonitorChart.js
+
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
@@ -7,22 +8,23 @@ import '../../styles/TrainingMonitorChart.css';
 const TrainingMonitorChart = ({ selectedTrainer }) => {
   const [lossData, setLossData] = useState([]);
   const [logs, setLogs] = useState([]);
-  const [isTraining, setIsTraining] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (!selectedTrainer) return;
 
-    setIsTraining(true);
-    setErrorMessage(null);
     setLossData([]);
+    setErrorMessage(null);
+    let eventSource;
 
-    const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
+    eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.message === 'Training finished') {
-        setIsTraining(false);
+        eventSource.close();
+      } else if (data.message === 'Training error') {
+        setErrorMessage('An error occurred during training.');
         eventSource.close();
       } else {
         setLossData((prevData) => [
@@ -43,7 +45,9 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
     };
 
     return () => {
-      eventSource.close();
+      if (eventSource) {
+        eventSource.close();
+      }
     };
   }, [selectedTrainer]);
 
