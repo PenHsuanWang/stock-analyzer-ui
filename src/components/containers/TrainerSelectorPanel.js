@@ -1,18 +1,14 @@
 // src/components/containers/TrainerSelectorPanel.js
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
 
-const TrainerSelectorPanel = ({ onTrainerSelect }) => {
+const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, onTrainingStatusChange, successMessage, errorMessage }) => {
   const [trainers, setTrainers] = useState([]);
-  const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [trainerDetails, setTrainerDetails] = useState(null);
-  const [isTraining, setIsTraining] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   const [epochNumber, setEpochNumber] = useState(10); // Default value for epoch number
+  const [retryCount, setRetryCount] = useState(0);
   const maxRetries = 3;
 
   useEffect(() => {
@@ -29,16 +25,16 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
   }, []);
 
   const handleTrainerSelect = async (trainerId) => {
-    setSelectedTrainer(trainerId);
+    if (onTrainingStatusChange) {
+      onTrainingStatusChange('reset');
+    }
     if (trainerId) {
       try {
         const trainer = await getTrainer(trainerId);
-        console.log("Fetched trainer details:", trainer); // Log the fetched trainer details
         setTrainerDetails(trainer);
-        onTrainerSelect(trainer); // Pass the entire trainer details to the parent component
+        onTrainerSelect(trainer);
       } catch (error) {
         console.error("Error fetching trainer details:", error);
-        setErrorMessage(`Error fetching trainer details: ${error.message}`);
       }
     } else {
       setTrainerDetails(null);
@@ -53,78 +49,39 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
     const message = backendMessage || defaultMessage;
 
     if ([422, 404].includes(errorCode)) {
-      // Stop retries for these error codes
-      setIsTraining(false);
+      if (onTrainingStatusChange) {
+        onTrainingStatusChange('error', message);
+      }
       setRetryCount(0);
-      setErrorMessage(message);
     } else if (retryCount < maxRetries) {
-      // Retry for other error codes
       setRetryCount(retryCount + 1);
     } else {
-      // Stop after max retries
-      setIsTraining(false);
+      if (onTrainingStatusChange) {
+        onTrainingStatusChange('error', message);
+      }
       setRetryCount(0);
-      setErrorMessage(message);
     }
   };
 
   const handleStartTraining = async () => {
     if (!selectedTrainer) return;
-    setIsTraining(true);
+    if (onTrainingStatusChange) {
+      onTrainingStatusChange('started');
+    }
     setRetryCount(0);
-    setErrorMessage(null); // Clear previous error message
-    setSuccessMessage(null); // Clear previous success message
     try {
-      await runMLTraining({ trainer_id: selectedTrainer, epochs: epochNumber });
+      await runMLTraining({ trainer_id: selectedTrainer.trainer_id || selectedTrainer, epochs: epochNumber });
     } catch (error) {
       console.error("Error starting training:", error);
       handleRetry(error);
     }
   };
 
-  const handleTrainingFinished = useCallback(() => {
-    setIsTraining(false);  // Re-enable the button
-    setSuccessMessage('Training completed successfully!');  // Show success message
-  }, []);
-  
-  useEffect(() => {
-    let eventSource;
-    if (trainerDetails) {
-      eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${trainerDetails.trainer_id}/progress`);
-      
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.message === 'Training finished') {
-          handleTrainingFinished();  // Reset button state when training finishes
-          eventSource.close();
-        } else if (data.message === 'Training error') {
-          setErrorMessage('An error occurred during training.');
-          setIsTraining(false);
-          eventSource.close();
-        } else {
-          // Handle other messages like loss updates during training
-          console.log(`Epoch ${data.epoch}, Loss: ${data.loss}`);
-        }
-      };
-      
-      eventSource.onerror = (error) => {
-        console.error('Error with EventSource:', error);
-        eventSource.close();
-      };
-    }
-
-    return () => {
-      if (eventSource) {
-        eventSource.close();  // Cleanup
-      }
-    };
-  }, [trainerDetails, handleTrainingFinished]);
-
   return (
     <div className="trainer-selector-panel">
       <h3>Select Trainer</h3>
       <div className="trainer-selection">
-        <select value={selectedTrainer || ''} onChange={(e) => handleTrainerSelect(e.target.value)}>
+        <select value={selectedTrainer?.trainer_id || selectedTrainer || ''} onChange={(e) => handleTrainerSelect(e.target.value)}>
           <option value="">Select Trainer</option>
           {trainers.map((trainer) => (
             <option key={trainer} value={trainer}>
@@ -146,15 +103,15 @@ const TrainerSelectorPanel = ({ onTrainerSelect }) => {
       )}
       <div className="epoch-setting">
         <label htmlFor="epochNumber">Training Epoch Setting:</label>
-        <input 
-          type="number" 
-          id="epochNumber" 
-          value={epochNumber} 
-          onChange={(e) => setEpochNumber(parseInt(e.target.value, 10))} 
+        <input
+          type="number"
+          id="epochNumber"
+          value={epochNumber}
+          onChange={(e) => setEpochNumber(parseInt(e.target.value, 10))}
         />
       </div>
-      <button 
-        onClick={handleStartTraining} 
+      <button
+        onClick={handleStartTraining}
         disabled={isTraining || !selectedTrainer}
         className="start-training-button"
       >

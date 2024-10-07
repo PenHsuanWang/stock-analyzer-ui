@@ -1,31 +1,52 @@
 // src/components/charts/TrainingMonitorChart.js
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import '../../styles/TrainingMonitorChart.css';
 
-const TrainingMonitorChart = ({ selectedTrainer }) => {
+const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
   const [lossData, setLossData] = useState([]);
   const [logs, setLogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const eventSourceRef = useRef(null);
 
   useEffect(() => {
     if (!selectedTrainer) return;
 
+    // Reset chart data when a new trainer is selected
     setLossData([]);
+    setLogs([]);
     setErrorMessage(null);
-    let eventSource;
 
-    eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id}/progress`);
+    // Close any existing EventSource
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+    }
+
+    const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id || selectedTrainer}/progress`);
+    eventSourceRef.current = eventSource;
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (data.message === 'Training finished') {
         eventSource.close();
+        eventSourceRef.current = null;
+        // Update final loss
+        setLogs((prevLogs) => [
+          ...prevLogs,
+          `Training finished. Final Loss: ${data.final_loss}`
+        ]);
+        if (onTrainingStatusChange) {
+          onTrainingStatusChange('finished');
+        }
       } else if (data.message === 'Training error') {
         setErrorMessage('An error occurred during training.');
         eventSource.close();
+        eventSourceRef.current = null;
+        if (onTrainingStatusChange) {
+          onTrainingStatusChange('error');
+        }
       } else {
         setLossData((prevData) => [
           ...prevData,
@@ -42,11 +63,16 @@ const TrainingMonitorChart = ({ selectedTrainer }) => {
       console.error('EventSource failed:', error);
       setErrorMessage('Error fetching training status.');
       eventSource.close();
+      eventSourceRef.current = null;
+      if (onTrainingStatusChange) {
+        onTrainingStatusChange('error');
+      }
     };
 
     return () => {
-      if (eventSource) {
-        eventSource.close();
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
     };
   }, [selectedTrainer]);
