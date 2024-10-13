@@ -4,7 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { getTrainerList, getTrainer, runMLTraining } from '../../services/api';
 import '../../styles/TrainerSelectorPanel.css';
 
-const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, onTrainingStatusChange, successMessage, errorMessage }) => {
+const TrainerSelectorPanel = ({
+  onTrainerSelect,
+  selectedTrainer,
+  isTraining,
+  onTrainingStatusChange,
+  successMessage,
+  errorMessage,
+}) => {
   const [trainers, setTrainers] = useState([]);
   const [trainerDetails, setTrainerDetails] = useState(null);
   const [epochNumber, setEpochNumber] = useState(10); // Default value for epoch number
@@ -17,7 +24,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
         const trainerList = await getTrainerList();
         setTrainers(trainerList.trainers);
       } catch (error) {
-        console.error("Error fetching trainers:", error);
+        console.error('Error fetching trainers:', error);
       }
     };
 
@@ -26,7 +33,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
 
   const handleTrainerSelect = async (trainerId) => {
     if (onTrainingStatusChange) {
-      onTrainingStatusChange('reset');
+      onTrainingStatusChange('reset'); // Reset status when selecting a new trainer
     }
     if (trainerId) {
       try {
@@ -34,7 +41,7 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
         setTrainerDetails(trainer);
         onTrainerSelect(trainer);
       } catch (error) {
-        console.error("Error fetching trainer details:", error);
+        console.error('Error fetching trainer details:', error);
       }
     } else {
       setTrainerDetails(null);
@@ -65,14 +72,20 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
 
   const handleStartTraining = async () => {
     if (!selectedTrainer) return;
+
+    // Start the training and set button state to "Training..."
     if (onTrainingStatusChange) {
       onTrainingStatusChange('started');
     }
+
     setRetryCount(0);
     try {
-      await runMLTraining({ trainer_id: selectedTrainer.trainer_id || selectedTrainer, epochs: epochNumber });
+      await runMLTraining({
+        trainer_id: selectedTrainer.trainer_id || selectedTrainer,
+        epochs: epochNumber,
+      });
     } catch (error) {
-      console.error("Error starting training:", error);
+      console.error('Error starting training:', error);
       handleRetry(error);
     }
   };
@@ -81,7 +94,10 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
     <div className="trainer-selector-panel">
       <h3>Select Trainer</h3>
       <div className="trainer-selection">
-        <select value={selectedTrainer?.trainer_id || selectedTrainer || ''} onChange={(e) => handleTrainerSelect(e.target.value)}>
+        <select
+          value={selectedTrainer?.trainer_id || selectedTrainer || ''}
+          onChange={(e) => handleTrainerSelect(e.target.value)}
+        >
           <option value="">Select Trainer</option>
           {trainers.map((trainer) => (
             <option key={trainer} value={trainer}>
@@ -93,12 +109,21 @@ const TrainerSelectorPanel = ({ onTrainerSelect, selectedTrainer, isTraining, on
       {trainerDetails && (
         <div className="trainer-details">
           <h4>Trainer Details</h4>
-          <p><strong>ID:</strong> {trainerDetails.trainer_id}</p>
-          <p><strong>Type:</strong> {trainerDetails.trainer_type}</p>
-          <p><strong>Loss Function:</strong> {trainerDetails.criterion}</p>
-          <p><strong>Optimizer:</strong> {trainerDetails.optimizer}</p>
-          <p><strong>Learning Rate:</strong> {trainerDetails.learning_rate}</p>
-          <p><strong>Device:</strong> {trainerDetails.device}</p>
+          <p>
+            <strong>ID:</strong> {trainerDetails.trainer_id}
+          </p>
+          <p>
+            <strong>Type:</strong> {trainerDetails.trainer_type}
+          </p>
+          <p>
+            <strong>Loss Function:</strong> {trainerDetails.criterion}
+          </p>
+          <p>
+            <strong>Optimizer:</strong> {trainerDetails.optimizer}
+          </p>
+          <p>
+            <strong>Device:</strong> {trainerDetails.device}
+          </p>
         </div>
       )}
       <div className="epoch-setting">

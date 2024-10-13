@@ -5,7 +5,7 @@ import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import '../../styles/TrainingMonitorChart.css';
 
-const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
+const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange, trainingSessionId }) => {
   const [lossData, setLossData] = useState([]);
   const [logs, setLogs] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -14,7 +14,7 @@ const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
   useEffect(() => {
     if (!selectedTrainer) return;
 
-    // Reset chart data when a new trainer is selected
+    // Reset chart data when a new training session starts
     setLossData([]);
     setLogs([]);
     setErrorMessage(null);
@@ -22,21 +22,27 @@ const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
     // Close any existing EventSource
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
+      eventSourceRef.current = null;
     }
 
-    const eventSource = new EventSource(`http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id || selectedTrainer}/progress`);
+    // Open a new EventSource for the current training session
+    const eventSource = new EventSource(
+      `http://localhost:8000/ml_training_manager/trainers/${selectedTrainer.trainer_id || selectedTrainer}/progress`
+    );
     eventSourceRef.current = eventSource;
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
       if (data.message === 'Training finished') {
         eventSource.close();
         eventSourceRef.current = null;
-        // Update final loss
+
         setLogs((prevLogs) => [
           ...prevLogs,
-          `Training finished. Final Loss: ${data.final_loss}`
+          `Training finished. Final Loss: ${data.final_loss}`,
         ]);
+
         if (onTrainingStatusChange) {
           onTrainingStatusChange('finished');
         }
@@ -44,17 +50,21 @@ const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
         setErrorMessage('An error occurred during training.');
         eventSource.close();
         eventSourceRef.current = null;
+
         if (onTrainingStatusChange) {
           onTrainingStatusChange('error');
         }
       } else {
+        // Append new loss data
         setLossData((prevData) => [
           ...prevData,
-          { x: data.epoch, y: data.loss }
+          { x: data.epoch, y: data.loss },
         ]);
+
+        // Log the current epoch and loss
         setLogs((prevLogs) => [
           ...prevLogs,
-          `Epoch ${data.epoch}: Loss = ${data.loss}`
+          `Epoch ${data.epoch}: Loss = ${data.loss}`,
         ]);
       }
     };
@@ -64,18 +74,20 @@ const TrainingMonitorChart = ({ selectedTrainer, onTrainingStatusChange }) => {
       setErrorMessage('Error fetching training status.');
       eventSource.close();
       eventSourceRef.current = null;
+
       if (onTrainingStatusChange) {
         onTrainingStatusChange('error');
       }
     };
 
+    // Cleanup EventSource on component unmount or trainingSessionId change
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
         eventSourceRef.current = null;
       }
     };
-  }, [selectedTrainer]);
+  }, [selectedTrainer, trainingSessionId]); // Dependency array includes trainingSessionId to reinitialize on session start
 
   const data = {
     labels: lossData.map((point) => point.x),
