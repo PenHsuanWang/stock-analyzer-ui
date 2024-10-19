@@ -69,7 +69,7 @@ const TrainerSetup = ({ selectedTrainer, selectedDataProcessor, selectedModel, o
         kwargs: {
           loss_function: lossFunction,
           optimizer: optimizer,
-          learning_rate: learningRate,
+          learning_rate: learningRate.toString(), // Convert to string for uniformity
           device: device,
           mlflow_tracking_uri: mlflowTrackingUri,
           mlflow_tracking_username: mlflowTrackingUsername,

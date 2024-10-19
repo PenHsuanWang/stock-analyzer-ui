@@ -52,7 +52,7 @@ const TrainerList = ({ onSelect, refreshList, onRefreshed }) => {
           <li key={trainer} className="processor-item">
             <label>
               <input
-                type="radio"
+                type="checkbox"
                 name="trainer"
                 checked={selectedTrainer === trainer}
                 onChange={() => handleSelect(trainer)}

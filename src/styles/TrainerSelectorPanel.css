@@ -1,0 +1,52 @@
+/* TrainerSelectorPanel.css */
+.trainer-selector-panel {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.trainer-selection {
+  margin-bottom: 20px;
+}
+
+.trainer-selection select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.trainer-details {
+  margin-top: 20px;
+}
+
+.epoch-setting {
+  margin-top: 20px;
+}
+
+.epoch-setting label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.epoch-setting input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.start-training-button {
+  margin-top: 20px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+}
