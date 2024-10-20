@@ -1,0 +1,21 @@
+/* src/styles/TrainerControlPage.css */
+.trainer-control-page-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.trainer-selector-panel, .training-monitor-chart {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+.start-training-button {
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+}
