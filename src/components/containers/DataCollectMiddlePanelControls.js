@@ -2,7 +2,7 @@
 import React from 'react';
 import { SaveButton, DeleteButton, SearchButton } from '../widgets/buttons/CustomButtons';
 
-function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, selectedData  }) {
+function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, selectedData, isLoading }) {
 
   // the activated function for save button
   const handleSave = async () => {
@@ -16,7 +16,7 @@ function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, select
       return;
     }
     
-    await onSave(searchParams); // using outer component's searchParams as payload
+    await onSave(searchParams);
   };
 
   // function to handle the delete operation
@@ -26,16 +26,30 @@ function DataCollectMiddlePanelControls({ onSave, onDelete, searchParams, select
       return;
     }
 
-    await onDelete(selectedData); // Pass the selected data to the parent component to handle deletion
+    await onDelete(selectedData);
   };
 
   return (
     <div className="middle-panel">
       <div className="middle-panel-buttons">
-        <SaveButton onClick={handleSave} />
-        <DeleteButton onClick={handleDelete} />
-        <SearchButton onClick={() => console.log('Search clicked!')} />
+        <SaveButton 
+          onClick={handleSave} 
+          disabled={isLoading}
+        />
+        <DeleteButton 
+          onClick={handleDelete} 
+          disabled={isLoading || selectedData.length === 0}
+        />
+        <SearchButton 
+          onClick={() => console.log('Search clicked!')} 
+          disabled={isLoading}
+        />
       </div>
+      {isLoading && (
+        <div className="loading-indicator">
+          Processing...
+        </div>
+      )}
     </div>
   );
 }

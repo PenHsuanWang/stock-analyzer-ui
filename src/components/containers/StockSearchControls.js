@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { fetchDataFromSource } from "../../services/api";
 import '../../styles/StockSearchControls.css';
-import { addDays, formatISO, parseISO, isBefore } from 'date-fns';
+import { parseISO, isBefore } from 'date-fns';
 
 const StockSearchControls = ({ setChartData, setSearchParams }) => {
   const [stockId, setStockId] = useState('');
@@ -12,13 +12,9 @@ const StockSearchControls = ({ setChartData, setSearchParams }) => {
   const [error, setError] = useState('');
 
   const handleSearch = async () => {
-    if (!stockId || !startDate || !endDate) {
-      setError('Please enter all fields: Stock ID, Start Date, and End Date.');
-      return;
-    }
-    
-    setError(''); // Clear previous error messages
+    setError('');
 
+    // Validate inputs
     if (!stockId || !startDate || !endDate) {
       setError('Please enter all fields: Stock ID, Start Date, and End Date.');
       return;
@@ -32,7 +28,7 @@ const StockSearchControls = ({ setChartData, setSearchParams }) => {
       return;
     }
 
-    setIsLoading(true); // Begin loading state
+    setIsLoading(true);
 
     try {
       const payload = {
@@ -41,39 +37,19 @@ const StockSearchControls = ({ setChartData, setSearchParams }) => {
         end_date: endDate,
       };
       const chartDataResponse = await fetchDataFromSource(payload);
-      const enrichedData = addDatesToData(chartDataResponse, startDate, endDate);
-      setChartData(enrichedData);
+      
+      // Backend now returns data with Date field, no need to add dates
+      setChartData(chartDataResponse);
 
       // Update search parameters after successful data fetch
       setSearchParams({ stockId, startDate, endDate });
 
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError('Failed to fetch data. Please try again later.'); // Set a user-friendly error message
+      setError(`Failed to fetch data: ${error.message || 'Please try again later.'}`);
     } finally {
-      setIsLoading(false); // End loading state
+      setIsLoading(false);
     }
-  };
-
-  // This function will add dates to the data received from the backend
-  const addDatesToData = (data, startDate, endDate) => {
-    const startDateParsed = parseISO(startDate);
-    const endDateParsed = parseISO(endDate);
-    const dateRange = eachDayOfInterval({ start: startDateParsed, end: endDateParsed });
-    return data.map((item, index) => {
-      return { ...item, Date: formatISO(dateRange[index], { representation: 'date' }) };
-    });
-  };
-
-  // Generate an array of dates between startDate and endDate
-  const eachDayOfInterval = ({ start, end }) => {
-    const dayList = [];
-    let day = start;
-    while (day <= end) {
-      dayList.push(day);
-      day = addDays(day, 1);
-    }
-    return dayList;
   };
 
   return (
@@ -85,18 +61,21 @@ const StockSearchControls = ({ setChartData, setSearchParams }) => {
           value={stockId}
           onChange={(e) => setStockId(e.target.value)}
           placeholder="Stock ID (e.g., AAPL)"
+          disabled={isLoading}
         />
         <input
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
           placeholder="Start Date"
+          disabled={isLoading}
         />
         <input
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           placeholder="End Date"
+          disabled={isLoading}
         />
         <button onClick={handleSearch} disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Search'}

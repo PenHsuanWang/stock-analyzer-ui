@@ -19,50 +19,93 @@ function DataCollectionPage({
   });
 
   const [fetchedData, setFetchedData] = useState([]);
-
   const [refreshDataList, setRefreshDataList] = useState(false);
-
-  // Add state to keep track of selected datasets for deletion
   const [selectedDatasets, setSelectedDatasets] = useState([]);
+  
+  // New states for loading and status
+  const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(null);
 
+  // Window sizes configuration - now exposed as state for future configurability
+  const [windowSizes] = useState([5, 10, 20, 60, 90]);
 
-  // process the stashed data
+  // Process and save the fetched data with full analysis
   const handleSaveData = async () => {
-    // Assume window_sizes is fixed for this example
-    const window_sizes = [5, 10, 20, 60, 90];
+    // Validate search parameters
+    if (!searchParams.stockId || !searchParams.startDate || !searchParams.endDate) {
+      setStatusMessage({ 
+        type: 'error', 
+        message: 'Please fetch data first before saving.' 
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setStatusMessage(null);
 
     try {
-      // send the request to backend for event handling
-      console.log(searchParams);
       const response = await computeFullAnalysisAndStore({
         prefix: prefix,
         stock_id: searchParams.stockId,
         start_date: searchParams.startDate,
         end_date: searchParams.endDate,
-        window_sizes
+        window_sizes: windowSizes
       });
-      console.log(response);
-      setRefreshDataList(prev => !prev); // Toggle the state to trigger a refresh StoredDataList
+      
+      setStatusMessage({ 
+        type: 'success', 
+        message: `Successfully saved and analyzed ${searchParams.stockId} data.` 
+      });
+      setRefreshDataList(prev => !prev);
     } catch (error) {
       console.error("Failed to save data:", error);
+      setStatusMessage({ 
+        type: 'error', 
+        message: `Failed to save data: ${error.message || 'Unknown error'}` 
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // function to handle the deletion of selected datasets
+  // Function to handle the deletion of selected datasets
   const handleDeleteData = async (selectedData) => {
+    if (!selectedData || selectedData.length === 0) {
+      setStatusMessage({ 
+        type: 'error', 
+        message: 'Please select datasets to delete.' 
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setStatusMessage(null);
+
     try {
+      let deletedCount = 0;
       for (const data of selectedData) {
-        // Make sure to send the data in the correct format
         await deleteDatasetInDB({
           prefix: prefix,
           stock_id: data.stock_id,
           start_date: data.start_date,
           end_date: data.end_date
         });
+        deletedCount++;
       }
-      setRefreshDataList(prev => !prev); // Refresh the list to show updated data
+      
+      setStatusMessage({ 
+        type: 'success', 
+        message: `Successfully deleted ${deletedCount} dataset(s).` 
+      });
+      setRefreshDataList(prev => !prev);
     } catch (error) {
       console.error("Failed to delete data:", error);
+      setStatusMessage({ 
+        type: 'error', 
+        message: `Failed to delete data: ${error.message || 'Unknown error'}` 
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +116,7 @@ function DataCollectionPage({
           {StockSearchControlsComponent && (
             <StockSearchControlsComponent 
               setChartData={setFetchedData} 
-              setSearchParams={setSearchParams} // Pass setSearchParams as a prop
+              setSearchParams={setSearchParams}
             />
           )}
         </div>
@@ -84,12 +127,18 @@ function DataCollectionPage({
         </div>
       </div>
       <div className="main-content-middle">
+        {statusMessage && (
+          <div className={`status-message ${statusMessage.type}`}>
+            {statusMessage.message}
+          </div>
+        )}
         {MiddlePanelComponent && (
           <MiddlePanelComponent 
             onSave={handleSaveData} 
-            onDelete={handleDeleteData} // Pass the new handleDeleteData function as a prop
+            onDelete={handleDeleteData}
             searchParams={searchParams}
-            selectedData={selectedDatasets} // Pass the selected datasets for deletion
+            selectedData={selectedDatasets}
+            isLoading={isLoading}
           />
         )}
       </div>
@@ -98,7 +147,7 @@ function DataCollectionPage({
           <SavedDataListComponent 
             prefix={prefix} 
             refresh={refreshDataList}
-            setSelectedItems={setSelectedDatasets} // Allow the list component to update the selected datasets
+            setSelectedItems={setSelectedDatasets}
           />
         )}
       </div>

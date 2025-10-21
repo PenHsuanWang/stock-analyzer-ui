@@ -5,10 +5,12 @@ import axios from 'axios';
 // Setup base URLs for the two backend servers
 const BASE_URL_STOCK_DATA = process.env.REACT_APP_BACKEND_URL_STOCK_DATA || 'http://localhost:8001';
 const BASE_URL_ML_SYSTEM = process.env.REACT_APP_BACKEND_URL_ML_SYSTEM || 'http://localhost:8000';
+const API_TIMEOUT = parseInt(process.env.REACT_APP_API_TIMEOUT) || 30000;
 
 // Create axios instances for each backend
 const apiClientStockData = axios.create({
   baseURL: BASE_URL_STOCK_DATA,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -16,6 +18,7 @@ const apiClientStockData = axios.create({
 
 const apiClientMlSystem = axios.create({
   baseURL: BASE_URL_ML_SYSTEM,
+  timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
   },
