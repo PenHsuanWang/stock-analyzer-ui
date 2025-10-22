@@ -9,7 +9,7 @@ import '../styles/CandlestickTechnicalAnalysisPage.css';
 
 function CandlestickTechnicalAnalysisPage({ analyzedDataPrefix }) {
   const [selectedDatasets, setSelectedDatasets] = useState([]);
-  const [visualizationData, setVisualizationData] = useState(null);
+  const [visualizationData, setVisualizationData] = useState([]);
   const [availablePatterns, setAvailablePatterns] = useState([]);
   const [selectedPatterns, setSelectedPatterns] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,54 +63,60 @@ function CandlestickTechnicalAnalysisPage({ analyzedDataPrefix }) {
         });
       });
 
-      // Combine all datasets into a single array sorted by date
-      const combinedData = transformedDatasets.flat().sort(
-        (a, b) => new Date(a.Date) - new Date(b.Date)
-      );
-
       // Extract patterns
       const patterns = extractPatterns(transformedDatasets);
       setAvailablePatterns(patterns);
 
-      // Prepare data structure for the integrated chart
-      const chartData = {
-        candlestick: combinedData.map(item => ({
-          Date: item.Date,
-          Open: item.Open,
-          High: item.High,
-          Low: item.Low,
-          Close: item.Close,
-          Volume: item.Volume,
-          Pattern: item.Pattern
-        })),
-        macd: combinedData.map(item => ({
-          Date: item.Date,
-          MACD: item.MACD,
-          Signal_Line: item.Signal_Line,
-          MACD_Histogram: item.MACD_Histogram
-        })),
-        rsi: combinedData.map(item => ({
-          Date: item.Date,
-          RSI: item.RSI
-        })),
-        movingAverages: {}
-      };
-
-      // Extract moving averages dynamically
-      Object.keys(combinedData[0] || {}).forEach(key => {
-        if (key.startsWith('MA_')) {
-          chartData.movingAverages[key] = combinedData.map(item => ({
+      // Prepare data structure for each dataset separately
+      const chartsData = transformedDatasets.map((dataSet, index) => {
+        const sortedData = dataSet.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+        
+        const chartData = {
+          stockInfo: {
+            stock_id: selectedDatasets[index].stock_id,
+            start_date: selectedDatasets[index].start_date,
+            end_date: selectedDatasets[index].end_date
+          },
+          candlestick: sortedData.map(item => ({
             Date: item.Date,
-            value: item[key]
-          }));
-        }
+            Open: item.Open,
+            High: item.High,
+            Low: item.Low,
+            Close: item.Close,
+            Volume: item.Volume,
+            Pattern: item.Pattern
+          })),
+          macd: sortedData.map(item => ({
+            Date: item.Date,
+            MACD: item.MACD,
+            Signal_Line: item.Signal_Line,
+            MACD_Histogram: item.MACD_Histogram
+          })),
+          rsi: sortedData.map(item => ({
+            Date: item.Date,
+            RSI: item.RSI
+          })),
+          movingAverages: {}
+        };
+
+        // Extract moving averages dynamically
+        Object.keys(sortedData[0] || {}).forEach(key => {
+          if (key.startsWith('MA_')) {
+            chartData.movingAverages[key] = sortedData.map(item => ({
+              Date: item.Date,
+              value: item[key]
+            }));
+          }
+        });
+
+        return chartData;
       });
 
-      setVisualizationData(chartData);
+      setVisualizationData(chartsData);
     } catch (error) {
       console.error("Error fetching data:", error);
       setError(`Failed to load data: ${error.message}`);
-      setVisualizationData(null);
+      setVisualizationData([]);
     } finally {
       setIsLoading(false);
     }
@@ -180,7 +186,7 @@ function CandlestickTechnicalAnalysisPage({ analyzedDataPrefix }) {
         )}
 
         {/* Chart and Pattern Filter Section */}
-        {visualizationData && (
+        {visualizationData && visualizationData.length > 0 && (
           <div className="analysis-content-container">
             {/* Pattern Filter Sidebar */}
             {availablePatterns.length > 0 && (
@@ -206,17 +212,26 @@ function CandlestickTechnicalAnalysisPage({ analyzedDataPrefix }) {
                   <p>Loading chart data...</p>
                 </div>
               ) : (
-                <IntegratedTechnicalAnalysisChart
-                  data={visualizationData}
-                  selectedPatterns={selectedPatterns}
-                />
+                visualizationData.map((chartData, index) => (
+                  <div key={index} className="individual-chart-container">
+                    {chartData.stockInfo && (
+                      <h3 className="chart-title">
+                        {chartData.stockInfo.stock_id} ({chartData.stockInfo.start_date} to {chartData.stockInfo.end_date})
+                      </h3>
+                    )}
+                    <IntegratedTechnicalAnalysisChart
+                      data={chartData}
+                      selectedPatterns={selectedPatterns}
+                    />
+                  </div>
+                ))
               )}
             </div>
           </div>
         )}
 
         {/* Empty State */}
-        {!isLoading && !visualizationData && !error && (
+        {!isLoading && (!visualizationData || visualizationData.length === 0) && !error && (
           <div className="empty-state">
             <div className="empty-state-icon">📈</div>
             <h3>No Analysis Data</h3>
