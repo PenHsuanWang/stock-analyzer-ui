@@ -1,7 +1,7 @@
-/* src/styles/CandlestickPatternPage.css */
+/* src/styles/CandlestickTechnicalAnalysisPage.css */
 
-.candlestick-pattern-page-container {
-  max-width: 1400px;
+.candlestick-technical-analysis-page-container {
+  max-width: 1600px;
   margin: 0 auto;
   padding: 24px;
 }
@@ -185,20 +185,20 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
-/* Chart and Patterns Container */
-.chart-and-patterns-container {
+/* Analysis Content Container */
+.analysis-content-container {
   display: flex;
   gap: 24px;
   align-items: flex-start;
 }
 
 .pattern-filter-section {
-  flex: 0 0 280px;
+  flex: 0 0 300px;
   position: sticky;
   top: 24px;
 }
 
-.candlestick-chart-container {
+.chart-section {
   flex: 1;
   min-width: 0;
   background: #ffffff;
@@ -206,6 +206,30 @@
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual Chart Container */
+.individual-chart-container {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.individual-chart-container:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #7c3aed;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  border-left: 4px solid #7c3aed;
+  border-radius: 4px;
 }
 
 /* Loading Container */
@@ -255,13 +279,13 @@
   font-size: 14px;
   color: #6b7280;
   margin: 0;
-  max-width: 400px;
+  max-width: 500px;
   line-height: 1.6;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .chart-and-patterns-container {
+@media (max-width: 1200px) {
+  .analysis-content-container {
     flex-direction: column;
   }
 
@@ -269,11 +293,12 @@
     position: static;
     flex: 1;
     width: 100%;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
-  .candlestick-pattern-page-container {
+  .candlestick-technical-analysis-page-container {
     padding: 16px;
   }
 
@@ -286,7 +311,7 @@
   }
 
   .data-selection-container,
-  .candlestick-chart-container {
+  .chart-section {
     padding: 16px;
   }
 
@@ -297,6 +322,10 @@
   .breadcrumb {
     font-size: 13px;
   }
+
+  .section-title {
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -305,7 +334,7 @@
   }
 
   .section-title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .empty-state {
@@ -315,5 +344,8 @@
   .empty-state-icon {
     font-size: 48px;
   }
-}
 
+  .page-description {
+    font-size: 12px;
+  }
+}
