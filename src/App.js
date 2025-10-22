@@ -15,7 +15,8 @@ import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
 import ModelTrainingSetupPage from './pages/ModelTrainingSetupPage';
-import TrainerControlPage from './pages/TrainerControlPage'; 
+import TrainerControlPage from './pages/TrainerControlPage';
+import JobSchedulerPage from './pages/JobSchedulerPage'; 
 
 import CandlestickDiagram from './components/charts/CandlestickDiagram';
 
@@ -163,6 +164,11 @@ function App() {
               analyzedDataPrefix="stock_data"
             />
           }
+        />
+
+        <Route 
+          path="/job-scheduler" 
+          element={<JobSchedulerPage />}
         />
 
         <Route path="/base" element={<BasePage />} />

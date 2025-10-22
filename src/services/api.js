@@ -248,3 +248,45 @@ export const sendGeneralRequest = async (method, path, payload = {}, params = {}
 
 // Export the sendRequest function for direct use in other parts of the application
 export { sendRequest };
+
+/** Job Scheduler API functions **/
+
+// Create a new scheduled job
+export const createScheduledJob = async (payload) => {
+  return sendRequestStockData('post', '/scheduler/jobs', payload);
+};
+
+// Get all scheduled jobs
+export const getScheduledJobs = async (activeOnly = false) => {
+  return sendRequestStockData('get', '/scheduler/jobs', {}, { active_only: activeOnly });
+};
+
+// Get specific job details
+export const getScheduledJob = async (jobId) => {
+  return sendRequestStockData('get', `/scheduler/jobs/${jobId}`);
+};
+
+// Update a scheduled job
+export const updateScheduledJob = async (jobId, payload) => {
+  return sendRequestStockData('put', `/scheduler/jobs/${jobId}`, payload);
+};
+
+// Delete a scheduled job
+export const deleteScheduledJob = async (jobId) => {
+  return sendRequestStockData('delete', `/scheduler/jobs/${jobId}`);
+};
+
+// Start (activate) a job
+export const startScheduledJob = async (jobId) => {
+  return sendRequestStockData('post', `/scheduler/jobs/${jobId}/start`);
+};
+
+// Stop (deactivate) a job
+export const stopScheduledJob = async (jobId) => {
+  return sendRequestStockData('post', `/scheduler/jobs/${jobId}/stop`);
+};
+
+// Get scheduler status
+export const getSchedulerStatus = async () => {
+  return sendRequestStockData('get', '/scheduler/status');
+};

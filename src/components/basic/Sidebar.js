@@ -10,6 +10,7 @@ const menuItems = [
     children: [
       { name: '🏠 Home', isCollapsible: false, children: [], to: '/' },
       { name: '📊 Data Collection', isCollapsible: false, children: [], to: '/data-collect' },
+      { name: '📅 Job Scheduler', isCollapsible: false, children: [], to: '/job-scheduler' },
       { name: '📈 Candlestick Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-candlestick' },
       { name: '🌡️ Heatmap Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-heatmap' },
       { name: '📊 Histogram Visualization', isCollapsible: false, children: [], to: '/analyzed-visualization-histogram' },
