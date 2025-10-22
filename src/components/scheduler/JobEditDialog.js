@@ -12,8 +12,14 @@ import {
   Chip,
   Alert,
   FormControlLabel,
-  Switch
+  Switch,
+  FormControl,
+  RadioGroup,
+  Radio,
+  Typography,
+  Tooltip
 } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { updateScheduledJob } from '../../services/api';
 
 function JobEditDialog({ open, job, onClose, onSuccess }) {
@@ -23,23 +29,28 @@ function JobEditDialog({ open, job, onClose, onSuccess }) {
     schedule_time: '17:00',
     start_date: '',
     end_date: '',
+    duration_days: '',
     is_active: true
   });
   
   const [stockInput, setStockInput] = useState('');
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useSlidingWindow, setUseSlidingWindow] = useState(false);
 
   useEffect(() => {
     if (job) {
+      const hasDuration = job.duration_days && job.duration_days > 0;
       setFormData({
         name: job.name,
         stock_ids: job.stock_ids || [],
         schedule_time: job.schedule_time,
         start_date: job.start_date || '',
         end_date: job.end_date || '',
+        duration_days: job.duration_days || '',
         is_active: job.is_active
       });
+      setUseSlidingWindow(hasDuration);
     }
   }, [job]);
 
@@ -77,12 +88,24 @@ function JobEditDialog({ open, job, onClose, onSuccess }) {
       setError('Job name and at least one stock ID are required');
       return;
     }
+    if (useSlidingWindow && (!formData.duration_days || formData.duration_days <= 0)) {
+      setError('Duration days must be a positive number when using sliding window');
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await updateScheduledJob(job.job_id, formData);
+      const payload = { ...formData };
+      if (useSlidingWindow) {
+        payload.duration_days = parseInt(formData.duration_days);
+        payload.start_date = null;
+      } else {
+        payload.duration_days = null;
+      }
+      
+      await updateScheduledJob(job.job_id, payload);
       onSuccess();
     } catch (err) {
       setError(`Failed to update job: ${err.message}`);
@@ -148,23 +171,67 @@ function JobEditDialog({ open, job, onClose, onSuccess }) {
             required
           />
 
-          <TextField
-            label="Start Date (Optional)"
-            type="date"
-            value={formData.start_date}
-            onChange={(e) => handleInputChange('start_date', e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
+          <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                Date Range Configuration
+              </Typography>
+              <Tooltip title="Choose between fixed dates or a sliding window">
+                <InfoIcon fontSize="small" sx={{ ml: 1, color: 'text.secondary' }} />
+              </Tooltip>
+            </Box>
+            
+            <FormControl component="fieldset">
+              <RadioGroup
+                value={useSlidingWindow ? 'sliding' : 'fixed'}
+                onChange={(e) => setUseSlidingWindow(e.target.value === 'sliding')}
+              >
+                <FormControlLabel 
+                  value="fixed" 
+                  control={<Radio />} 
+                  label="Fixed Date Range" 
+                />
+                <FormControlLabel 
+                  value="sliding" 
+                  control={<Radio />} 
+                  label="Sliding Window (Last N Days)" 
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
 
-          <TextField
-            label="End Date (Optional)"
-            type="date"
-            value={formData.end_date}
-            onChange={(e) => handleInputChange('end_date', e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-          />
+          {useSlidingWindow ? (
+            <TextField
+              label="Duration (Days)"
+              type="number"
+              value={formData.duration_days}
+              onChange={(e) => handleInputChange('duration_days', e.target.value)}
+              fullWidth
+              required
+              inputProps={{ min: 1 }}
+              helperText="Number of days to fetch from today"
+            />
+          ) : (
+            <>
+              <TextField
+                label="Start Date (Optional)"
+                type="date"
+                value={formData.start_date}
+                onChange={(e) => handleInputChange('start_date', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+              />
+
+              <TextField
+                label="End Date (Optional)"
+                type="date"
+                value={formData.end_date}
+                onChange={(e) => handleInputChange('end_date', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+              />
+            </>
+          )}
 
           <FormControlLabel
             control={

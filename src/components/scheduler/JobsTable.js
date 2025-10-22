@@ -67,6 +67,7 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
             <TableCell><strong>Name</strong></TableCell>
             <TableCell><strong>Stocks</strong></TableCell>
             <TableCell><strong>Schedule</strong></TableCell>
+            <TableCell><strong>Date Range</strong></TableCell>
             <TableCell><strong>Status</strong></TableCell>
             <TableCell><strong>Last Run</strong></TableCell>
             <TableCell><strong>Next Run</strong></TableCell>
@@ -89,6 +90,24 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
                 </Box>
               </TableCell>
               <TableCell>{job.schedule_time}</TableCell>
+              <TableCell>
+                {job.duration_days ? (
+                  <Chip 
+                    label={`Last ${job.duration_days} days`} 
+                    size="small" 
+                    color="primary" 
+                    variant="outlined"
+                  />
+                ) : job.start_date ? (
+                  <Box sx={{ fontSize: '0.875rem' }}>
+                    {job.start_date}
+                    <br />
+                    to {job.end_date || 'today'}
+                  </Box>
+                ) : (
+                  <Chip label="Last 30 days" size="small" variant="outlined" />
+                )}
+              </TableCell>
               <TableCell>
                 <Chip
                   label={job.status}

@@ -11,8 +11,14 @@ import {
   Box,
   Chip,
   Alert,
-  Typography
+  Typography,
+  FormControl,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Tooltip
 } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { createScheduledJob } from '../../services/api';
 
 function JobCreationDialog({ open, onClose, onSuccess }) {
@@ -22,8 +28,11 @@ function JobCreationDialog({ open, onClose, onSuccess }) {
     schedule_time: '17:00',
     start_date: '',
     end_date: '',
+    duration_days: '',
     prefix: 'scheduled_stock_data'
   });
+  
+  const [useSlidingWindow, setUseSlidingWindow] = useState(false);
   
   const [stockInput, setStockInput] = useState('');
   const [error, setError] = useState(null);
@@ -67,12 +76,24 @@ function JobCreationDialog({ open, onClose, onSuccess }) {
       setError('At least one stock ID is required');
       return;
     }
+    if (useSlidingWindow && (!formData.duration_days || formData.duration_days <= 0)) {
+      setError('Duration days must be a positive number when using sliding window');
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
 
     try {
-      await createScheduledJob(formData);
+      const payload = { ...formData };
+      if (useSlidingWindow) {
+        payload.duration_days = parseInt(formData.duration_days);
+        delete payload.start_date;
+      } else {
+        delete payload.duration_days;
+      }
+      
+      await createScheduledJob(payload);
       onSuccess();
       setFormData({
         name: '',
@@ -80,8 +101,10 @@ function JobCreationDialog({ open, onClose, onSuccess }) {
         schedule_time: '17:00',
         start_date: '',
         end_date: '',
+        duration_days: '',
         prefix: 'scheduled_stock_data'
       });
+      setUseSlidingWindow(false);
     } catch (err) {
       setError(`Failed to create job: ${err.message}`);
     } finally {
@@ -151,25 +174,70 @@ function JobCreationDialog({ open, onClose, onSuccess }) {
             helperText="Daily execution time (24-hour format)"
           />
 
-          <TextField
-            label="Start Date (Optional)"
-            type="date"
-            value={formData.start_date}
-            onChange={(e) => handleInputChange('start_date', e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-            helperText="Leave empty to fetch last 30 days"
-          />
+          <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                Date Range Configuration
+              </Typography>
+              <Tooltip title="Choose between fixed dates or a sliding window that automatically updates">
+                <InfoIcon fontSize="small" sx={{ ml: 1, color: 'text.secondary' }} />
+              </Tooltip>
+            </Box>
+            
+            <FormControl component="fieldset">
+              <RadioGroup
+                value={useSlidingWindow ? 'sliding' : 'fixed'}
+                onChange={(e) => setUseSlidingWindow(e.target.value === 'sliding')}
+              >
+                <FormControlLabel 
+                  value="fixed" 
+                  control={<Radio />} 
+                  label="Fixed Date Range" 
+                />
+                <FormControlLabel 
+                  value="sliding" 
+                  control={<Radio />} 
+                  label="Sliding Window (Last N Days)" 
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
 
-          <TextField
-            label="End Date (Optional)"
-            type="date"
-            value={formData.end_date}
-            onChange={(e) => handleInputChange('end_date', e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            fullWidth
-            helperText="Leave empty for today"
-          />
+          {useSlidingWindow ? (
+            <TextField
+              label="Duration (Days)"
+              type="number"
+              value={formData.duration_days}
+              onChange={(e) => handleInputChange('duration_days', e.target.value)}
+              fullWidth
+              required
+              inputProps={{ min: 1 }}
+              helperText="Number of days to fetch from today (e.g., 60 for last 60 days)"
+              placeholder="60"
+            />
+          ) : (
+            <>
+              <TextField
+                label="Start Date (Optional)"
+                type="date"
+                value={formData.start_date}
+                onChange={(e) => handleInputChange('start_date', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                helperText="Leave empty to fetch last 30 days"
+              />
+
+              <TextField
+                label="End Date (Optional)"
+                type="date"
+                value={formData.end_date}
+                onChange={(e) => handleInputChange('end_date', e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                helperText="Leave empty for today"
+              />
+            </>
+          )}
 
           <TextField
             label="Data Prefix"
