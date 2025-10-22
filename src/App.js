@@ -10,6 +10,7 @@ import DataExportPage from './pages/DataExportPage.js';
 import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
 import AdvanceAnalyzedDataVisualizationPage from './pages/AdvanceAnalyzedDataVisualizationPage.js';
 import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
+import CandlestickTechnicalAnalysisPage from './pages/CandlestickTechnicalAnalysisPage.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
@@ -51,6 +52,15 @@ function App() {
               analyzedDataPrefix="stock_data"
             />
           }
+        />
+
+        <Route 
+          path="/analyzed-visualization-candlestick-technical-analysis" 
+          element={
+            <CandlestickTechnicalAnalysisPage 
+              analyzedDataPrefix="stock_data" 
+            />
+          } 
         />
 
         <Route 
