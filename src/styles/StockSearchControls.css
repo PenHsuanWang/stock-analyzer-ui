@@ -1,44 +1,134 @@
 .StockSearchControls {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  /* padding: 20px; */
-  /* width: 250px; */
-  gap: 10px;
+  align-items: stretch;
+  gap: 16px;
   background-color: #f7f7f7;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.StockSearchControls .stockInputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 .StockSearchControls input[type="text"],
 .StockSearchControls input[type="date"] {
-  /* padding: 10px; */
-  /* font-size: 10px; */
   border: 1px solid #1d9ed1;
-  border-radius: 5px;
-  width: 80%; 
-  margin-bottom: 10px; 
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 160px;
+  flex: 1 1 160px;
 }
 
 .StockSearchControls button {
-  /* padding: 10px 20px; */
   background-color: #282c34;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-bottom: 10px; 
+  padding: 10px 18px;
+  min-width: 120px;
 }
 
 .StockSearchControls button:hover {
   background-color: #1f242a;
 }
 
-.dateInputs {
-  display: flex;
-  gap: 10%;
+.error-message {
+  color: #dc2626;
+  margin-top: 8px;
+  text-align: center;
 }
 
-.error-message {
-  color: red;
-  margin-top: 10px;
+.metadata-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metadata-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.metadata-card__header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.metadata-card__freshness {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.metadata-card__freshness.fresh {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
+.metadata-card__freshness.stale {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #b91c1c;
+}
+
+.metadata-card__grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.metadata-card__label {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.metadata-card__value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.metadata-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.metadata-card__tag {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.metadata-card__description {
+  margin: 0;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.4;
 }

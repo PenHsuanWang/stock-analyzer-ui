@@ -62,8 +62,11 @@ const sendRequestMlSystem = async (method, path, payload = {}, params = {}) =>
 export const fetchDataFromSource = (payload) =>
   sendRequestStockData('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 
-export const getListDatasetFromDB = (payload) =>
-  sendRequestStockData('post', '/stock_data/get_all_keys', payload);
+export const getDataWithMetadata = (payload) =>
+  sendRequestStockData('post', '/stock_data/get_data_with_metadata', payload);
+
+export const getListDatasetFromDB = (payload = {}) =>
+  sendRequestStockData('post', '/stock_data/list_datasets', payload);
 
 export const deleteDatasetInDB = (payload) =>
   sendRequestStockData('post', '/stock_data/delete_data', payload);
@@ -72,7 +75,7 @@ export const computeFullAnalysisAndStore = (payload) =>
   sendRequestStockData('post', '/stock_data/compute_full_analysis_and_store', payload);
 
 export const fetchDataFromBackendDB = (payload) =>
-  sendRequestStockData('post', '/stock_data/get_data', payload);
+  getDataWithMetadata(payload);
 
 export const computeAssetsCorrelation = (payload) =>
   sendRequestStockData('post', '/stock_data/calculate_correlation', payload);

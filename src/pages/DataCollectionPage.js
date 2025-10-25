@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import BasePage from './BasePage';
 import '../styles/DataCollectionPage.css';
 
-import { fetchAndStashData, deleteDatasetInDB, computeFullAnalysisAndStore } from '../services/api';
+import { deleteDatasetInDB, computeFullAnalysisAndStore } from '../services/api';
 
 function DataCollectionPage({
   StockSearchControlsComponent,
@@ -117,6 +117,7 @@ function DataCollectionPage({
             <StockSearchControlsComponent 
               setChartData={setFetchedData} 
               setSearchParams={setSearchParams}
+              dataPrefix={prefix}
             />
           )}
         </div>
