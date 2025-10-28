@@ -245,7 +245,9 @@ const IntegratedTechnicalAnalysisChart = ({ data, selectedPatterns = [] }) => {
       title: { text: 'Price ($)', font: { size: 12, color: '#4b5563' } },
       domain: [0.50, 0.88],
       gridcolor: '#f3f4f6',
-      showgrid: true
+      showgrid: true,
+      autorange: true,
+      fixedrange: false
     },
     // Volume Axis
     yaxis2: {
