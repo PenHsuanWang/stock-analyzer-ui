@@ -1,7 +1,7 @@
 // src/App.js
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import BasePage from './pages/BasePage.js';
 import DataCollectionPage from './pages/DataCollectionPage';
@@ -11,6 +11,7 @@ import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage
 import AdvanceAnalyzedDataVisualizationPage from './pages/AdvanceAnalyzedDataVisualizationPage.js';
 import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
 import CandlestickTechnicalAnalysisPage from './pages/CandlestickTechnicalAnalysisPage.js';
+import StockAnalysisDashboard from './pages/StockAnalysisDashboard.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
@@ -55,8 +56,40 @@ function App() {
           }
         />
 
+        {/* New Unified Stock Analysis Dashboard */}
+        <Route 
+          path="/stock-analysis-dashboard" 
+          element={
+            <StockAnalysisDashboard 
+              analyzedDataPrefix="stock_data" 
+            />
+          } 
+        />
+
+        {/* Legacy routes - redirect to unified dashboard */}
         <Route 
           path="/analyzed-visualization-candlestick-technical-analysis" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
+        />
+
+        <Route 
+          path="/analyzed-visualization-candlestick-with-pattern" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
+        />
+
+        <Route 
+          path="/analyzed-visualization-candlestick" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
+        />
+
+        <Route
+          path="/advance-analyzed-visualization" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
+        />
+
+        {/* Keep old pages available for backward compatibility during transition */}
+        <Route 
+          path="/legacy/analyzed-visualization-candlestick-technical-analysis" 
           element={
             <CandlestickTechnicalAnalysisPage 
               analyzedDataPrefix="stock_data" 
@@ -65,7 +98,7 @@ function App() {
         />
 
         <Route 
-          path="/analyzed-visualization-candlestick-with-pattern" 
+          path="/legacy/analyzed-visualization-candlestick-with-pattern" 
           element={
             <CandlestickPatternPage 
               analyzedDataPrefix="stock_data" 
@@ -74,7 +107,7 @@ function App() {
         />
 
         <Route 
-          path="/analyzed-visualization-candlestick" 
+          path="/legacy/analyzed-visualization-candlestick" 
           element={
             <AnalyzedDataVisualizationPage 
               analyzedDataPrefix="stock_data" 
@@ -115,9 +148,15 @@ function App() {
 
         <Route
           path="/advance-analyzed-visualization" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
+        />
+
+        {/* Keep legacy version available */}
+        <Route
+          path="/legacy/advance-analyzed-visualization" 
           element={
             <AdvanceAnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" // You may adjust the props as needed
+              analyzedDataPrefix="stock_data"
             />
           } 
         />
