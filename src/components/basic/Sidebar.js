@@ -63,19 +63,6 @@ const navigationGroups = [
         to: '/stock-analysis-dashboard',
       },
       {
-        id: 'legacy-analysis',
-        label: 'Legacy Analysis Tools',
-        icon: '📂',
-        defaultOpen: false,
-        children: [
-          { id: 'candlestick', label: 'Multi-Asset Candlesticks', icon: '📈', to: '/legacy/analyzed-visualization-candlestick' },
-          { id: 'pattern', label: 'Patterns Overlay', icon: '🎯', to: '/legacy/analyzed-visualization-candlestick-with-pattern' },
-          { id: 'unified-ta', label: 'Unified TA Dashboard', icon: '🧭', to: '/legacy/analyzed-visualization-candlestick-technical-analysis' },
-          { id: 'advanced-viz', label: 'Advanced Multi-Chart', icon: '🛰️', to: '/legacy/advance-analyzed-visualization' },
-          { id: 'pairgrid', label: 'PairGrid Explorer', icon: '🧩', to: '/analyzed-visualization-pairgrid' },
-        ],
-      },
-      {
         id: 'ml-analysis',
         label: 'ML Analysis',
         icon: '🤖',
