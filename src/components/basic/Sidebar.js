@@ -57,25 +57,10 @@ const navigationGroups = [
     defaultOpen: true,
     children: [
       {
-        id: 'candlestick-analysis',
-        label: 'Candlestick Analysis',
-        icon: '🕯️',
-        defaultOpen: true,
-        children: [
-          { id: 'candlestick', label: 'Multi-Asset Candlesticks', icon: '📈', to: '/analyzed-visualization-candlestick' },
-          { id: 'pattern', label: 'Patterns Overlay', icon: '🎯', to: '/analyzed-visualization-candlestick-with-pattern' },
-        ],
-      },
-      {
-        id: 'technical-indicators',
-        label: 'Technical Indicators',
-        icon: '📐',
-        defaultOpen: true,
-        children: [
-          { id: 'unified-ta', label: 'Unified TA Dashboard', icon: '🧭', to: '/analyzed-visualization-candlestick-technical-analysis' },
-          { id: 'advanced-viz', label: 'Advanced Multi-Chart', icon: '🛰️', to: '/advance-analyzed-visualization' },
-          { id: 'pairgrid', label: 'PairGrid Explorer', icon: '🧩', to: '/analyzed-visualization-pairgrid' },
-        ],
+        id: 'stock-analysis',
+        label: 'Stock Analysis Dashboard',
+        icon: '📊',
+        to: '/stock-analysis-dashboard',
       },
       {
         id: 'ml-analysis',

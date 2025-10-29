@@ -1,16 +1,14 @@
 // src/App.js
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage.js';
 import BasePage from './pages/BasePage.js';
 import DataCollectionPage from './pages/DataCollectionPage';
 import DataAnalysisPage from './pages/DataAnalysisPage.js';
 import DataExportPage from './pages/DataExportPage.js';
 import AnalyzedDataVisualizationPage from './pages/AnalyzedDataVisualizationPage';
-import AdvanceAnalyzedDataVisualizationPage from './pages/AdvanceAnalyzedDataVisualizationPage.js';
-import CandlestickPatternPage from './pages/CandlestickPatternPage.js';
-import CandlestickTechnicalAnalysisPage from './pages/CandlestickTechnicalAnalysisPage.js';
+import StockAnalysisDashboard from './pages/StockAnalysisDashboard.js';
 import CorrelationAnalysisPage from './pages/CorrelationAnalysisPage';
 import ModelManagePage from './pages/ModelManagePage';
 import ModelComparisonPage from './pages/ModelComparisonPage';
@@ -55,32 +53,30 @@ function App() {
           }
         />
 
+        {/* Unified Stock Analysis Dashboard */}
         <Route 
-          path="/analyzed-visualization-candlestick-technical-analysis" 
+          path="/stock-analysis-dashboard" 
           element={
-            <CandlestickTechnicalAnalysisPage 
+            <StockAnalysisDashboard 
               analyzedDataPrefix="stock_data" 
             />
           } 
+        />
+
+        {/* Redirect old routes to unified dashboard */}
+        <Route 
+          path="/analyzed-visualization-candlestick-technical-analysis" 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
         />
 
         <Route 
           path="/analyzed-visualization-candlestick-with-pattern" 
-          element={
-            <CandlestickPatternPage 
-              analyzedDataPrefix="stock_data" 
-            />
-          } 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
         />
 
         <Route 
           path="/analyzed-visualization-candlestick" 
-          element={
-            <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" 
-              chartType="candlestick" 
-            />
-          } 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
         />
         
         <Route 
@@ -115,11 +111,7 @@ function App() {
 
         <Route
           path="/advance-analyzed-visualization" 
-          element={
-            <AdvanceAnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" // You may adjust the props as needed
-            />
-          } 
+          element={<Navigate to="/stock-analysis-dashboard" replace />}
         />
         
         <Route 
