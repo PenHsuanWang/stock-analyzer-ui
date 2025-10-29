@@ -293,3 +293,20 @@ export const stopScheduledJob = async (jobId) => {
 export const getSchedulerStatus = async () => {
   return sendRequestStockData('get', '/scheduler/status');
 };
+
+// Get execution history for a job
+export const getJobExecutionHistory = async (jobId, limit = 50, status = null) => {
+  const params = { limit };
+  if (status) params.status = status;
+  return sendRequestStockData('get', `/scheduler/jobs/${jobId}/history`, {}, params);
+};
+
+// Get latest execution details for a job
+export const getLatestJobExecution = async (jobId) => {
+  return sendRequestStockData('get', `/scheduler/jobs/${jobId}/latest-execution`);
+};
+
+// Get specific execution details by execution ID
+export const getExecutionDetails = async (executionId) => {
+  return sendRequestStockData('get', `/scheduler/executions/${executionId}`);
+};

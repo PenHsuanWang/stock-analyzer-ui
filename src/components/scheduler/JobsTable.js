@@ -1,6 +1,6 @@
 // src/components/scheduler/JobsTable.js
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -19,9 +19,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
+import ErrorIcon from '@mui/icons-material/Error';
+import WarningIcon from '@mui/icons-material/Warning';
+import HistoryIcon from '@mui/icons-material/History';
 import { format } from 'date-fns';
+import JobErrorDialog from './JobErrorDialog';
+import JobExecutionHistory from './JobExecutionHistory';
 
 function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
@@ -35,6 +43,28 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
       default:
         return 'default';
     }
+  };
+
+  const handleStatusClick = (job) => {
+    if (job.status === 'failed' || job.status === 'completed') {
+      setSelectedJob(job);
+      setErrorDialogOpen(true);
+    }
+  };
+
+  const handleHistoryClick = (job) => {
+    setSelectedJob(job);
+    setHistoryDialogOpen(true);
+  };
+
+  const handleCloseErrorDialog = () => {
+    setErrorDialogOpen(false);
+    setSelectedJob(null);
+  };
+
+  const handleCloseHistoryDialog = () => {
+    setHistoryDialogOpen(false);
+    setSelectedJob(null);
   };
 
   const formatDate = (dateString) => {
@@ -109,11 +139,16 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
                 )}
               </TableCell>
               <TableCell>
-                <Chip
-                  label={job.status}
-                  color={getStatusColor(job.status)}
-                  size="small"
-                />
+                <Tooltip title={job.status === 'failed' ? 'Click to see error details' : job.status === 'completed' ? 'Click to see execution details' : ''}>
+                  <Chip
+                    label={job.status}
+                    color={getStatusColor(job.status)}
+                    size="small"
+                    onClick={() => handleStatusClick(job)}
+                    icon={job.status === 'failed' ? <ErrorIcon /> : job.status === 'completed' ? <WarningIcon /> : undefined}
+                    sx={{ cursor: (job.status === 'failed' || job.status === 'completed') ? 'pointer' : 'default' }}
+                  />
+                </Tooltip>
               </TableCell>
               <TableCell>{formatDate(job.last_run)}</TableCell>
               <TableCell>{formatDate(job.next_run)}</TableCell>
@@ -125,6 +160,15 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
                 />
               </TableCell>
               <TableCell align="right">
+                <Tooltip title="View Execution History">
+                  <IconButton
+                    onClick={() => handleHistoryClick(job)}
+                    color="primary"
+                    size="small"
+                  >
+                    <HistoryIcon />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title={job.is_active ? 'Stop Job' : 'Start Job'}>
                   <IconButton
                     onClick={() => onToggle(job)}
@@ -149,6 +193,26 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
           ))}
         </TableBody>
       </Table>
+      
+      {/* Error Dialog */}
+      {selectedJob && (
+        <JobErrorDialog
+          open={errorDialogOpen}
+          onClose={handleCloseErrorDialog}
+          jobId={selectedJob.job_id}
+          jobName={selectedJob.name}
+        />
+      )}
+      
+      {/* History Dialog */}
+      {selectedJob && (
+        <JobExecutionHistory
+          open={historyDialogOpen}
+          onClose={handleCloseHistoryDialog}
+          jobId={selectedJob.job_id}
+          jobName={selectedJob.name}
+        />
+      )}
     </TableContainer>
   );
 }
