@@ -53,7 +53,10 @@ The central hub for technical analysis, combining:
 ### Prerequisites
 - Node.js (v14+)
 - NPM or Yarn
-- Backend Services (Stock Data Service & ML System) running locally or remotely.
+- **Backend Services**: This frontend relies on two distinct microservices:
+  1.  **Stock Data Service** (Default: `http://localhost:8001`) - Handles data fetching, storage, and scheduling.
+  2.  **ML System** (Default: `http://localhost:8000`) - Handles model training, inference, and management.
+  *Ensure these services are running locally or are accessible via the network.*
 
 ### Setup
 
@@ -75,6 +78,53 @@ The central hub for technical analysis, combining:
    npm start
    ```
    The application will open at `http://localhost:3000`.
+
+---
+
+## Development Guidelines
+
+**New Developer?** Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guides on setup, data models, and testing.
+
+### AI-Assisted Development with GitHub Copilot
+
+This project includes custom instructions for GitHub Copilot Chat that automatically enforce our coding standards, architecture patterns, and quality requirements.
+
+**Quick Setup:**
+1. Install [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) and [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions in VS Code
+2. The custom instructions in `.github/copilot-instructions.md` will load automatically
+3. See [.github/COPILOT_SETUP_GUIDE.md](./.github/COPILOT_SETUP_GUIDE.md) for detailed setup
+4. Use [.github/COPILOT_QUICK_REFERENCE.md](./.github/COPILOT_QUICK_REFERENCE.md) for command templates
+
+**What Copilot Knows:**
+- ✅ Project architecture and folder structure
+- ✅ Technology stack (React 18, MUI v5, Plotly.js)
+- ✅ Coding standards and anti-patterns
+- ✅ Accessibility requirements (WCAG AA)
+- ✅ Testing patterns and mocking strategies
+
+### 1. Verification & Testing
+We use `jest` and `react-testing-library` (standard Create React App setup).
+
+- **Run Unit Tests:**
+  ```bash
+  npm test
+  ```
+  *Note: Press `a` to run all tests, or `q` to quit the watch mode.*
+
+- **Linting:**
+  The project uses standard ESLint configuration. Any linting errors will appear in the console during `npm start` or the build process.
+
+### 2. Build & Deployment
+To create an optimized production build:
+```bash
+npm run build
+```
+This generates a `build/` directory containing static assets (HTML, CSS, JS) ready for deployment. These files can be served by any static file server (Nginx, Apache, S3, Docker).
+
+### 3. Coding Standards
+- **Component Structure:** Reusable UI elements go in `src/components/`, while route-specific layouts go in `src/pages/`.
+- **Styling:** We use a modular CSS approach. Create a corresponding `.css` file in `src/styles/` for each major component to avoid style leakage.
+- **State:** Prefer functional components and Hooks (`useState`, `useEffect`) over class components.
 
 ---
 
@@ -146,11 +196,13 @@ const { fetchData, isLoading, error } = useStockDataFetcher('stock_data');
 
 ### 4. Service Layer Pattern
 **Location:** `src/services/api.js`
-All API interactions are encapsulated in a single service module. This creates a unified interface for the frontend to communicate with multiple backend microservices (`stock-data` and `ml-system`). It handles:
-- Base URL configuration (via `.env`)
-- Timeout management
-- Error normalization
-- Request interceptors
+All API interactions are encapsulated in a single service module. This creates a unified interface for the frontend to communicate with multiple backend microservices.
+- **Why?** Our architecture splits "Data/Scheduling" and "Machine Learning" into separate backend services. The frontend unifies them here.
+- **Features:**
+  - Base URL configuration (via `.env`)
+  - Timeout management
+  - Error normalization
+  - Request interceptors
 
 ---
 
