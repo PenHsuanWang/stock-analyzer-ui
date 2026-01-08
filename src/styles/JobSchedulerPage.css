@@ -3,6 +3,7 @@
 .job-scheduler-page {
   padding: 20px;
   min-height: 100vh;
+  width: 100%;
 }
 
 .page-header {
