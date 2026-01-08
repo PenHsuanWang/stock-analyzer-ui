@@ -160,34 +160,36 @@ function JobsTable({ jobs, onEdit, onDelete, onToggle }) {
                 />
               </TableCell>
               <TableCell align="right">
-                <Tooltip title="View Execution History">
-                  <IconButton
-                    onClick={() => handleHistoryClick(job)}
-                    color="primary"
-                    size="small"
-                  >
-                    <HistoryIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={job.is_active ? 'Stop Job' : 'Start Job'}>
-                  <IconButton
-                    onClick={() => onToggle(job)}
-                    color={job.is_active ? 'error' : 'success'}
-                    size="small"
-                  >
-                    {job.is_active ? <StopIcon /> : <PlayArrowIcon />}
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit Job">
-                  <IconButton onClick={() => onEdit(job)} size="small">
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete Job">
-                  <IconButton onClick={() => onDelete(job.job_id)} color="error" size="small">
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
+                <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+                  <Tooltip title="View Execution History">
+                    <IconButton
+                      onClick={() => handleHistoryClick(job)}
+                      color="primary"
+                      size="small"
+                    >
+                      <HistoryIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={job.is_active ? 'Stop Job' : 'Start Job'}>
+                    <IconButton
+                      onClick={() => onToggle(job)}
+                      color={job.is_active ? 'error' : 'success'}
+                      size="small"
+                    >
+                      {job.is_active ? <StopIcon /> : <PlayArrowIcon />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Edit Job">
+                    <IconButton onClick={() => onEdit(job)} size="small">
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Job">
+                    <IconButton onClick={() => onDelete(job.job_id)} color="error" size="small">
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </TableCell>
             </TableRow>
           ))}

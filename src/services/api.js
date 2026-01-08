@@ -59,26 +59,45 @@ const sendRequestMlSystem = async (method, path, payload = {}, params = {}) =>
   sendRequest(apiClientMlSystem, method, path, payload, params);
 
 /** Stock Data Backend API functions **/
-export const fetchDataFromSource = (payload) =>
-  sendRequestStockData('post', '/stock_data/fetch_and_get_as_dataframe', payload);
 
-export const getDataWithMetadata = (payload) =>
-  sendRequestStockData('post', '/stock_data/get_data_with_metadata', payload);
+// Helper function to extract prefix from payload and build the correct path
+const getPathWithPrefix = (endpoint, payload) => {
+  const prefix = payload?.prefix || 'stock_data';
+  return `/${prefix}/${endpoint}`;
+};
 
-export const getListDatasetFromDB = (payload = {}) =>
-  sendRequestStockData('post', '/stock_data/list_datasets', payload);
+export const fetchDataFromSource = (payload) => {
+  const path = getPathWithPrefix('fetch_and_get_as_dataframe', payload);
+  return sendRequestStockData('post', path, payload);
+};
 
-export const deleteDatasetInDB = (payload) =>
-  sendRequestStockData('post', '/stock_data/delete_data', payload);
+export const getDataWithMetadata = (payload) => {
+  const path = getPathWithPrefix('get_data_with_metadata', payload);
+  return sendRequestStockData('post', path, payload);
+};
 
-export const computeFullAnalysisAndStore = (payload) =>
-  sendRequestStockData('post', '/stock_data/compute_full_analysis_and_store', payload);
+export const getListDatasetFromDB = (payload = {}) => {
+  const path = getPathWithPrefix('list_datasets', payload);
+  return sendRequestStockData('post', path, payload);
+};
+
+export const deleteDatasetInDB = (payload) => {
+  const path = getPathWithPrefix('delete_data', payload);
+  return sendRequestStockData('post', path, payload);
+};
+
+export const computeFullAnalysisAndStore = (payload) => {
+  const path = getPathWithPrefix('compute_full_analysis_and_store', payload);
+  return sendRequestStockData('post', path, payload);
+};
 
 export const fetchDataFromBackendDB = (payload) =>
   getDataWithMetadata(payload);
 
-export const computeAssetsCorrelation = (payload) =>
-  sendRequestStockData('post', '/stock_data/calculate_correlation', payload);
+export const computeAssetsCorrelation = (payload) => {
+  const path = getPathWithPrefix('calculate_correlation', payload);
+  return sendRequestStockData('post', path, payload);
+};
 
 export const exportDataFromDB = async (url, data, mode) => {
   if (mode === 'http') {
