@@ -1,362 +1,187 @@
-# Documents
+# Stock Analysis Portal - Frontend UI
 
 ## Project Overview
 
-This web application is designed for querying and visualizing stock market information. Users can select stocks, specify date ranges, and visualize the data in the form of candlestick and heatmap diagrams, facilitating an in-depth analysis of stock trends and correlations.
+This web application is the frontend user interface for a comprehensive Stock Analysis Service. It provides tools for collecting, analyzing, and visualizing stock market data. Users can select stocks, specify date ranges, train machine learning models, schedule automatic data fetching jobs, and visualize complex financial data through interactive charts (Candlestick, Heatmap, MACD, RSI).
 
-## Usage
+## Key Features
 
-To start the Stock Analysis Portal, run the following command in your project directory:
+### 1. Unified Stock Analysis Dashboard
+**Location:** `/stock-analysis-dashboard`
+The central hub for technical analysis, combining:
+- **Candlestick Charts**: Interactive price charts with zoom and pan.
+- **Pattern Recognition**: Automatic detection of candlestick patterns (e.g., Doji, Hammer) with filtering capabilities.
+- **Technical Indicators**: Toggleable MACD, RSI, Moving Averages, and Volume charts.
+- **Multi-Asset Support**: Compare multiple stocks side-by-side.
 
-```bash
-npm start
-```
+### 2. Job Scheduler (New!)
+**Location:** `/job-scheduler`
+- **Automated Fetching**: Schedule recurring jobs to fetch stock data (e.g., "Fetch AAPL every day at 18:00").
+- **Execution History**: View detailed logs of past job runs, including success/failure status and specific error messages.
+- **Management**: Create, edit, pause, or delete scheduled jobs.
 
-This will launch the web application on `http://localhost:3000`. The portal provides various functionalities spread across different pages:
+### 3. Data Collection & Management
+**Location:** `/data-collect`
+- **Search & Fetch**: Interface to query the backend for raw stock data.
+- **Data Preview**: Instant candlestick preview of fetched data.
+- **Management**: Save interesting datasets to the database for future analysis or delete obsolete ones.
 
-### Home (`/`)
-The homepage serves as the landing page for the Stock Analysis Portal, providing quick access to all the features and a summary of the portal's capabilities.
-![](https://i.imgur.com/G7joesh.png)
+### 4. Machine Learning Integration
+- **Model Management** (`/model-manage`): View and manage trained ML models.
+- **Training Setup** (`/model-training-setup`): Configure and initiate new model training sessions.
+- **Trainer Control** (`/trainer-control`): Monitor active training processes and view real-time metrics.
+- **Model Comparison** (`/model-comparison`): Compare performance metrics across different models.
 
-### Data Collection (`/data-collect`)
-This page is dedicated to collecting raw stock data. Users can search for stocks, view raw data, collect it, and manage previously saved datasets.
-![](https://i.imgur.com/qTPDY5v.gif)
+---
 
-### Data Analysis (`/data-analysis`)
-On this page, users can analyze raw stock data. It offers tools for dissecting and understanding stock data trends and performing advanced data analysis.
-![](https://i.imgur.com/KFzM2ix.gif)
+## Technical Stack
 
-### Analyzed Data Visualization - Candlestick with Pattern (`/analyzed-visualization-candlestick-with-pattern`)
-This endpoint allows users to view candlestick charts with highlighted patterns for analyzed stock data, offering insights into potential market movements and trend reversals.
+- **Framework**: React 18 (Create React App)
+- **UI Library**: Material UI (MUI) v5
+- **Charting**: 
+  - `plotly.js` / `react-plotly.js` (Primary for complex financial charts)
+  - `chart.js` / `react-chartjs-2` (Secondary visualizations)
+- **State Management**: React Hooks (`useState`, `useEffect`, `useCallback`)
+- **Routing**: `react-router-dom` v6
+- **HTTP Client**: `axios`
+- **Date Handling**: `date-fns`
 
-![](https://i.imgur.com/XEixyW3.gif)
+---
 
-### Analyzed Data Visualization - Candlestick (`/analyzed-visualization-candlestick`)
-Visit this page to view simple candlestick charts for analyzed stock data, which can be crucial for understanding price action and market sentiment.
+## Installation & Usage
 
-![](https://i.imgur.com/KFzM2ix.gif)
+### Prerequisites
+- Node.js (v14+)
+- NPM or Yarn
+- Backend Services (Stock Data Service & ML System) running locally or remotely.
 
-### Analyzed Data Visualization - Heatmap (`/analyzed-visualization-heatmap`)
-This page presents a heatmap visualization of analyzed stock data, providing a visual representation of complex datasets to quickly grasp correlations and variances.
+### Setup
 
-![](https://imgur.com/E0B6xro.gif)
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-### Analyzed Data Visualization - Histogram (`/analyzed-visualization-histogram`)
-Access this page to view histogram charts of analyzed stock data, which are useful for identifying the distribution and frequency of data points within the dataset.
+2. **Configuration**
+   Create a `.env` file in the root directory (optional, defaults provided in `src/services/api.js`):
+   ```env
+   REACT_APP_BACKEND_URL_STOCK_DATA=http://localhost:8001
+   REACT_APP_BACKEND_URL_ML_SYSTEM=http://localhost:8000
+   REACT_APP_API_TIMEOUT=30000
+   ```
 
-### Analyzed Data Visualization - Pairgrid (`/analyzed-visualization-pairgrid`)
-The Pairgrid page offers a grid layout visualization of analyzed stock data, helping in identifying the relationship between different pairs of variables.
+3. **Start Development Server**
+   ```bash
+   npm start
+   ```
+   The application will open at `http://localhost:3000`.
 
-### Correlation Analysis (`/correlation-analysis`)
-This page is designed for the correlation analysis of stock data, allowing users to find the statistical relationship between different stocks or market indicators.
+---
 
-![](https://imgur.com/6nfKvHv.gif)
-
-Each page is crafted to provide specific functionalities to cater to the various needs of stock market analysis, ensuring a comprehensive toolset for traders and analysts alike.
-
-### Project Structure
-
-Below is the file structure of the project, highlighting the main directories and files:
-
-```
-/my-project
-|-- /node_modules
-|-- /public
- src
-    ├── App.css
-    ├── App.js
-    ├── App.test.js
-    ├── components
-    │   ├── basic
-    │   │   ├── Footer.js
-    │   │   ├── Header.js
-    │   │   ├── NavBar.js
-    │   │   └── Sidebar.js
-    │   ├── charts
-    │   │   ├── CandlestickDiagram.js
-    │   │   └── TwoDHeatmapDiagram.js
-    │   ├── containers
-    │   │   ├── DataCollectMiddlePanelControls.js
-    │   │   ├── ListDatasetFromDBControls.js
-    │   │   └── StockSearchControls.js
-    │   ├── lists
-    │   ├── views
-    │   │   └── layout
-    │   │       └── ImageGrid.js
-    │   └── widgets
-    │       └── buttons
-    │           └── CustomButtons.js
-    ├── index.css
-    ├── index.js
-    ├── logo.svg
-    ├── pages
-    │   ├── AnalyzedDataVisualizationPage.js
-    │   ├── BasePage.js
-    │   ├── DataAnalysisPage.js
-    │   ├── DataCollectionPage.js
-    │   ├── DataVisualizationPage.js
-    │   └── HomePage.js
-    ├── services
-    │   └── api.js
-    └── styles
-        ├── AnalyzedDataVisualizationPage.css
-        ├── BasePage.css
-        ├── CustomButtons.css
-        ├── DataAnalysisPage.css
-        ├── DataCollectionPage.css
-        ├── DataVisualizationPage.css
-        ├── Footer.css
-        ├── Header.css
-        ├── HomePage.css
-        ├── ListDatasetFromDBControls.css
-        ├── NavBar.css
-        ├── Sidebar.css
-        └── StockSearchControls.css
-|-- package.json
-|-- ...
-```
-
-## Component Introduction
-
-`App.js` is the main entry point of the application, routing to different pages and providing them with necessary components.
-
-### Key Components
-
-- `BasePage.js`: Serves as the layout foundation for the application, including the Header, Footer, NavBar, Sidebar, and the main content area.
-- `DataVisualizationPage.js`: Used for rendering the stock data visualization interface.
-- `AnalyzedDataVisualizationPage.js`: Handles the visualization of analyzed stock data using candlestick and heatmap diagrams.
-- `CandlestickDiagram.js` and `TwoDHeatmapDiagram.js`: Chart components responsible for rendering the stock data visualizations.
-- `StockSearchControls.js` and `ListDatasetFromDBControls.js`: Interactive components for querying and listing stock data.
-- `api.js`: Contains services for backend API interaction.
-
-### Styling
-
-Each component has an associated CSS file located under `src/styles`, ensuring a consistent and modular styling approach.
-
-## Design Patterns
-
-This application leverages common design patterns to ensure code maintainability and scalability:
-
-- **Composition**: Utilized to combine various UI components into complex layouts.
-- **Strategy Pattern**: Implemented in routing to allow dynamic component rendering based on the user's navigation.
-
-### Page Rendering Structure
-
-BasePage.js is used as the base template for all pages. It provides the layout for Header, NavBar, Footer, and Sidebar. The main screen position (Main block) is defined. The other page components are arranged within the Main.
-
-Other feature pages all operate within the Main block, operations in main are implemented in another any_name_Page.js.
-Page is responsible for defining the webpage layout and then passing different functional components into each block.
-
-As an example, consider a webpage that displays a line chart of stock prices over time. The object relationship diagram is as follows:
+## Project Structure
 
 ```
-                      Reenter various components
-                           |
-App.js startup -----------> Calls page -> Sets Route path
-                           |
-                           |
-BasePage.js -> DataVisualizePage.js
+src/
+├── components/          # Reusable UI components
+│   ├── basic/           # Layout components (Header, Sidebar, etc.)
+│   ├── charts/          # Visualization components (Candlestick, MACD, etc.)
+│   ├── containers/      # Complex logic containers & control panels
+│   └── scheduler/       # Job Scheduler specific components
+├── pages/               # Main route views
+│   ├── StockAnalysisDashboard.js  # Unified Analysis View
+│   ├── JobSchedulerPage.js        # Job Management View
+│   ├── DataCollectionPage.js      # Data Fetching View
+│   └── ...
+├── services/            # API communication logic
+│   └── api.js           # Centralized Axios instances & endpoints
+├── hooks/               # Custom React Hooks
+│   ├── useStockDataFetcher.js
+│   └── useCandlestickPatterns.js
+├── styles/              # CSS files (Component-specific styles)
+└── utils/               # Helper functions
 ```
 
-## Introduction to Main Components and Modules
+---
 
-**2.1 BasePage (Base Page Module)**
+## Architecture & Design Patterns
 
-`BasePage` serves as the foundational page for the entire application, responsible for presenting common frameworks such as Header, Footer, Sidebar, NavBar, and Main block.
+This application leverages common design patterns to ensure code maintainability, scalability, and ease of onboarding for new developers.
 
-**Location:** `src/pages/BasePage.js`
-
-**2.2 AnalyzedDataVisualizationPage (Analyzed Data Visualization Page Module)**
-
-`AnalyzedDataVisualizationPage` is now the primary page for stock information query and visualization. It dynamically handles the visualization type through the `chartType` prop, which can be set to 'candlestick' or 'heatmap' to display the corresponding diagrams. The page manages the selection of datasets for visualization and the visualization data state itself.
-
-**Location:** `src/pages/AnalyzedDataVisualizationPage.js`
-
-**2.3 CandlestickDiagram (Candlestick Chart Component)**
-
-`CandlestickDiagram` visualizes stock data as a candlestick chart, suitable for detailed analysis of stock price movements over time.
-
-**Location:** `src/components/charts/CandlestickDiagram.js`
-
-**2.4 TwoDHeatmapDiagram (2D Heatmap Chart Component)**
-
-`TwoDHeatmapDiagram` presents correlation data in a heatmap format, offering insights into the interdependence between different stocks or metrics.
-
-**Location:** `src/components/charts/TwoDHeatmapDiagram.js`
-
-**2.5 StockSearchControls (Stock Query Control Component)**
-
-`StockSearchControls` allows users to input stock codes and date ranges to fetch and visualize data through interactive controls.
-
-**Location:** `src/components/containers/StockSearchControls.js`
-
-**2.6 api.js (API Service Module)**
-
-`api.js` includes functions for fetching data from the backend API, such as stock prices, correlation data, and other stock-related metrics.
-
-**Location:** `src/services/api.js`
-
-## Design Patterns and Logic
-
-### 1. Application of Composition 
-
-**Description:** Composition is a method of constructing more complex objects using existing objects. In React, this means we can create more intricate UI elements by combining multiple components. Composition allows us to reuse code, logic, or UI segments, ensuring low coupling and high cohesion between modules.
+### 1. Component Composition
+**Description:** Composition is a method of constructing more complex objects using existing objects. In React, this means we can create more intricate UI elements by combining multiple components.
 
 **Code Example:** 
 The `BasePage` component exemplifies composition. It combines `Header`, `NavBar`, `Sidebar`, and `Footer` components and provides an area (`children` props) to display the main content.
+
 ```javascript
 const BasePage = ({ children }) => (
     <div className="App">
         <Header title="Website Logo & Navigation" />
         <NavBar />
-        ...
-        <main className="Main-content">
-            {children}
-        </main>
-        ...
+        <div className="App-content">
+            <Sidebar />
+            <main className="Main-content">
+                {children}
+            </main>
+        </div>
+        <Footer content="Footer Content" />
     </div>
 );
 ```
 
-   1. **Basic Component Composition:** `BasePage.js` demonstrates combining basic UI components like Header, NavBar, Sidebar, and Footer. Through component combination, each section can be developed, tested, and reused independently.
+### 2. Strategy Pattern
+**Description:** The Strategy Pattern defines a series of algorithms and encapsulates each of them, making them interchangeable. In this React application, this is reflected in:
+1.  **Routing:** Different routing paths correspond to different component strategies.
+2.  **Analysis Modes:** The `StockAnalysisDashboard` uses an internal state (`analysisMode`) to switch between different visualization strategies (Quick View, Pattern Analysis, Technical Analysis) without changing the route.
 
-   2. **Data Visualization Component Composition:** `DataVisualizationPage.js` dynamically composes content by accepting external `ChartComponent` and `ControlComponent`. This pattern makes page layout and functionality separation more flexible, allowing for combinations of different charts and control components based on need.
+### 3. Custom Hooks (Logic Abstraction)
+**Description:** We abstract complex stateful logic into custom hooks to keep UI components clean and focused on rendering.
 
-Components are decided in `App.js`, determining where and which components should be used, then passed to `DataVisualizationPage` via props. This pattern not only makes component combination more flexible but also facilitates future expansion and refactoring. For instance, for the stock information query feature, you've utilized `StockSearchControls` to capture user input and then relayed this info to `StockDiagram` to display the corresponding chart.
-
-**Future Expansion Methods**
-
-If you wish to continue expanding using the composition method, here are some suggestions:
-
- 1. **Incorporating New Components:** If there are future fundamental UI components or features, you can simply create a new component and integrate it where needed using composition.
-
- 2. **Modularizing Features:** When adding new data visualization tools or control panels, you can emulate the pattern of `StockDiagram` and `StockSearchControls`, establishing separate data visualization and control components, then combining them in `App.js`.
-
- 3. **Plug-and-play:** Through component combination, you can easily replace some functionalities, like swapping out different chart libraries or control panels, without affecting other segments.
-
-### 2. Higher-Order Components (HOC)
-
-**Description:**
-
-Higher-Order Components (HOC) are an advanced technique in React for reusing component logic. An HOC is a function that takes a component as a parameter and returns a new component. This pattern allows us to wrap components with another one to add some additional properties or behaviors without modifying the component itself.
-
-**Example in Your Code:**
-
-`DataVisualizationPage` can be considered a component that simulates HOC. Although it's not an HOC in the traditional sense, it demonstrates similar behavior, as it takes other components (`ChartComponent` and `ControlComponent`) as props and decides how to render them.
-
+**Example:** `useStockDataFetcher`
+Instead of handling loading states, error catching, and API calls directly in the component, we extract it:
 ```javascript
-function DataVisualizationPage({ ChartComponent, ControlComponent }) {
-    ...
-    {ControlComponent && <ControlComponent setChartData={setChartData} />}
-    ...
-    {ChartComponent && <ChartComponent data={chartData} />}
-    ...
-}
+// src/hooks/useStockDataFetcher.js
+const { fetchData, isLoading, error } = useStockDataFetcher('stock_data');
 ```
 
-**How It Works:**
-
-When deciding which components to use in `App.js`, they are passed as props to `DataVisualizationPage`. This approach provides `DataVisualizationPage` with dynamic composition capabilities, allowing it to decide on presentation and behavior
-
-. In this pattern, you can introduce different data visualization tools or control panels without altering the `DataVisualizationPage` structure.
-
-**Expanding With HOCs:**
-
-To further utilize HOCs:
-
- 1. **Adding Functionality:** You could wrap existing components in HOCs to provide them with additional logic or state management.
- 2. **Styling & Theming:** HOCs can be utilized to modify the styles of wrapped components dynamically.
- 3. **Access Control:** Implementing authentication or access control logic within HOCs can help in displaying components based on user roles.
-
-### 3. Strategy Pattern
-
-**Description:** The Strategy Pattern defines a series of algorithms and encapsulates each of them, making them interchangeable. The main purpose of this pattern is to separate the use of algorithms from their implementation, providing a mechanism to choose different strategies. In React applications, the Strategy Pattern is mainly reflected in the dynamic replacement and configuration of components, corresponding to different scenarios or functional requirements.
-
-**Code Example:**  
-In the routing configuration of `App.js`, we can observe the utilization of the Strategy Pattern. Specifically, different routing paths correspond to different component strategies. For example, when the route is `/stock-ma-plot`, the `DataVisualizationPage` component will dynamically display the corresponding components based on the provided `ChartComponent` and `ControlComponent` strategies.
-
-```javascript
-<Route 
-  path="/stock-ma-plot" 
-  element={
-    <DataVisualizationPage 
-      ChartComponent={StockDiagram} 
-      ControlComponent={StockSearchControls}
-    />
-  } 
-/>
-```
-
-**How It Works:**  
-Through routing configuration, multiple component combination strategies are defined. These strategies can be dynamically switched based on user requirements or different functional modules. When a user accesses a specific route, the corresponding component strategy is activated, ensuring the page presentation and functionality match the route.
-
-**Advantages:**  
-
-1. **Flexibility:** The Strategy Pattern provides a mechanism that allows us to dynamically replace components or functionalities based on different requirements or scenarios without modifying existing code.
-
-2. **Decoupling:** This pattern ensures that the implementation and use of strategies are separate. This means when we need to add or modify a strategy, other parts of the code won't be affected.
-
-3. **Scalability:** When requirements change or new functionalities are added, just add the corresponding strategy and configure it in the routes without significant refactoring.
-
-The Strategy Pattern in React development, especially in component composition and routing configuration, offers potent flexibility and scalability. In this project, the combination of composition, higher-order components, and the strategy pattern ensures a clear, modular, and maintainable overall structure.
+### 4. Service Layer Pattern
+**Location:** `src/services/api.js`
+All API interactions are encapsulated in a single service module. This creates a unified interface for the frontend to communicate with multiple backend microservices (`stock-data` and `ml-system`). It handles:
+- Base URL configuration (via `.env`)
+- Timeout management
+- Error normalization
+- Request interceptors
 
 ---
 
-- **Composition:** We often use composition to create more complex components. For instance, the `BasePage` component combines several child components to create a unified page layout.
+## Component Introduction
 
-- **Higher-Order Components (HOC):** Some components operate like HOCs, accepting other components as parameters and rendering dynamically based on those components. This offers high reusability and flexibility.
+### Key Pages & Modules
 
-- **Strategy Pattern:** In configuring routes, this project employs the Strategy Pattern. This means we can effortlessly provide different component combinations for different routes.
+**1. StockAnalysisDashboard (Unified Dashboard)**
+**Location:** `src/pages/StockAnalysisDashboard.js`
+The successor to multiple fragmented visualization pages. It serves as the primary interface for technical analysis. It dynamically handles visualization types and manages the state for pattern recognition, indicator toggles, and data fetching.
 
-By adhering to these design principles, the modularity and maintainability of the project are ensured.
+**2. JobSchedulerPage (Scheduler Module)**
+**Location:** `src/pages/JobSchedulerPage.js`
+A dedicated management interface for the background job system. It uses a polling mechanism (via `useEffect` and `setInterval`) to keep the job status list up-to-date in real-time.
 
-## 3. Usage
+**3. BasePage (Layout Module)**
+**Location:** `src/pages/BasePage.js`
+The foundational layout component. All page views are wrapped in `BasePage` to ensure consistent navigation (Sidebar/Header) and styling structure.
 
-### 3.1 Installing Required Packages
+**4. CandlestickDiagram (Chart Component)**
+**Location:** `src/components/charts/CandlestickDiagram.js`
+A reusable chart component based on `react-plotly.js`. It accepts data props and renders interactive financial charts. It is designed to be purely presentational, receiving its data from container components.
 
-Execute the following command in the root directory of the project to install the necessary npm packages:
-
-```bash
-npm install react-router-dom react-plotly.js axios
-```
-
-### 3.2 Launching the Development Server
-
-Ensure that the backend API server is running and adjust the API address in `dataService` based on your backend configuration.
-
-Execute the following command in the root directory of the project to launch the React development server:
-
-```bash
-npm start
-```
-
-Open a browser and navigate to `http://localhost:3000`. You should be able to see the application's homepage. Proceed to the stock information query page, enter the stock code and date range, then click the search button. After a brief wait, you should be able to see the stock chart information at the bottom of the page.
----
-
-## 🆕 Recent Updates (Feature Branch: ui-ux-improvements)
-
-### New Unified Technical Analysis Page
-A new comprehensive analysis page is now available that combines pattern recognition with technical indicators!
-
-**Access:** Sidebar → Group B → 🎯 Technical Analysis (Unified)
-
-**Features:**
-- 📈 Candlestick charts with pattern markers
-- 📊 Volume analysis
-- 📉 MACD indicator (with signal line and histogram)
-- 📈 RSI indicator (with overbought/oversold zones)
-- 📈 Moving averages (MA_5, MA_20, etc.)
-- 🎯 Pattern filtering (Select All/Clear)
-- ✅ Multiple companies support (each gets separate chart)
-
-### UI/UX Improvements
-The Pattern Analysis page has been enhanced with:
-- Modern purple gradient design
-- Loading states and error handling
-- Responsive design (mobile/tablet/desktop)
-- Select All/Clear for pattern filtering
-
-### Documentation
-See `FINAL_SUMMARY.md` for complete details on all improvements.
+**5. api.js (API Service)**
+**Location:** `src/services/api.js`
+The bridge between Frontend and Backend. It exports named functions (e.g., `getScheduledJobs`, `fetchDataFromSource`) that correspond directly to backend endpoints.
 
 ---
+
+### Styling Architecture
+
+We follow a **Modular CSS** approach.
+- **Global Styles:** `App.css` and `index.css` for app-wide resets and variables.
+- **Component Styles:** Each component has a dedicated CSS file in `src/styles/` (e.g., `JobSchedulerPage.css` matches `JobSchedulerPage.js`). This makes it easy to locate and edit styles for specific features without side effects.
