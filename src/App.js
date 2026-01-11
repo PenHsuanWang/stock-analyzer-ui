@@ -2,8 +2,8 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage.js';
-import BasePage from './pages/BasePage.js';
 import DataCollectionPage from './pages/DataCollectionPage';
 import DataAnalysisPage from './pages/DataAnalysisPage.js';
 import DataExportPage from './pages/DataExportPage.js';
@@ -22,34 +22,43 @@ import ListDatasetFromDBControls from './components/containers/ListDatasetFromDB
 import StockSearchControls from './components/containers/StockSearchControls';
 import DataCollectMiddlePanelControls from './components/containers/DataCollectMiddlePanelControls';
 
-import './styles/BasePage.css';
-
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route 
+          path="/" 
+          element={
+            <MainLayout>
+              <HomePage />
+            </MainLayout>
+          } 
+        />
 
         <Route 
           path="/data-collect" 
           element={
-            <DataCollectionPage 
-              StockSearchControlsComponent={StockSearchControls}
-              CandlestickDiagramComponent={CandlestickDiagram}
-              MiddlePanelComponent={DataCollectMiddlePanelControls}
-              SavedDataListComponent={ListDatasetFromDBControls}
-              prefix="stock_data"
-            />
+            <MainLayout>
+              <DataCollectionPage 
+                StockSearchControlsComponent={StockSearchControls}
+                CandlestickDiagramComponent={CandlestickDiagram}
+                MiddlePanelComponent={DataCollectMiddlePanelControls}
+                SavedDataListComponent={ListDatasetFromDBControls}
+                prefix="stock_data"
+              />
+            </MainLayout>
           }
         />
 
         <Route 
           path="/data-analysis" 
           element={
-            <DataAnalysisPage 
-              savedDataPrefix="raw_stock_data"
-              analyzedDataPrefix="stock_data"
-            />
+            <MainLayout>
+              <DataAnalysisPage 
+                savedDataPrefix="raw_stock_data"
+                analyzedDataPrefix="stock_data"
+              />
+            </MainLayout>
           }
         />
 
@@ -57,9 +66,11 @@ function App() {
         <Route 
           path="/stock-analysis-dashboard" 
           element={
-            <StockAnalysisDashboard 
-              analyzedDataPrefix="stock_data" 
-            />
+            <MainLayout>
+              <StockAnalysisDashboard 
+                analyzedDataPrefix="stock_data" 
+              />
+            </MainLayout>
           } 
         />
 
@@ -82,30 +93,36 @@ function App() {
         <Route 
           path="/analyzed-visualization-heatmap" 
           element={
-            <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" 
-              chartType="heatmap" 
-            />
+            <MainLayout>
+              <AnalyzedDataVisualizationPage 
+                analyzedDataPrefix="stock_data" 
+                chartType="heatmap" 
+              />
+            </MainLayout>
           } 
         />
 
         <Route 
           path="/analyzed-visualization-histogram" 
           element={
-            <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" 
-              chartType="histogram" 
-            />
+            <MainLayout>
+              <AnalyzedDataVisualizationPage 
+                analyzedDataPrefix="stock_data" 
+                chartType="histogram" 
+              />
+            </MainLayout>
           } 
         />
 
         <Route 
           path="/analyzed-visualization-pairgrid" 
           element={
-            <AnalyzedDataVisualizationPage 
-              analyzedDataPrefix="stock_data" 
-              chartType="pairgrid" 
-            />
+            <MainLayout>
+              <AnalyzedDataVisualizationPage 
+                analyzedDataPrefix="stock_data" 
+                chartType="pairgrid" 
+              />
+            </MainLayout>
           } 
         />
 
@@ -117,53 +134,71 @@ function App() {
         <Route 
           path="/correlation-analysis" 
           element={
-            <CorrelationAnalysisPage
-              prefix="stock_data"
-            />
+            <MainLayout>
+              <CorrelationAnalysisPage
+                prefix="stock_data"
+              />
+            </MainLayout>
           }
         />
 
         <Route 
           path="/data-export" 
           element={
-            <DataExportPage/>
+            <MainLayout>
+              <DataExportPage/>
+            </MainLayout>
           }
         />
 
         <Route 
           path="/model-manage" 
-          element={<ModelManagePage />}
+          element={
+            <MainLayout>
+              <ModelManagePage />
+            </MainLayout>
+          }
         />
 
         <Route 
           path="/model-comparison" 
-          element={<ModelComparisonPage />}  
+          element={
+            <MainLayout>
+              <ModelComparisonPage />
+            </MainLayout>
+          }  
         />
 
         <Route
           path="/model-training-setup"
           element={
-            <ModelTrainingSetupPage 
-              analyzedDataPrefix="stock_data"
-            />
+            <MainLayout>
+              <ModelTrainingSetupPage 
+                analyzedDataPrefix="stock_data"
+              />
+            </MainLayout>
           }
         />
 
         <Route 
           path="/trainer-control"
           element={
-            <TrainerControlPage 
-              analyzedDataPrefix="stock_data"
-            />
+            <MainLayout>
+              <TrainerControlPage 
+                analyzedDataPrefix="stock_data"
+              />
+            </MainLayout>
           }
         />
 
         <Route 
           path="/job-scheduler" 
-          element={<JobSchedulerPage />}
+          element={
+            <MainLayout>
+              <JobSchedulerPage />
+            </MainLayout>
+          }
         />
-
-        <Route path="/base" element={<BasePage />} />
       </Routes>
     </Router>
   );

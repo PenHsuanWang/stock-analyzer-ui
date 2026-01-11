@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getModelList, compareModels, sendRequest } from '../services/api';
-import BasePage from './BasePage';
 import Header from '../components/basic/Header';
 import ModelSelector from '../components/containers/ModelSelector';
 import ComparisonTable from '../components/containers/ComparisonTable';
@@ -139,45 +138,43 @@ const ModelComparisonPage = () => {
   };
 
   return (
-    <BasePage>
-      <div className="model-comparison-page">
-        <ModelComparisonHeader />
-        <div className="model-selection">
-          <ModelSelector 
-            modelName={modelName1} 
-            setModelName={(name) => setPartState({ modelName1: name })} 
-            version={version1} 
-            setVersion={(version) => setPartState({ version1: version })} 
-            modelOptions={modelOptions.map(model => model.name)} 
-            versionOptions={versionOptions1} 
-          />
-          <ModelSelector 
-            modelName={modelName2} 
-            setModelName={(name) => setPartState({ modelName2: name })} 
-            version={version2} 
-            setVersion={(version) => setPartState({ version2: version })} 
-            modelOptions={modelOptions.map(model => model.name)} 
-            versionOptions={versionOptions2} 
-          />
-        </div>
-
-        <div className="model-details-container">
-          <ModelDetails model={modelDetails1} />
-          <ModelDetails model={modelDetails2} />
-        </div>
-
-        <button onClick={handleCompare}>Compare Models</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        {comparisonResult && (
-          <ComparisonTable comparisonResult={comparisonResult} />
-        )}
-        <MetricsComparison metrics={metrics} />
-        <TestModelPerformance />
-        <HistoricalComparison history={history} />
-        <InteractiveAnalysis onFilter={handleFilter} onSort={handleSort} onAdjustParameters={handleAdjustParameters} />
-        <ExportAndShare onExport={handleExport} onGenerateLink={handleGenerateLink} />
+    <div className="model-comparison-page">
+      <ModelComparisonHeader />
+      <div className="model-selection">
+        <ModelSelector 
+          modelName={modelName1} 
+          setModelName={(name) => setPartState({ modelName1: name })} 
+          version={version1} 
+          setVersion={(version) => setPartState({ version1: version })} 
+          modelOptions={modelOptions.map(model => model.name)} 
+          versionOptions={versionOptions1} 
+        />
+        <ModelSelector 
+          modelName={modelName2} 
+          setModelName={(name) => setPartState({ modelName2: name })} 
+          version={version2} 
+          setVersion={(version) => setPartState({ version2: version })} 
+          modelOptions={modelOptions.map(model => model.name)} 
+          versionOptions={versionOptions2} 
+        />
       </div>
-    </BasePage>
+
+      <div className="model-details-container">
+        <ModelDetails model={modelDetails1} />
+        <ModelDetails model={modelDetails2} />
+      </div>
+
+      <button onClick={handleCompare}>Compare Models</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {comparisonResult && (
+        <ComparisonTable comparisonResult={comparisonResult} />
+      )}
+      <MetricsComparison metrics={metrics} />
+      <TestModelPerformance />
+      <HistoricalComparison history={history} />
+      <InteractiveAnalysis onFilter={handleFilter} onSort={handleSort} onAdjustParameters={handleAdjustParameters} />
+      <ExportAndShare onExport={handleExport} onGenerateLink={handleGenerateLink} />
+    </div>
   );
 };
 

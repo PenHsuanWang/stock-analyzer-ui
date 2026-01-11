@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import BasePage from './BasePage';
 import { getModelList, sendRequest } from '../services/api';
 import Header from '../components/basic/Header';
 import ModelListTable from '../components/lists/ModelListTable';
@@ -36,16 +35,14 @@ const ModelManagePage = () => {
   };
 
   return (
-    <BasePage>
-      <div className="model-manage-page">
-        <Header title="Model Management" description="Manage and view details of machine learning models." />
-        <div className="model-manage-content">
-          <ModelListTable models={modelOptions} onSelectModel={handleModelSelection} />
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {modelDetails && <ModelDetails model={modelDetails} />}
-        </div>
+    <div className="model-manage-page">
+      <Header title="Model Management" description="Manage and view details of machine learning models." />
+      <div className="model-manage-content">
+        <ModelListTable models={modelOptions} onSelectModel={handleModelSelection} />
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {modelDetails && <ModelDetails model={modelDetails} />}
       </div>
-    </BasePage>
+    </div>
   );
 };
 

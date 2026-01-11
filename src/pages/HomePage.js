@@ -1,54 +1,106 @@
 import React from 'react';
-import Sidebar from '../components/basic/Sidebar';
+import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
+
+// Mock Data
+const METRICS = [
+  { label: 'System Status', value: 'Online', trend: '●', trendType: 'positive' },
+  { label: 'Active Jobs', value: '2', trend: 'Running', trendType: 'neutral' },
+  { label: 'Total Datasets', value: '14', trend: '+3 this week', trendType: 'positive' },
+  { label: 'Last Update', value: '10m ago', trend: 'Auto-fetch', trendType: 'neutral' },
+];
+
+const RECENT_ACTIVITY = [
+  { action: 'Fetch Data', target: 'AAPL', status: 'Success', time: '2m ago' },
+  { action: 'Model Train', target: 'LSTM_v2', status: 'Running', time: '15m ago' },
+  { action: 'Fetch Data', target: 'TSLA', status: 'Failed', time: '1h ago' },
+  { action: 'Data Export', target: 'All_Holdings', status: 'Success', time: '2h ago' },
+  { action: 'System', target: 'Backup', status: 'Success', time: '1d ago' },
+];
+
+const MetricCard = ({ label, value, trend, trendType }) => (
+  <div className="metric-card">
+    <div className="metric-card__label">{label}</div>
+    <div className="metric-card__value">{value}</div>
+    <div className={`metric-card__trend metric-card__trend--${trendType}`}>
+      {trend}
+    </div>
+  </div>
+);
+
+const ActionCard = ({ icon, title, desc, to }) => (
+  <Link to={to} className="action-card">
+    <div className="action-card__icon">{icon}</div>
+    <div className="action-card__title">{title}</div>
+    <div className="action-card__desc">{desc}</div>
+  </Link>
+);
 
 const HomePage = () => {
   return (
-    <div className="HomePage">
-      <Sidebar />
-      <main className="Content">
-        <section className="welcome-section">
-          <h1>Welcome to the Stock Analysis Portal</h1>
-          <p>Your one-stop shop for stock data analysis, insights discovery, and data visualization.</p>
-        </section>
+    <div className="home-dashboard">
+      {/* Row 1: Metrics */}
+      <section className="metric-ticker">
+        {METRICS.map((m, i) => (
+          <MetricCard key={i} {...m} />
+        ))}
+      </section>
 
-        <div className="feature-section">
-          <div className="feature-card">
-            <h2>Comprehensive Data Collection</h2>
-            <p>Enter stock codes and dates to gather the data you need.</p>
-          </div>
-          <div className="feature-card">
-            <h2>Advanced Data Analysis</h2>
-            <p>Utilize cutting-edge algorithms to dissect and understand market trends.</p>
-          </div>
-          <div className="feature-card">
-            <h2>Dynamic Data Visualization</h2>
-            <p>Explore your data through various charts including Candlestick and Heatmap diagrams.</p>
-          </div>
+      {/* Row 2: Quick Actions */}
+      <section className="quick-actions">
+        <ActionCard 
+          to="/data-collect" 
+          icon="⚡" 
+          title="New Manual Fetch" 
+          desc="Retrieve fresh stock data from yFinance"
+        />
+        <ActionCard 
+          to="/stock-analysis-dashboard" 
+          icon="📈" 
+          title="View Analysis" 
+          desc="Visualize trends and candlestick patterns"
+        />
+        <ActionCard 
+          to="/job-scheduler" 
+          icon="⏱️" 
+          title="Check Jobs" 
+          desc="Monitor background fetch tasks"
+        />
+      </section>
+
+      {/* Row 3: Recent Activity */}
+      <section className="recent-activity">
+        <div className="recent-activity__header">
+          <h2 className="recent-activity__title">Recent Activity</h2>
         </div>
-
-        <section className="readme-section">
-          <h2>Project Overview</h2>
-          <p>Welcome to the Stock Analysis Portal, a sophisticated tool designed to facilitate the querying and visualization of stock information. This platform allows users to input stock codes and date ranges to retrieve and display closing stock prices within a specified timeframe. The intuitive interface presents the results in an accessible line chart format, enabling users to gain insights into stock performance at a glance.</p>
-          
-          <h2>Key Features</h2>
-          <ul>
-            <li>Comprehensive Data Collection: Enter stock codes and dates to gather the data you need.</li>
-            <li>Advanced Data Analysis: Utilize cutting-edge algorithms to dissect and understand market trends.</li>
-            <li>Dynamic Data Visualization: Explore your data through various charts including Candlestick and Heatmap diagrams.</li>
-          </ul>
-          
-          <h2>Project Structure</h2>
-          <p>Our project is structured in a modular fashion, encapsulating different functionalities within specific directories and components. This modular design ensures ease of maintenance and scalability as the project grows and evolves.</p>
-          
-          <h2>Usage Guide</h2>
-          <p>Getting started is as simple as installing the required packages with <code>npm install</code>, ensuring your backend API server is running, and then launching the development server with <code>npm start</code>. Navigate to <code>http://localhost:3000</code> to access the homepage and begin your stock analysis journey.</p>
-          
-          <p>The combination of React's compositional capabilities, higher-order components, and the strategic pattern in routing configuration underpins the flexible and scalable architecture of our application. This thoughtful design approach guarantees a modular and maintainable structure, providing users with a seamless experience.</p>
-          
-          <p>Whether you are a seasoned investor or new to stock analysis, our platform is equipped to support your decision-making process with powerful tools and a user-friendly interface.</p>
-        </section>
-      </main>
+        <div className="dataset-table__wrapper">
+          <table className="dataset-table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {RECENT_ACTIVITY.map((row, i) => (
+                <tr key={i}>
+                  <td>{row.action}</td>
+                  <td>{row.target}</td>
+                  <td style={{ 
+                    color: row.status === 'Success' ? 'var(--success)' : 
+                           row.status === 'Failed' ? 'var(--danger)' : 'var(--warning)' 
+                  }}>
+                    {row.status}
+                  </td>
+                  <td style={{ color: 'var(--text-muted)' }}>{row.time}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 };

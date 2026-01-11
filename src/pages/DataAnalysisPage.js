@@ -1,6 +1,5 @@
 // DataAnalysisPage.js
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import { computeFullAnalysisAndStore, deleteDatasetInDB } from '../services/api';
 import '../styles/DataAnalysisPage.css'; 
@@ -65,26 +64,24 @@ function DataAnalysisPage({ savedDataPrefix, analyzedDataPrefix }) {
   };
 
   return (
-    <BasePage>
-      <div className="data-analysis-page-container">
-        <div className="data-list-container">
-          <ListDatasetFromDBControls
-            key={refreshRawDataKey}
-            prefix={savedDataPrefix}
-            setSelectedItems={setSelectedForAnalysis}
-          />
-          <button onClick={handleAnalyze}>Analyze</button>
-        </div>
-        <div className="data-list-container">
-          <ListDatasetFromDBControls
-            key={refreshAnalyzedDataKey}
-            prefix={analyzedDataPrefix}
-            setSelectedItems={setSelectedForDeletion}
-          />
-          <button onClick={handleDelete}>Delete</button>
-        </div>
+    <div className="data-analysis-page-container">
+      <div className="data-list-container">
+        <ListDatasetFromDBControls
+          key={refreshRawDataKey}
+          prefix={savedDataPrefix}
+          setSelectedItems={setSelectedForAnalysis}
+        />
+        <button onClick={handleAnalyze}>Analyze</button>
       </div>
-    </BasePage>
+      <div className="data-list-container">
+        <ListDatasetFromDBControls
+          key={refreshAnalyzedDataKey}
+          prefix={analyzedDataPrefix}
+          setSelectedItems={setSelectedForDeletion}
+        />
+        <button onClick={handleDelete}>Delete</button>
+      </div>
+    </div>
   );
 }
 

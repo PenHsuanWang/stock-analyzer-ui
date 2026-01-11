@@ -5,7 +5,7 @@ import '../../styles/Sidebar.css';
 const navigationGroups = [
   {
     id: 'group-a',
-    label: 'Group A · Fundamentals',
+    label: 'Fundamentals',
     icon: '📘',
     defaultOpen: true,
     children: [
@@ -52,13 +52,13 @@ const navigationGroups = [
   },
   {
     id: 'group-b',
-    label: 'Group B · Advanced',
+    label: 'Advanced',
     icon: '🚀',
     defaultOpen: true,
     children: [
       {
         id: 'stock-analysis',
-        label: 'Stock Analysis Dashboard',
+        label: 'Stock Analysis',
         icon: '📊',
         to: '/stock-analysis-dashboard',
       },
@@ -68,7 +68,7 @@ const navigationGroups = [
         icon: '🤖',
         defaultOpen: true,
         children: [
-          { id: 'model-training-setup', label: 'Model Training Setup', icon: '🛠️', to: '/model-training-setup' },
+          { id: 'model-training-setup', label: 'Training Setup', icon: '🛠️', to: '/model-training-setup' },
           { id: 'trainer-control', label: 'Trainer Control', icon: '📡', to: '/trainer-control' },
           { id: 'model-manage', label: 'Model Management', icon: '📁', to: '/model-manage' },
           { id: 'model-comparison', label: 'Model Comparison', icon: '⚖️', to: '/model-comparison' },
@@ -88,9 +88,8 @@ const buildInitialExpansionState = (items, acc = {}) => {
   return acc;
 };
 
-const SidebarItem = ({ item, depth, expanded, toggle }) => {
+const SidebarItem = ({ item, expanded, toggle }) => {
   const hasChildren = Array.isArray(item.children) && item.children.length > 0;
-  const paddingLeft = 12 + depth * 16;
 
   if (hasChildren) {
     return (
@@ -98,7 +97,6 @@ const SidebarItem = ({ item, depth, expanded, toggle }) => {
         <button
           type="button"
           className="sidebar-node__button"
-          style={{ paddingLeft }}
           onClick={() => toggle(item.id)}
           aria-expanded={!!expanded[item.id]}
         >
@@ -120,7 +118,6 @@ const SidebarItem = ({ item, depth, expanded, toggle }) => {
               <SidebarItem
                 key={child.id}
                 item={child}
-                depth={depth + 1}
                 expanded={expanded}
                 toggle={toggle}
               />
@@ -137,7 +134,6 @@ const SidebarItem = ({ item, depth, expanded, toggle }) => {
       className={({ isActive }) =>
         ['sidebar-link', isActive ? 'active' : ''].join(' ').trim()
       }
-      style={{ paddingLeft }}
     >
       {item.icon && (
         <span className="sidebar-node__icon" aria-hidden="true">
@@ -160,11 +156,11 @@ function Sidebar() {
   };
 
   return (
-    <aside className="Sidebar" aria-label="Primary navigation">
+    <div className="sidebar-inner">
       <div className="Sidebar-search">
         <input
           type="text"
-          placeholder="Search this site..."
+          placeholder="Search..."
           aria-label="Search navigation"
         />
       </div>
@@ -173,13 +169,12 @@ function Sidebar() {
           <SidebarItem
             key={group.id}
             item={group}
-            depth={0}
             expanded={expanded}
             toggle={toggleItem}
           />
         ))}
       </nav>
-    </aside>
+    </div>
   );
 }
 

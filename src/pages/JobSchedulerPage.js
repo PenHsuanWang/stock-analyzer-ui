@@ -1,7 +1,6 @@
 // src/pages/JobSchedulerPage.js
 
 import React, { useState, useEffect } from 'react';
-import BasePage from './BasePage';
 import {
   Container,
   Grid,
@@ -129,90 +128,88 @@ function JobSchedulerPage() {
   };
 
   return (
-    <BasePage>
-      <Container maxWidth="xl" className="job-scheduler-page">
-        <Box className="page-header">
-          <Typography variant="h4" component="h1" gutterBottom>
-            📅 Job Scheduler
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            Manage scheduled jobs for automatic stock data fetching
-          </Typography>
-        </Box>
+    <Container maxWidth="xl" className="job-scheduler-page">
+      <Box className="page-header">
+        <Typography variant="h4" component="h1" gutterBottom>
+          📅 Job Scheduler
+        </Typography>
+        <Typography variant="body1" color="textSecondary">
+          Manage scheduled jobs for automatic stock data fetching
+        </Typography>
+      </Box>
 
-        {error && (
-          <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
+      {error && (
+        <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 2 }}>
+          {success}
+        </Alert>
+      )}
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <SchedulerStatusCard status={schedulerStatus} onRefresh={loadSchedulerStatus} />
-          </Grid>
-
-          <Grid item xs={12} md={8}>
-            <Box className="quick-actions">
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleCreateJob}
-              >
-                Create New Job
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<RefreshIcon />}
-                onClick={loadJobs}
-                disabled={isLoading}
-              >
-                Refresh
-              </Button>
-              <Button
-                variant={showActiveOnly ? 'contained' : 'outlined'}
-                onClick={() => setShowActiveOnly(!showActiveOnly)}
-              >
-                {showActiveOnly ? 'Show All' : 'Active Only'}
-              </Button>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12}>
-            {isLoading ? (
-              <Box display="flex" justifyContent="center" p={4}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <JobsTable
-                jobs={jobs}
-                onEdit={handleEditJob}
-                onDelete={handleDeleteJob}
-                onToggle={handleToggleJob}
-              />
-            )}
-          </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <SchedulerStatusCard status={schedulerStatus} onRefresh={loadSchedulerStatus} />
         </Grid>
 
-        <JobCreationDialog
-          open={createDialogOpen}
-          onClose={() => setCreateDialogOpen(false)}
-          onSuccess={handleJobCreated}
-        />
+        <Grid item xs={12} md={8}>
+          <Box className="quick-actions">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleCreateJob}
+            >
+              Create New Job
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<RefreshIcon />}
+              onClick={loadJobs}
+              disabled={isLoading}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant={showActiveOnly ? 'contained' : 'outlined'}
+              onClick={() => setShowActiveOnly(!showActiveOnly)}
+            >
+              {showActiveOnly ? 'Show All' : 'Active Only'}
+            </Button>
+          </Box>
+        </Grid>
 
-        <JobEditDialog
-          open={editDialogOpen}
-          job={selectedJob}
-          onClose={() => setEditDialogOpen(false)}
-          onSuccess={handleJobUpdated}
-        />
-      </Container>
-    </BasePage>
+        <Grid item xs={12}>
+          {isLoading ? (
+            <Box display="flex" justifyContent="center" p={4}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <JobsTable
+              jobs={jobs}
+              onEdit={handleEditJob}
+              onDelete={handleDeleteJob}
+              onToggle={handleToggleJob}
+            />
+          )}
+        </Grid>
+      </Grid>
+
+      <JobCreationDialog
+        open={createDialogOpen}
+        onClose={() => setCreateDialogOpen(false)}
+        onSuccess={handleJobCreated}
+      />
+
+      <JobEditDialog
+        open={editDialogOpen}
+        job={selectedJob}
+        onClose={() => setEditDialogOpen(false)}
+        onSuccess={handleJobUpdated}
+      />
+    </Container>
   );
 }
 

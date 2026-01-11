@@ -1,6 +1,5 @@
 // src/pages/ModelTrainingSetupPage.js
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import Header from '../components/basic/Header';
 import DataFetcherSetup from '../components/containers/DataFetcherSetup';
 import DataProcessorSetup from '../components/containers/DataProcessorSetup';
@@ -35,72 +34,70 @@ const ModelTrainingSetupPage = ({ analyzedDataPrefix }) => {
   };
 
   return (
-    <BasePage>
+    <div className="model-training-setup-page">
       <Header title="Model Training Setup" />
-      <div className="model-training-setup-page">
-        <div className="setup-block">
-          <div className="setup-form">
-            <DataFetcherSetup onSetupComplete={() => {}} />
-          </div>
-          <div className="component-list">
-            <DataFetcherList />
-          </div>
+      <div className="setup-block">
+        <div className="setup-form">
+          <DataFetcherSetup onSetupComplete={() => {}} />
         </div>
-        <div className="setup-block">
-          <div className="setup-form">
-            <DataProcessorSetup
-              selectedDataProcessor={selectedDataProcessor}
-              onSetupComplete={() => handleSetupComplete('dataProcessor')}
-              analyzedDataPrefix={analyzedDataPrefix}
-            />
-          </div>
-          <div className="component-list">
-            <DataProcessorList
-              refreshList={refreshDataProcessorList}
-              onRefreshed={() => setRefreshDataProcessorList(false)}
-              onSelect={setSelectedDataProcessor}
-            />
-          </div>
-        </div>
-        <div className="setup-block">
-          <div className="setup-form">
-            <ModelSetup
-              selectedModel={selectedModel}
-              onSetupComplete={() => handleSetupComplete('model')}
-            />
-          </div>
-          <div className="component-list">
-            <ModelForTrainerList
-              refreshList={refreshModelList}
-              onRefreshed={() => setRefreshModelList(false)}
-              onSelect={setSelectedModel}
-            />
-          </div>
-        </div>
-        <div className="setup-block">
-          <div className="setup-form">
-            <TrainerSetup
-              selectedTrainer={selectedTrainer}
-              selectedDataProcessor={selectedDataProcessor}
-              selectedModel={selectedModel}
-              onSetupComplete={() => handleSetupComplete('trainer')}
-            />
-          </div>
-          <div className="component-list">
-            <TrainerList
-              refreshList={refreshTrainerList}
-              onRefreshed={() => setRefreshTrainerList(false)}
-              onSelect={setSelectedTrainer}
-            />
-          </div>
-        </div>
-        <div className="setup-block">
-          <div className="setup-form">
-            <TrainingParameters onTrainingComplete={() => alert('Training started successfully')} />
-          </div>
+        <div className="component-list">
+          <DataFetcherList />
         </div>
       </div>
-    </BasePage>
+      <div className="setup-block">
+        <div className="setup-form">
+          <DataProcessorSetup
+            selectedDataProcessor={selectedDataProcessor}
+            onSetupComplete={() => handleSetupComplete('dataProcessor')}
+            analyzedDataPrefix={analyzedDataPrefix}
+          />
+        </div>
+        <div className="component-list">
+          <DataProcessorList
+            refreshList={refreshDataProcessorList}
+            onRefreshed={() => setRefreshDataProcessorList(false)}
+            onSelect={setSelectedDataProcessor}
+          />
+        </div>
+      </div>
+      <div className="setup-block">
+        <div className="setup-form">
+          <ModelSetup
+            selectedModel={selectedModel}
+            onSetupComplete={() => handleSetupComplete('model')}
+          />
+        </div>
+        <div className="component-list">
+          <ModelForTrainerList
+            refreshList={refreshModelList}
+            onRefreshed={() => setRefreshModelList(false)}
+            onSelect={setSelectedModel}
+          />
+        </div>
+      </div>
+      <div className="setup-block">
+        <div className="setup-form">
+          <TrainerSetup
+            selectedTrainer={selectedTrainer}
+            selectedDataProcessor={selectedDataProcessor}
+            selectedModel={selectedModel}
+            onSetupComplete={() => handleSetupComplete('trainer')}
+          />
+        </div>
+        <div className="component-list">
+          <TrainerList
+            refreshList={refreshTrainerList}
+            onRefreshed={() => setRefreshTrainerList(false)}
+            onSelect={setSelectedTrainer}
+          />
+        </div>
+      </div>
+      <div className="setup-block">
+        <div className="setup-form">
+          <TrainingParameters onTrainingComplete={() => alert('Training started successfully')} />
+        </div>
+      </div>
+    </div>
   );
 };
 

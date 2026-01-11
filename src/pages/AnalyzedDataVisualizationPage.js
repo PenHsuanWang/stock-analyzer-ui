@@ -1,6 +1,5 @@
 // src/pages/AnalyzedDataVisualizationPage.js
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import TwoDHeatmapDiagram from '../components/charts/TwoDHeatmapDiagram';
 import CandlestickDiagram from '../components/charts/CandlestickDiagram';
@@ -150,21 +149,19 @@ function AnalyzedDataVisualizationPage({ analyzedDataPrefix, chartType }) {
   };
 
   return (
-    <BasePage>
-      <div className="analyzed-data-visualization-page-container">
-        <div className="data-list-container" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          <ListDatasetFromDBControls
-            key={refreshAnalyzedDataKey}
-            prefix={analyzedDataPrefix}
-            setSelectedItems={setSelectedForVisualization}
-          />
-          <button onClick={handleShowData}>Show</button>
-        </div>
-        <div className="analyzed-data-visualization-container">
-          {renderVisualization()}
-        </div>
+    <div className="analyzed-data-visualization-page-container">
+      <div className="data-list-container" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+        <ListDatasetFromDBControls
+          key={refreshAnalyzedDataKey}
+          prefix={analyzedDataPrefix}
+          setSelectedItems={setSelectedForVisualization}
+        />
+        <button onClick={handleShowData}>Show</button>
       </div>
-    </BasePage>
+      <div className="analyzed-data-visualization-container">
+        {renderVisualization()}
+      </div>
+    </div>
   );
 }
 

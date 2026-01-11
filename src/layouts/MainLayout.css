@@ -1,0 +1,72 @@
+/* src/layouts/MainLayout.css */
+
+.app-shell {
+  display: grid;
+  height: 100vh;                              /* Viewport Height Locked */
+  grid-template-areas: 
+    "sidebar header"
+    "sidebar main";
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr;
+  overflow: hidden;                           /* Prevent body scroll */
+  background: var(--bg-app);
+}
+
+.shell-sidebar {
+  grid-area: sidebar;
+  background: var(--bg-panel);
+  overflow: hidden;                           /* Let Sidebar component handle scroll */
+  border-right: 1px solid var(--bg-card);
+}
+
+.shell-header {
+  grid-area: header;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--s-6);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.shell-main {
+  grid-area: main;
+  background: var(--bg-app);
+  overflow-y: auto;                           /* Content scroll */
+  overflow-x: hidden;
+  padding: var(--s-6);
+  position: relative;
+}
+
+/* Focus management for skip link */
+.shell-main:focus {
+  outline: none;
+}
+
+/* ===== Responsive: Tablet & Below ===== */
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-areas: 
+      "header"
+      "main";
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--header-height) 1fr;
+  }
+  
+  .shell-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    /* transform: translateX(-100%); */
+    transition: transform var(--transition-normal);
+    z-index: 100;
+  }
+  
+  .shell-sidebar.open {
+    transform: translateX(0);
+  }
+}

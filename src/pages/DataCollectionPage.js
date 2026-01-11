@@ -1,7 +1,9 @@
+// src/pages/DataCollectionPage.js (Target State)
 import React, { useState } from 'react';
-import BasePage from './BasePage';
+import SplitPane from '../components/basic/SplitPane';
+import ResponsiveChartContainer from '../components/charts/ResponsiveChartContainer';
+import EmptyState from '../components/basic/EmptyState';
 import '../styles/DataCollectionPage.css';
-
 import { deleteDatasetInDB, computeFullAnalysisAndStore } from '../services/api';
 
 function DataCollectionPage({
@@ -11,7 +13,6 @@ function DataCollectionPage({
   SavedDataListComponent,
   prefix
 }) {
-  // State to hold the fetched data
   const [searchParams, setSearchParams] = useState({
     stockId: '',
     startDate: '',
@@ -22,16 +23,12 @@ function DataCollectionPage({
   const [refreshDataList, setRefreshDataList] = useState(false);
   const [selectedDatasets, setSelectedDatasets] = useState([]);
   
-  // New states for loading and status
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState(null);
 
-  // Window sizes configuration - now exposed as state for future configurability
   const [windowSizes] = useState([5, 10, 20, 60, 90]);
 
-  // Process and save the fetched data with full analysis
   const handleSaveData = async () => {
-    // Validate search parameters
     if (!searchParams.stockId || !searchParams.startDate || !searchParams.endDate) {
       setStatusMessage({ 
         type: 'error', 
@@ -44,7 +41,7 @@ function DataCollectionPage({
     setStatusMessage(null);
 
     try {
-      const response = await computeFullAnalysisAndStore({
+      await computeFullAnalysisAndStore({
         prefix: prefix,
         stock_id: searchParams.stockId,
         start_date: searchParams.startDate,
@@ -68,7 +65,6 @@ function DataCollectionPage({
     }
   };
 
-  // Function to handle the deletion of selected datasets
   const handleDeleteData = async (selectedData) => {
     if (!selectedData || selectedData.length === 0) {
       setStatusMessage({ 
@@ -109,30 +105,20 @@ function DataCollectionPage({
     }
   };
 
-  return (
-    <BasePage>
-      <div className="main-content-top">
-        <div className="main-content-data-search">
-          {StockSearchControlsComponent && (
-            <StockSearchControlsComponent 
-              setChartData={setFetchedData} 
-              setSearchParams={setSearchParams}
-              dataPrefix={prefix}
-            />
-          )}
-        </div>
-        <div className="main-content-data-preview">
-          {CandlestickDiagramComponent && (
-            <CandlestickDiagramComponent data={fetchedData} />
-          )}
-        </div>
-      </div>
-      <div className="main-content-middle">
-        {statusMessage && (
-          <div className={`status-message ${statusMessage.type}`}>
-            {statusMessage.message}
-          </div>
+  const leftPane = (
+    <div className="control-deck">
+      <section className="control-section">
+        <h3 className="control-section__title">Search Parameters</h3>
+        {StockSearchControlsComponent && (
+          <StockSearchControlsComponent 
+            setChartData={setFetchedData} 
+            setSearchParams={setSearchParams}
+            dataPrefix={prefix}
+          />
         )}
+      </section>
+      
+      <section className="control-section">
         {MiddlePanelComponent && (
           <MiddlePanelComponent 
             onSave={handleSaveData} 
@@ -142,17 +128,52 @@ function DataCollectionPage({
             isLoading={isLoading}
           />
         )}
-      </div>
-      <div className="main-content-bottom">
+      </section>
+      
+      <section className="control-section control-section--scrollable">
+        <h3 className="control-section__title">Saved Datasets</h3>
         {SavedDataListComponent && (
           <SavedDataListComponent 
             prefix={prefix} 
             refresh={refreshDataList}
             setSelectedItems={setSelectedDatasets}
+            compact={true}
           />
         )}
-      </div>
-    </BasePage>
+      </section>
+    </div>
+  );
+
+  const rightPane = (
+    <div className="visual-deck">
+      {statusMessage && (
+        <div className={`status-banner status-banner--${statusMessage.type}`}>
+          {statusMessage.message}
+        </div>
+      )}
+      
+      {fetchedData.length > 0 ? (
+        <ResponsiveChartContainer minHeight={500}>
+          {CandlestickDiagramComponent && (
+             <CandlestickDiagramComponent data={fetchedData} />
+          )}
+        </ResponsiveChartContainer>
+      ) : (
+        <EmptyState 
+          icon="📊"
+          title="No Data Selected"
+          description="Enter stock parameters and click 'Fetch Data' to view the candlestick chart."
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <SplitPane 
+      left={leftPane} 
+      right={rightPane} 
+      leftWidth="340px"
+    />
   );
 }
 

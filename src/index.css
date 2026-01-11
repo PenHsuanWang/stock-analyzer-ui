@@ -1,8 +1,82 @@
+:root {
+  /* ===== Brand Palette ===== */
+  --primary: #38bdf8;              /* Sky Blue - Primary Actions */
+  --primary-hover: #0284c7;        /* Darker Sky - Hover State */
+  --primary-focus: rgba(56, 189, 248, 0.4);  /* Focus Ring */
+  
+  --success: #10b981;              /* Emerald - Success States */
+  --warning: #f59e0b;              /* Amber - Warning States */
+  --danger: #ef4444;               /* Red - Error/Delete States */
+  
+  /* ===== Background Palette ===== */
+  --bg-app: #020617;               /* Deep Space - Body Background */
+  --bg-panel: #0f172a;             /* Slate 900 - Sidebar/Header */
+  --bg-card: #1e293b;              /* Slate 800 - Component Surface */
+  --bg-hover: rgba(255, 255, 255, 0.08);  /* Hover Overlay */
+  
+  /* ===== Text Palette (v2.1) ===== */
+  --text-primary: #f8fafc;         /* Slate 50 - Headings */
+  --text-secondary: #94a3b8;       /* Slate 400 - Labels/Meta */
+  --text-muted: #475569;           /* Slate 600 - Disabled */
+  --text-inverse: #111827;         /* Gray 900 - Text on Light BG */
+
+  /* ===== Border Colors ===== */
+  --border-default: #334155;       /* Slate 700 */
+  --border-focus: var(--primary);
+  
+  /* ===== Spacing System (4px Base) ===== */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;                     /* Standard Padding */
+  --s-5: 20px;
+  --s-6: 24px;                     /* Section Gap */
+  --s-8: 32px;
+  --s-10: 40px;                    /* Standard Input Height */
+  
+  /* ===== Component Sizing ===== */
+  --input-height-sm: 32px;         /* Filters */
+  --input-height-md: 40px;         /* Standard */
+  --input-height-lg: 48px;         /* Search */
+  
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-full: 9999px;
+
+  /* ===== Layout Dimensions (v2.1) ===== */
+  --header-height: 64px;
+  --sidebar-width: 260px;
+  --sidebar-width-collapsed: 72px;
+  
+  /* ===== Typography ===== */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 
+                 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 
+                 sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 28px;
+  
+  /* ===== Shadows ===== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.2);
+  
+  /* ===== Transitions ===== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-family);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +84,157 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* ===== Focus Ring Utility (WCAG 2.1 AA) ===== */
+.focus-ring:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Remove default outline when using focus-visible */
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ===== Skip Link (Screen Reader Navigation) ===== */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--s-3) var(--s-4);
+  background: var(--primary);
+  color: var(--text-inverse);
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  z-index: 9999;
+  transition: top var(--transition-fast);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: var(--s-4);
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Component Specs ===== */
+
+/* 3.1 Standard Button */
+.btn {
+  height: var(--input-height-md);            /* 40px */
+  padding: 0 var(--s-4);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  transition: all var(--transition-fast);
+  text-decoration: none; /* In case it's an <a> tag */
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--text-inverse); /* Using text-inverse for better contrast on primary */
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn--primary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.btn--secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+}
+
+.btn--sm {
+  height: var(--input-height-sm);            /* 32px */
+  font-size: var(--font-size-sm);
+  padding: 0 var(--s-3);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 3.2 Standard Input */
+.input {
+  height: var(--input-height-md);            /* 40px */
+  padding: 0 var(--s-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast), 
+              box-shadow var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-focus);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.input--sm {
+  height: var(--input-height-sm);
+  font-size: var(--font-size-sm);
+}
+
+/* 3.3 Standard Select */
+.select {
+  height: var(--input-height-md);
+  padding: 0 var(--s-8) 0 var(--s-3);        /* Right padding for arrow */
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right var(--s-3) center;
+  background-size: 20px;
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  appearance: none;
+}
+
+.select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-focus);
+  outline: none;
 }

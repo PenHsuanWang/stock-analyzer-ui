@@ -133,7 +133,7 @@ const getSourceDisplay = (sourceType) => {
 };
 
 // Memoizing the component to prevent unnecessary re-renders
-const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems }) => {
+const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems, compact = false }) => {
   const [datasets, setDatasets] = useState([]);
   const [selectedDatasets, setSelectedDatasets] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
@@ -310,7 +310,7 @@ const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems }) =
   const detailDisplayTags = getDisplayTags(detailMetadata);
 
   return (
-    <div className="ListDatasetFromDBControls">
+    <div className={`ListDatasetFromDBControls ${compact ? 'compact' : ''}`}>
       <div className="dataset-filters">
         <div className="dataset-filters__group">
           <label htmlFor={`source-filter-${prefix}`} className="dataset-filters__label">
@@ -412,6 +412,28 @@ const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems }) =
 
       {emptyStateMessage ? (
         <div className="dataset-empty-state">{emptyStateMessage}</div>
+      ) : compact ? (
+        <div className="dataset-list--compact">
+          {datasets.map((dataset) => {
+            const { metadata = {} } = dataset;
+            const fresh = isDatasetFresh(metadata);
+            return (
+              <div
+                key={dataset.key}
+                className={`dataset-card--compact ${isSelected(dataset) ? 'selected' : ''}`}
+                onClick={() => handleCheckboxChange(dataset, !isSelected(dataset))}
+              >
+                <div className="dataset-card--compact__symbol">{dataset.stock_id}</div>
+                <div className="dataset-card--compact__dates">
+                  {normalizeDate(dataset.start_date)} - {normalizeDate(dataset.end_date)}
+                </div>
+                <div className={`dataset-card--compact__status ${fresh ? 'fresh' : 'stale'}`}>
+                  {fresh ? 'Fresh' : 'Stale'}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       ) : (
         <div className="dataset-table__wrapper">
           <table className="dataset-table">
@@ -499,8 +521,9 @@ const ListDatasetFromDBControls = memo(({ prefix, refresh, setSelectedItems }) =
         </div>
       )}
 
-      {detailDataset && (
+      {detailDataset && !compact && (
         <div className="dataset-detail">
+          {/* Detail view content (same as before) */}
           <div className="dataset-detail__header">
             <h4>Dataset Details</h4>
             <button

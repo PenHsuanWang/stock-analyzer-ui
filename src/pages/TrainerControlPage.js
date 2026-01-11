@@ -1,7 +1,6 @@
 // src/pages/TrainerControlPage.js
 
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import Header from '../components/basic/Header';
 import TrainerSelectorPanel from '../components/containers/TrainerSelectorPanel';
 import TrainingMonitorChart from '../components/charts/TrainingMonitorChart';
@@ -40,24 +39,22 @@ const TrainerControlPage = () => {
   };
 
   return (
-    <BasePage>
+    <div className="trainer-control-page-vertical">
       <Header title="Trainer Control Panel" />
-      <div className="trainer-control-page-vertical">
-        <TrainerSelectorPanel
-          onTrainerSelect={handleTrainerSelect}
-          selectedTrainer={selectedTrainer}
-          isTraining={isTraining}
-          onTrainingStatusChange={handleTrainingStatusChange}
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-        />
-        <TrainingMonitorChart
-          selectedTrainer={selectedTrainer}
-          onTrainingStatusChange={handleTrainingStatusChange}
-          trainingSessionId={trainingSessionId} // Pass trainingSessionId
-        />
-      </div>
-    </BasePage>
+      <TrainerSelectorPanel
+        onTrainerSelect={handleTrainerSelect}
+        selectedTrainer={selectedTrainer}
+        isTraining={isTraining}
+        onTrainingStatusChange={handleTrainingStatusChange}
+        successMessage={successMessage}
+        errorMessage={errorMessage}
+      />
+      <TrainingMonitorChart
+        selectedTrainer={selectedTrainer}
+        onTrainingStatusChange={handleTrainingStatusChange}
+        trainingSessionId={trainingSessionId} // Pass trainingSessionId
+      />
+    </div>
   );
 };
 

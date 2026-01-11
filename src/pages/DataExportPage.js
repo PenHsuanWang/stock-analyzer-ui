@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import ExportControlPanel from '../components/containers/ExportControlPanel';
 import DataTable from '../components/containers/DataTable';
@@ -47,30 +46,28 @@ function DataExportPage() {
   }, [selectedData]);
 
   return (
-    <BasePage>
-      <div className="data-export-page-main-content">
-        <div className="data-selection-section">
-          <ListDatasetFromDBControls
-            prefix={"stock_data"}
-            setSelectedItems={setSelectedData}
-          />
-        </div>
-        <div className="data-export-section">
-          <ExportControlPanel
-            selectedData={selectedRows}
-          />
-        </div>
-        <div className="data-preview-section">
-          {loading ? (
-            <LoadingIndicator />
-          ) : error ? (
-            <div className="data-export-error">Error: {error}</div>
-          ) : (
-            <DataTable data={detailedData} onSelectionChange={setSelectedRows} />
-          )}
-        </div>  
+    <div className="data-export-page-main-content">
+      <div className="data-selection-section">
+        <ListDatasetFromDBControls
+          prefix={"stock_data"}
+          setSelectedItems={setSelectedData}
+        />
       </div>
-    </BasePage>
+      <div className="data-export-section">
+        <ExportControlPanel
+          selectedData={selectedRows}
+        />
+      </div>
+      <div className="data-preview-section">
+        {loading ? (
+          <LoadingIndicator />
+        ) : error ? (
+          <div className="data-export-error">Error: {error}</div>
+        ) : (
+          <DataTable data={detailedData} onSelectionChange={setSelectedRows} />
+        )}
+      </div>  
+    </div>
   );
 }
 

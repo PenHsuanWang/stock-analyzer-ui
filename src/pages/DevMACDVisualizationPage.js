@@ -1,6 +1,5 @@
 // src/pages/DevMACDVisualizationPage.js
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import IntegratedTechAnaChart from '../components/charts/IntegratedTechAnaChart';
 import { formatDate } from '../utils/DatetimeFormat';
@@ -92,7 +91,7 @@ function DevMACDVisualizationPage({ analyzedDataPrefix }) {
   // The rest of the component remains unchanged, using the same layouts and structure
 
   return (
-    <BasePage>
+    <div className="dev-macd-visualization-page">
       <ListDatasetFromDBControls
         prefix={analyzedDataPrefix}
         setSelectedItems={setSelectedDatasets}
@@ -109,7 +108,7 @@ function DevMACDVisualizationPage({ analyzedDataPrefix }) {
           </div>
         )}
       </div>
-    </BasePage>
+    </div>
   );
   // return (
   //   <BasePage>

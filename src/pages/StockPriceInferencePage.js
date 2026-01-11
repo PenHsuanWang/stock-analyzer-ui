@@ -1,6 +1,5 @@
 // src/pages/StockPriceInferencePage.js
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import StockSearchControls from '../components/containers/StockSearchControls';
 import PriceInferenceChart from '../components/charts/PriceInferenceChart';
 import CandlestickDiagram from '../components/charts/CandlestickDiagram';
@@ -33,7 +32,7 @@ const StockPriceInferencePage = () => {
   };
 
   return (
-    <BasePage>
+    <div className="stock-price-inference-page">
       <h2>Stock Price Prediction</h2>
       <div className="prediction-page-container">
         <div className="search-and-predict">
@@ -45,7 +44,7 @@ const StockPriceInferencePage = () => {
         {stockData && <CandlestickDiagram data={stockData} />}
         {predictionData && <PriceInferenceChart data={predictionData} />}
       </div>
-    </BasePage>
+    </div>
   );
 };
 

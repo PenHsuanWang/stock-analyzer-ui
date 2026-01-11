@@ -7,7 +7,7 @@
 
 .App-content { 
   flex-grow: 1;
-  display: flex; /* 設定為flex，使子元素並排 */
+  display: flex;
 }
 
 .ChartBasePage {
@@ -15,14 +15,8 @@
 }
 
 .Main-content {
-  display: flex; /* 將子元件設置為並排排列 */
-  gap: 20px; /* 可以根據需要增加間隔 */
-}
-
-aside {
-  width: 25%; /* 側邊欄的寬度 */
-  background-color: #f5f5f5; /* 為了使其明顯，給它一個背景顏色 */
-  padding: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .App-logo {
@@ -34,12 +28,6 @@ aside {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.App-header, footer, nav {
-  background-color: #282c34;
-  padding: 10px;
-  color: white;
 }
 
 .App-link {

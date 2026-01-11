@@ -1,0 +1,36 @@
+/* src/styles/SplitPane.css */
+
+.split-pane {
+  display: grid;
+  grid-template-columns: var(--split-left-width, 320px) 1fr;
+  gap: var(--split-gap, var(--s-6));
+  height: 100%;
+  min-height: 0;                              /* Allow shrinking in flex/grid */
+}
+
+.split-pane__left {
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.split-pane__right {
+  overflow: hidden;                           /* Chart container manages scroll */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;                               /* Prevent grid blowout */
+}
+
+/* ===== Responsive: Stack on narrow screens ===== */
+@media (max-width: 900px) {
+  .split-pane {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  
+  .split-pane__left {
+    max-height: 40vh;
+  }
+}

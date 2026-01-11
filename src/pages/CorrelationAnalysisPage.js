@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import BasePage from './BasePage';
 import ListDatasetFromDBControls from '../components/containers/ListDatasetFromDBControls';
 import ScatterAndHistogramChart from '../components/charts/ScatterAndHistogramChart';
 import SimpleScatterSimple from '../components/charts/ScatterPlotMatrix';
@@ -61,26 +60,24 @@ function CorrelationAnalysisPage({ prefix }) {
   };
 
   return (
-    <BasePage>
-      <div className="correlation-analysis-page-container">
-        <div className="data-selection-container">
-          <ListDatasetFromDBControls
-            prefix={prefix}
-            setSelectedItems={(items) => setBaseDataset(items[0])}
-          />
-          <ListDatasetFromDBControls
-            prefix={prefix}
-            setSelectedItems={(items) => setCompareDataset(items[0])}
-          />
-          <button onClick={handleFetchData}>Show Daily Return Scatter Correlation</button>
-        </div>
-        <div className="data-visualization-container">
-          {visualizationData.length > 0 && (
-            <ScatterPlotWithRegressionLine data={visualizationData} />
-          )}
-        </div>
+    <div className="correlation-analysis-page-container">
+      <div className="data-selection-container">
+        <ListDatasetFromDBControls
+          prefix={prefix}
+          setSelectedItems={(items) => setBaseDataset(items[0])}
+        />
+        <ListDatasetFromDBControls
+          prefix={prefix}
+          setSelectedItems={(items) => setCompareDataset(items[0])}
+        />
+        <button onClick={handleFetchData}>Show Daily Return Scatter Correlation</button>
       </div>
-    </BasePage>
+      <div className="data-visualization-container">
+        {visualizationData.length > 0 && (
+          <ScatterPlotWithRegressionLine data={visualizationData} />
+        )}
+      </div>
+    </div>
   );
 }
 
